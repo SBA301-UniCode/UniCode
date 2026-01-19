@@ -1,0 +1,30 @@
+package com.example.unicode.entity;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.*;
+
+@Entity
+@Table(name = "Exam")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class Exam {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID examId;
+    private int duration;
+    private double passScore;
+    @OneToOne
+    @JoinColumn(name = "content_id")
+    private Content content;
+    @OneToMany(mappedBy = "exam")
+    private List<Question> questionList = new ArrayList<>();
+    @OneToMany(mappedBy = "exam")
+    private List<ExamAttempt> ExamAttemptList = new ArrayList<>();
+
+}
