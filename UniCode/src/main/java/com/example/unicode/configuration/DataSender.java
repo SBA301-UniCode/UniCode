@@ -8,6 +8,7 @@ import com.example.unicode.repository.RoleRepo;
 import com.example.unicode.repository.UsersRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class DataSender implements CommandLineRunner {
     private final RoleRepo roleRepository;
     private final PrivilegeRepo privilegeRepository;
     private final UsersRepo usersRepository;
+    private final PasswordEncoder passwordEncoder;
     @Override
     public void run(String... args) throws Exception {
         if(roleRepository.count() > 0) return; // tránh insert lại
@@ -61,19 +63,19 @@ public class DataSender implements CommandLineRunner {
         // ===== Create Users =====
         Users u1 = new Users();
         u1.setEmail("admin@gmail.com");
-        u1.setPassword("123456");
+        u1.setPassword(passwordEncoder.encode("123456"));
         u1.setName("Admin");
         u1.setTokenVersion(0);
 
         Users u2 = new Users();
         u2.setEmail("teacher@gmail.com");
-        u2.setPassword("123456");
+        u2.setPassword(passwordEncoder.encode("123456"));
         u2.setName("Instructor");
         u2.setTokenVersion(0);
 
         Users u3 = new Users();
         u3.setEmail("student@gmail.com");
-        u3.setPassword("123456");
+        u3.setPassword(passwordEncoder.encode("123456"));
         u3.setName("Learner");
         u3.setTokenVersion(0);
 

@@ -28,8 +28,6 @@ public class ApiResponse<T> {
               .success(true)
               .build();
      }
-
-
      public static <T> ApiResponse<T> success(T data) {
          return ApiResponse.<T>builder()
                  .code(1000)
@@ -38,7 +36,6 @@ public class ApiResponse<T> {
                  .success(true)
                  .build();
      }
-
      public static <T> ApiResponse<T> success() {
          return ApiResponse.<T>builder()
                  .code(1000)
@@ -59,5 +56,12 @@ public class ApiResponse<T> {
                 .code(code)
                 .message(message)
                 .build();
+    } public static <T> ApiResponse<T> error(String message) {
+        return ApiResponse.<T>builder()
+                .success(false)
+                .code(1004)
+                .message(message)
+                .build();
     }
+
 }

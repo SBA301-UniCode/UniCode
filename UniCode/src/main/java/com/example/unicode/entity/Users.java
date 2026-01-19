@@ -23,6 +23,7 @@ public class Users {
     private String password;
     private String name;
     private int tokenVersion;
+    private boolean isActive = true;
     @OneToOne(mappedBy = "users" )
     private Role role;
     @OneToMany(mappedBy = "instructers")

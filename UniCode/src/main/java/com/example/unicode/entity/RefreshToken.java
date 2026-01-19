@@ -1,14 +1,11 @@
 package com.example.unicode.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
+@Builder
 @Entity
 @Table(name = "RefreshToken")
 @NoArgsConstructor
@@ -17,8 +14,8 @@ import java.util.UUID;
 @Setter
 public class RefreshToken {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID refreshTokenId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long refreshTokenId;
     private String token;
     private LocalDateTime expiryDate;
     @ManyToOne
