@@ -1,6 +1,7 @@
 package com.example.unicode.configuration;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -18,10 +19,12 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration  {
   private final CustomDecoder jwtDecoder;
   private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+  @Value("${login.google.success-url}")
+  private String SUCCESS_URL;
   @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
        http.authorizeHttpRequests(auth -> {
-           auth.requestMatchers("/api/auth/login").permitAll()
+           auth.requestMatchers("/api/auth/login","/api/auth/login-google").permitAll()
                .anyRequest().authenticated();
        });
 
@@ -33,6 +36,7 @@ public class SecurityConfiguration  {
                })
                        .authenticationEntryPoint(authenticationEntryPoint)
        );
+       http.oauth2Login(config -> {config.defaultSuccessUrl(SUCCESS_URL,true);});
        http.csrf(AbstractHttpConfigurer::disable);
        return http.build();
     }

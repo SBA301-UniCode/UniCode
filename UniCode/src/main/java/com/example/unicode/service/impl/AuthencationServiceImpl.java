@@ -8,6 +8,7 @@ import com.example.unicode.dto.response.LoginResponse;
 import com.example.unicode.entity.Users;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
+import com.example.unicode.repository.RoleRepo;
 import com.example.unicode.repository.UsersRepo;
 import com.example.unicode.service.AuthencationSevice;
 import com.example.unicode.service.RefreshTokenService;
@@ -19,6 +20,7 @@ import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,7 @@ public class AuthencationServiceImpl implements AuthencationSevice {
      private final RefreshTokenService refreshTokenService;
      private final UsersRepo usersRepo;
      private final PasswordEncoder passwordEncoder;
+     private final RoleRepo roleRepo;
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
         Users user = usersRepo.findByEmail(loginRequest.getUsername());
@@ -51,6 +54,24 @@ public class AuthencationServiceImpl implements AuthencationSevice {
         }catch (Exception e){
             throw new JwtException("Generate token failed", e);
         }
+    }
+
+    @Override
+    public LoginResponse loginGoogle(OAuth2AuthenticationToken auth) throws JOSEException {
+        Users user = usersRepo.findByEmail(auth.getPrincipal().getAttribute("email"));
+        if(user == null){
+            user = Users.builder()
+                    .email(auth.getPrincipal().getAttribute("email"))
+                    .name(auth.getPrincipal().getAttribute("name"))
+                    .avatarUrl(auth.getPrincipal().getAttribute("picture"))
+                    .role(roleRepo.findByRoleCode("LEARNER"))
+                    .build();
+            usersRepo.save(user);
+        }
+        return LoginResponse.builder()
+                .accessToken(tokenService.generateToken(user))
+                .refreshToken(refreshTokenService.generateRefreshToken(user))
+                .build();
     }
 
     @Override

@@ -1,11 +1,9 @@
 package com.example.unicode.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -22,8 +21,10 @@ public class Users {
     private String email;
     private String password;
     private String name;
-    private int tokenVersion;
+    private int tokenVersion = 0;
+    private String avatarUrl;
     private boolean isActive = true;
+    private LocalDateTime createAt = LocalDateTime.now();
     @OneToOne(mappedBy = "users" )
     private Role role;
     @OneToMany(mappedBy = "instructers")

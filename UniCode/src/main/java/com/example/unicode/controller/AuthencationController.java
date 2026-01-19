@@ -8,7 +8,10 @@ import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -41,4 +44,10 @@ public class AuthencationController {
     {
         return ApiResponse.success("Test successful");
     }
+    @GetMapping("/login-google")
+    public ApiResponse loginGoogle(OAuth2AuthenticationToken principal) throws JOSEException {
+        log.info("Google login attempt for user: {}", principal.getName());
+        return ApiResponse.success(authencationSevice.loginGoogle(principal));
+    }
+
 }
