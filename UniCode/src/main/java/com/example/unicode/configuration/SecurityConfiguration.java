@@ -24,7 +24,12 @@ public class SecurityConfiguration  {
   @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
        http.authorizeHttpRequests(auth -> {
-           auth.requestMatchers("/api/auth/login","/api/auth/login-google").permitAll()
+           auth.requestMatchers(
+                           "/api/auth/login",
+                           "/api/auth/login-google",
+                           "/v3/api-docs/**",
+                           "/swagger-ui/**",
+                           "/swagger-ui.html").permitAll()
                .anyRequest().authenticated();
        });
 
