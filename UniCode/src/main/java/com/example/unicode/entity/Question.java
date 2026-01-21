@@ -18,8 +18,6 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID questionId;
-    private int score;
-    private int numberAnswers;
     @ManyToOne
     @JoinColumn(name = "exam_id")
     private Exam exam;

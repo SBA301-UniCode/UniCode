@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -82,9 +83,9 @@ public class DataSender implements CommandLineRunner {
         usersRepository.saveAll(List.of(u1,u2,u3));
 
         // ===== Map role to user =====
-        admin.setUsers(u1);
-        instructor.setUsers(u2);
-        learner.setUsers(u3);
+        admin.setUserslist(Set.of(u1));
+        instructor.setUserslist(Set.of(u2));
+        learner.setUserslist(Set.of(u3));
 
         roleRepository.saveAll(List.of(admin,instructor,learner));
 

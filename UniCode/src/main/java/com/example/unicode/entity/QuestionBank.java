@@ -1,5 +1,6 @@
 package com.example.unicode.entity;
 
+import com.example.unicode.enums.QuestionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +23,9 @@ public class QuestionBank {
     private UUID questionBankId;
     private String questionText;
     private String imageUrl;
+    private int numberAnswers;
+    @Enumerated(EnumType.STRING)
+    private QuestionType questionType;
     @OneToOne
     @JoinColumn(name = "lesson_id")
     private Lesson lesson;

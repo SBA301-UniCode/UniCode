@@ -62,13 +62,15 @@ public class TokenServiceImpl implements TokenService {
 
     public String getScope(Users user) {
         StringJoiner scope = new StringJoiner(" ");
-        if(user.getRole() != null)
+        if(user.getRolesList() != null)
         {
-           scope.add("ROLE_"+user.getRole().getRoleCode());
-           if(user.getRole().getPrivileges().size() > 0)
-           {
-               user.getRole().getPrivileges().forEach(privilege -> scope.add(privilege.getPrivilegeCode()));
-           }
+            user.getRolesList().forEach(role -> {
+                        scope.add("ROLE_" + role.getRoleCode());
+                        if (role.getPrivileges() != null && role.getPrivileges().size() > 0) {
+                            role.getPrivileges().forEach(privilege -> scope.add(privilege.getPrivilegeCode()));
+                        }
+                    }
+                );
         }
         return scope.toString().trim();
     }

@@ -4,9 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
 @Entity
 @Table(name = "Users")
 @NoArgsConstructor
@@ -25,8 +24,8 @@ public class Users {
     private String avatarUrl;
     private boolean isActive = true;
     private LocalDateTime createAt = LocalDateTime.now();
-    @OneToOne(mappedBy = "users" )
-    private Role role;
+    @OneToMany(mappedBy = "users" )
+    private Set<Role> rolesList = new HashSet<>();
     @OneToMany(mappedBy = "instructers")
     private List<Sylabus> sylabusList = new ArrayList<>();
     @OneToMany(mappedBy = "instructors")

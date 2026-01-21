@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.catalina.User;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,8 +29,10 @@ public class Role {
     )
     private Set<Privilege> privileges = new HashSet<>();
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private Users users;
+    @ManyToMany
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "role_code"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<Users> userslist = new HashSet<>();
 
 }
