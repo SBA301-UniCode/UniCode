@@ -18,9 +18,9 @@ public class FileController {
     private final S3Service s3Service;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> upload(@RequestParam MultipartFile file) throws IOException {
+    public ResponseEntity<?> upload(@RequestParam MultipartFile file,String folder) throws IOException {
 
-        String key = s3Service.upload(file, "images");
+        String key = s3Service.upload(file, folder);
 
         return ResponseEntity.ok(Map.of(
                 "fileKey", key,
