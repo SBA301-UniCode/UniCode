@@ -24,7 +24,7 @@ public class Users {
     private String avatarUrl;
     private boolean isActive = true;
     private LocalDateTime createAt = LocalDateTime.now();
-    @OneToMany(mappedBy = "users" )
+    @ManyToMany(mappedBy = "userslist" )
     private Set<Role> rolesList = new HashSet<>();
     @OneToMany(mappedBy = "instructers")
     private List<Sylabus> sylabusList = new ArrayList<>();

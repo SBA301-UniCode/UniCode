@@ -24,6 +24,8 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -64,7 +66,7 @@ public class AuthencationServiceImpl implements AuthencationSevice {
                     .email(auth.getPrincipal().getAttribute("email"))
                     .name(auth.getPrincipal().getAttribute("name"))
                     .avatarUrl(auth.getPrincipal().getAttribute("picture"))
-                    .role(roleRepo.findByRoleCode("LEARNER"))
+                    .rolesList(Set.of(roleRepo.findByRoleCode("LEARNER")))
                     .build();
             usersRepo.save(user);
         }
