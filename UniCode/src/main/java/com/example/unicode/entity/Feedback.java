@@ -1,12 +1,12 @@
 package com.example.unicode.entity;
 
+import com.example.unicode.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -15,15 +15,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Feedback {
+public class Feedback extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID feedBackId;
     private String comment;
     private int rating;
-    private LocalDateTime createdAt;
     @ManyToOne
-    @JoinColumn(name="learner_id")
+    @JoinColumn(name = "learner_id")
     private Users learner;
     @ManyToOne
     @JoinColumn(name = "course_id")

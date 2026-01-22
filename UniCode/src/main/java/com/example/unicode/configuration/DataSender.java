@@ -21,9 +21,10 @@ public class DataSender implements CommandLineRunner {
     private final PrivilegeRepo privilegeRepository;
     private final UsersRepo usersRepository;
     private final PasswordEncoder passwordEncoder;
+
     @Override
     public void run(String... args) throws Exception {
-        if(roleRepository.count() > 0) return; // tránh insert lại
+        if (roleRepository.count() > 0) return; // tránh insert lại
 
         // ===== Create Privileges =====
         Privilege p1 = new Privilege("USER_VIEW", "View user", "View users");
@@ -38,28 +39,28 @@ public class DataSender implements CommandLineRunner {
         Privilege p8 = new Privilege("LEARN", "Learn course", "Join course");
         Privilege p9 = new Privilege("TAKE_EXAM", "Take exam", "Do exam");
 
-        privilegeRepository.saveAll(List.of(p1,p2,p3,p4,p5,p6,p7,p8,p9));
+        privilegeRepository.saveAll(List.of(p1, p2, p3, p4, p5, p6, p7, p8, p9));
 
         // ===== Create Roles =====
         Role admin = new Role();
         admin.setRoleCode("ADMIN");
         admin.setRoleName("Administrator");
         admin.setDescription("System admin");
-        admin.getPrivileges().addAll(List.of(p1,p2,p3,p4,p5,p6,p7));
+        admin.getPrivileges().addAll(List.of(p1, p2, p3, p4, p5, p6, p7));
 
         Role instructor = new Role();
         instructor.setRoleCode("INSTRUCTOR");
         instructor.setRoleName("Instructor");
         instructor.setDescription("Teacher");
-        instructor.getPrivileges().addAll(List.of(p5,p6,p8));
+        instructor.getPrivileges().addAll(List.of(p5, p6, p8));
 
         Role learner = new Role();
         learner.setRoleCode("LEARNER");
         learner.setRoleName("Learner");
         learner.setDescription("Student");
-        learner.getPrivileges().addAll(List.of(p8,p9));
+        learner.getPrivileges().addAll(List.of(p8, p9));
 
-        roleRepository.saveAll(List.of(admin,instructor,learner));
+        roleRepository.saveAll(List.of(admin, instructor, learner));
 
         // ===== Create Users =====
         Users u1 = new Users();
@@ -80,14 +81,14 @@ public class DataSender implements CommandLineRunner {
         u3.setName("Learner");
         u3.setTokenVersion(0);
 
-        usersRepository.saveAll(List.of(u1,u2,u3));
+        usersRepository.saveAll(List.of(u1, u2, u3));
 
         // ===== Map role to user =====
         admin.setUserslist(Set.of(u1));
         instructor.setUserslist(Set.of(u2));
         learner.setUserslist(Set.of(u3));
 
-        roleRepository.saveAll(List.of(admin,instructor,learner));
+        roleRepository.saveAll(List.of(admin, instructor, learner));
 
         System.out.println("✅ Seed data created successfully!");
     }

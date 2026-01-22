@@ -1,10 +1,9 @@
 package com.example.unicode.entity;
 
+import com.example.unicode.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -13,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "rate_condition")
-public class RateCondition {
+public class RateCondition extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID rate_condition_id;
@@ -21,5 +20,5 @@ public class RateCondition {
     private double rate;
     @ManyToOne
     @JoinColumn(name = "course_id")
-    private Course course ;
+    private Course course;
 }

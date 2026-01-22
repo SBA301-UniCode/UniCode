@@ -16,36 +16,40 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class SecurityConfiguration  {
-  private final CustomDecoder jwtDecoder;
-  private final CustomAuthenticationEntryPoint authenticationEntryPoint;
-  @Value("${login.google.success-url}")
-  private String SUCCESS_URL;
-  @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-       http.authorizeHttpRequests(auth -> {
-           auth.requestMatchers(
-                           "/api/auth/login",
-                           "/api/auth/login-google",
-                           "/v3/api-docs/**",
-                           "/swagger-ui/**",
-                           "/swagger-ui.html",
-                           "/api/files/upload").permitAll()
-               .anyRequest().authenticated();
-       });
+public class SecurityConfiguration {
+    private final CustomDecoder jwtDecoder;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    @Value("${login.google.success-url}")
+    private String SUCCESS_URL;
 
-       http.oauth2ResourceServer(
-               config -> config.jwt( jwtConfigurer -> {
-                   jwtConfigurer
-                           .decoder(jwtDecoder)
-                   .jwtAuthenticationConverter(jwtAuthenticationConverter());
-               })
-                       .authenticationEntryPoint(authenticationEntryPoint)
-       );
-       http.oauth2Login(config -> {config.defaultSuccessUrl(SUCCESS_URL,true);});
-       http.csrf(AbstractHttpConfigurer::disable);
-       return http.build();
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(auth -> {
+            auth.requestMatchers(
+                            "/api/auth/login",
+                            "/api/auth/login-google",
+                            "/v3/api-docs/**",
+                            "/swagger-ui/**",
+                            "/swagger-ui.html",
+                            "/api/files/upload").permitAll()
+                    .anyRequest().authenticated();
+        });
+
+        http.oauth2ResourceServer(
+                config -> config.jwt(jwtConfigurer -> {
+                            jwtConfigurer
+                                    .decoder(jwtDecoder)
+                                    .jwtAuthenticationConverter(jwtAuthenticationConverter());
+                        })
+                        .authenticationEntryPoint(authenticationEntryPoint)
+        );
+        http.oauth2Login(config -> {
+            config.defaultSuccessUrl(SUCCESS_URL, true);
+        });
+        http.csrf(AbstractHttpConfigurer::disable);
+        return http.build();
     }
+
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter granted = new JwtGrantedAuthoritiesConverter();

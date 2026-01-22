@@ -9,7 +9,10 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 
 public interface AuthencationSevice {
     LoginResponse login(LoginRequest loginRequest);
+
     LoginResponse loginGoogle(OAuth2AuthenticationToken auth) throws JOSEException;
+
     String refreshAccessToken(RefreshAccessTokenRequest request) throws JOSEException;
+
     void Logout();
 }

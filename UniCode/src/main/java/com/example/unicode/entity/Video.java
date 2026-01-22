@@ -1,4 +1,6 @@
 package com.example.unicode.entity;
+
+import com.example.unicode.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,12 +15,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Video {
+public class Video extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID videoId;
     private String videoUrl;
-    private int  duration;
+    private int duration;
     @OneToOne
     @JoinColumn(name = "content_id")
     private Content content;

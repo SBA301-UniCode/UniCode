@@ -3,6 +3,7 @@ package com.example.unicode.exception;
 import lombok.Data;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+
 @Getter
 public enum ErrorCode {
     // AUTHENCATION ERRORS(1)
@@ -15,11 +16,23 @@ public enum ErrorCode {
 
     // USERS ERRORS(3)
     USER_NOT_FOUND(3001, "User not found ", HttpStatus.NOT_FOUND),
-    USER_INACTIVE(3002, "User is inactive", HttpStatus.FORBIDDEN)
+    USER_INACTIVE(3002, "User is inactive", HttpStatus.FORBIDDEN),
+    USER_ALREADY_EXISTS(3003, "User with this email already exists", HttpStatus.BAD_REQUEST),
 
+    // PRIVILEGE ERRORS(4)
+    PRIVILEGE_NOT_FOUND(4001, "Privilege not found", HttpStatus.NOT_FOUND),
+    PRIVILEGE_ALREADY_EXISTS(4002, "Privilege already exists", HttpStatus.BAD_REQUEST),
 
+    // ROLE ERRORS(5)
+    ROLE_NOT_FOUND(5001, "Role not found", HttpStatus.NOT_FOUND),
+    ROLE_ALREADY_EXISTS(5002, "Role already exists", HttpStatus.BAD_REQUEST),
 
-    ;
+    // CERTIFICATE ERRORS(6)
+    CERTIFICATE_NOT_FOUND(6001, "Certificate not found", HttpStatus.NOT_FOUND),
+    CERTIFICATE_ALREADY_EXISTS(6002, "Certificate already exists for this user and course", HttpStatus.BAD_REQUEST),
+
+    // COURSE ERRORS(7)
+    COURSE_NOT_FOUND(7001, "Course not found", HttpStatus.NOT_FOUND);
 
     int code;
     String message;

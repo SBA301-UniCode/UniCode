@@ -5,6 +5,7 @@ import com.example.unicode.dto.request.LoginRequest;
 import com.example.unicode.dto.request.LogoutRequest;
 import com.example.unicode.dto.request.RefreshAccessTokenRequest;
 import com.example.unicode.dto.response.LoginResponse;
+import com.example.unicode.entity.Role;
 import com.example.unicode.entity.Users;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
@@ -30,30 +31,30 @@ import java.util.Set;
 @Slf4j
 @RequiredArgsConstructor
 public class AuthencationServiceImpl implements AuthencationSevice {
-     private final TokenService tokenService;
-     private final RefreshTokenService refreshTokenService;
-     private final UsersRepo usersRepo;
-     private final PasswordEncoder passwordEncoder;
-     private final RoleRepo roleRepo;
+    private final TokenService tokenService;
+    private final RefreshTokenService refreshTokenService;
+    private final UsersRepo usersRepo;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleRepo roleRepo;
+
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
         Users user = usersRepo.findByEmail(loginRequest.getUsername());
-        if(user == null){
-            throw  new AppException(ErrorCode.USER_NOT_FOUND);
+        if (user == null) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
-        if(!user.isActive()){
+        if (!user.isActive()) {
             throw new AppException(ErrorCode.USER_INACTIVE);
         }
-        if(!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()))
-        {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new AppException(ErrorCode.INVALID_LOGIN_REQUEST);
         }
         try {
-          return  LoginResponse.builder()
+            return LoginResponse.builder()
                     .accessToken(tokenService.generateToken(user))
                     .refreshToken(refreshTokenService.generateRefreshToken(user))
                     .build();
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new JwtException("Generate token failed", e);
         }
     }
@@ -61,12 +62,14 @@ public class AuthencationServiceImpl implements AuthencationSevice {
     @Override
     public LoginResponse loginGoogle(OAuth2AuthenticationToken auth) throws JOSEException {
         Users user = usersRepo.findByEmail(auth.getPrincipal().getAttribute("email"));
-        if(user == null){
+        if (user == null) {
+            Role learnerRole = roleRepo.findByRoleCodeAndDeletedFalse("LEARNER")
+                    .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
             user = Users.builder()
                     .email(auth.getPrincipal().getAttribute("email"))
                     .name(auth.getPrincipal().getAttribute("name"))
                     .avatarUrl(auth.getPrincipal().getAttribute("picture"))
-                    .rolesList(Set.of(roleRepo.findByRoleCode("LEARNER")))
+                    .rolesList(Set.of(learnerRole))
                     .build();
             usersRepo.save(user);
         }
@@ -78,20 +81,20 @@ public class AuthencationServiceImpl implements AuthencationSevice {
 
     @Override
     public String refreshAccessToken(RefreshAccessTokenRequest refreshToken) throws JOSEException {
-        return  refreshTokenService.refreshAccessToken(refreshToken.getRefreshToken());
+        return refreshTokenService.refreshAccessToken(refreshToken.getRefreshToken());
     }
 
     @Override
     public void Logout() {
-       String email = SecurityContextHolder.getContext().getAuthentication().getName();
-       log.info("User {} is logging out", email);
-       Users user = usersRepo.findByEmail(email);
-         if(user == null){
-            throw  new AppException(ErrorCode.USER_NOT_FOUND);
-         }
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info("User {} is logging out", email);
+        Users user = usersRepo.findByEmail(email);
+        if (user == null) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
 
-         user.setTokenVersion(user.getTokenVersion() + 1);
-            usersRepo.save(user);
+        user.setTokenVersion(user.getTokenVersion() + 1);
+        usersRepo.save(user);
 
     }
 }
