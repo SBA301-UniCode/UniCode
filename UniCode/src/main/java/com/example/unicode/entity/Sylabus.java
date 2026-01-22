@@ -6,9 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,9 +19,6 @@ public class Sylabus {
     private String courseContent;
     private String method;
     private String referenceMaterial;
-    @ManyToOne
-    @JoinColumn(name ="instructer_id" )
-    private Users instructers;
-    @OneToMany(mappedBy = "sylabus")
-    private List<Courser> courserList = new ArrayList<>();
+    @OneToOne(mappedBy = "sylabus")
+    private Course course ;
 }

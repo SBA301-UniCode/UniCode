@@ -29,7 +29,7 @@ public class Enrollment {
     private Users learner;
     @ManyToOne
     @JoinColumn(name = "course_id")
-    private Courser course;
+    private Course course;
     @OneToMany(mappedBy = "enrollment")
     private List<Process> processes = new ArrayList<>();
 }

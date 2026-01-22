@@ -30,7 +30,7 @@ public class QuestionBank {
     @JoinColumn(name = "lesson_id")
     private Lesson lesson;
     @OneToMany(mappedBy = "questionBank")
-    private List<Question> questionList = new ArrayList<>();
+    private List<QuestionExam> questionExamList = new ArrayList<>();
     @OneToMany(mappedBy = "questionBank")
     private List<QuestionOption> questionOptionList = new ArrayList<>();
 
