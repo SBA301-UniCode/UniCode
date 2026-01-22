@@ -1,9 +1,9 @@
 package com.example.unicode.entity;
 
+import com.example.unicode.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -13,7 +13,7 @@ import java.util.*;
 @Getter
 @Setter
 @Builder
-public class Users {
+public class Users extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID userId;
@@ -23,8 +23,8 @@ public class Users {
     private int tokenVersion = 0;
     private String avatarUrl;
     private boolean isActive = true;
-    private LocalDateTime createAt = LocalDateTime.now();
-    @ManyToMany(mappedBy = "userslist" )
+
+    @ManyToMany(mappedBy = "userslist")
     private Set<Role> rolesList = new HashSet<>();
     @OneToMany(mappedBy = "instructors")
     private List<Course> courseList = new ArrayList<>();
@@ -39,6 +39,6 @@ public class Users {
     @OneToMany(mappedBy = "learner")
     private List<ExamAttempt> examAttemptList = new ArrayList<>();
     @OneToMany(mappedBy = "user")
-     private List<RefreshToken> refreshTokens = new ArrayList<>();
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
 
 }

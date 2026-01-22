@@ -21,6 +21,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final RefreshTokenRepo refreshTokenRepo;
     @Value("${jwt.refreshExpiration}")
     private Long REFRESH_EXPIRATION_TIME;
+
     @Override
     public String generateRefreshToken(Users user) {
         refreshTokenRepo.deleteAll(refreshTokenRepo.findAllByUser(user));
@@ -29,19 +30,17 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .token(UUID.randomUUID().toString())
                 .expiryDate(LocalDateTime.now().plusSeconds(REFRESH_EXPIRATION_TIME))
                 .build();
-       refreshTokenRepo.save(refreshToken);
+        refreshTokenRepo.save(refreshToken);
         return refreshToken.getToken();
     }
 
     @Override
     public String refreshAccessToken(String refreshToken) throws JOSEException {
         RefreshToken rf = refreshTokenRepo.findByToken(refreshToken);
-        if(rf == null)
-        {
+        if (rf == null) {
             throw new AppException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
-        if(rf.getExpiryDate().isBefore(LocalDateTime.now()))
-        {
+        if (rf.getExpiryDate().isBefore(LocalDateTime.now())) {
             refreshTokenRepo.delete(rf);
             throw new AppException(ErrorCode.REFRESH_TOKEN_EXPIRED);
         }

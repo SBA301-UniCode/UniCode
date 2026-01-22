@@ -18,7 +18,7 @@ public class FileController {
     private final S3Service s3Service;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> upload(@RequestParam MultipartFile file,String folder) throws IOException {
+    public ResponseEntity<?> upload(@RequestParam MultipartFile file, String folder) throws IOException {
 
         String key = s3Service.upload(file, folder);
 
@@ -27,6 +27,7 @@ public class FileController {
                 "url", "https://amzn-s3-unicode.s3.ap-southeast-2.amazonaws.com/" + key
         ));
     }
+
     @GetMapping("/get-url")
     public ResponseEntity<?> upload(@RequestParam String key) {
         String url = s3Service.generateViewUrl(key);

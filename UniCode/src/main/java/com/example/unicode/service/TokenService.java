@@ -8,5 +8,6 @@ import java.text.ParseException;
 
 public interface TokenService {
     String generateToken(Users user) throws JOSEException;
+
     boolean validateToken(String token) throws JOSEException, ParseException;
 }

@@ -18,6 +18,7 @@ public class GlobalException {
         );
         return ResponseEntity.status(errorCode.status).body(apiResponse);
     }
+
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ApiResponse> handleAppException(JwtException ex) {
 

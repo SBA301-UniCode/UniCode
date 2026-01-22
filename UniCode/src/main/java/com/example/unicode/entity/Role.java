@@ -1,11 +1,11 @@
 package com.example.unicode.entity;
 
+import com.example.unicode.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.catalina.User;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +16,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "Roles")
-public class Role {
+public class Role extends BaseEntity {
     @Id
     private String roleCode;
     private String roleName;

@@ -23,10 +23,11 @@ import java.util.StringJoiner;
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
     @Value("${jwt.secret}")
-    private  String SECRET_KEY;
+    private String SECRET_KEY;
     @Value("${jwt.expiration}")
     private Long EXPIRATION_TIME;
     private final UsersRepo usersRepo;
+
     @Override
     public String generateToken(Users user) throws JOSEException {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
@@ -52,25 +53,23 @@ public class TokenServiceImpl implements TokenService {
         int tokenVersion = signedJWT.getJWTClaimsSet().getIntegerClaim("tokenVersion");
         Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         Users users = usersRepo.findByEmail(email);
-        if(users == null)
-        {
+        if (users == null) {
             throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
-       boolean verified = signedJWT.verify(verifier);
+        boolean verified = signedJWT.verify(verifier);
         return verified && users.getTokenVersion() == tokenVersion && expirationTime.after(new Date());
     }
 
     public String getScope(Users user) {
         StringJoiner scope = new StringJoiner(" ");
-        if(user.getRolesList() != null)
-        {
+        if (user.getRolesList() != null) {
             user.getRolesList().forEach(role -> {
                         scope.add("ROLE_" + role.getRoleCode());
                         if (role.getPrivileges() != null && role.getPrivileges().size() > 0) {
                             role.getPrivileges().forEach(privilege -> scope.add(privilege.getPrivilegeCode()));
                         }
                     }
-                );
+            );
         }
         return scope.toString().trim();
     }

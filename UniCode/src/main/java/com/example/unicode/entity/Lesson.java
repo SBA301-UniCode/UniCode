@@ -1,5 +1,6 @@
 package com.example.unicode.entity;
 
+import com.example.unicode.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Lesson {
+public class Lesson extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID lessonId;
@@ -27,6 +28,6 @@ public class Lesson {
     private Chapter chapter;
     @OneToMany(mappedBy = "lesson")
     private List<Content> contentList = new ArrayList<>();
-    @OneToOne(mappedBy ="lesson")
+    @OneToOne(mappedBy = "lesson")
     private QuestionBank questionBank;
 }

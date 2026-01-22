@@ -1,5 +1,6 @@
 package com.example.unicode.entity;
 
+import com.example.unicode.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.util.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Course {
+public class Course extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID courseId;
@@ -31,11 +32,11 @@ public class Course {
     private Set<RateCondition> rateConditions = new HashSet<>();
     @OneToMany(mappedBy = "course")
     private Set<Feedback> feedbacks = new HashSet<>();
-   @OneToOne(mappedBy = "course")
+    @OneToOne(mappedBy = "course")
     private Certificate certificate;
-   @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course")
     private List<Subcription> subcriptionList = new ArrayList<>();
-   @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course")
     private List<Enrollment> enrollmentList = new ArrayList<>();
     @OneToMany(mappedBy = "course")
     private List<Chapter> chapterList = new ArrayList<>();
