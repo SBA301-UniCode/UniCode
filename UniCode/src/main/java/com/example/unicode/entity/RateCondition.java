@@ -19,6 +19,7 @@ public class RateCondition {
     private UUID rate_condition_id;
     private String description;
     private double rate;
-    @ManyToMany(mappedBy = "rateConditions")
-    private Set<Courser> coursers = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course ;
 }

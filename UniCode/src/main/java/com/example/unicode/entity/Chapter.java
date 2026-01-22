@@ -23,7 +23,7 @@ public class Chapter {
     private int orderIndex;
     @ManyToOne
     @JoinColumn(name = "course_id")
-    private Courser course;
+    private Course course;
     @OneToMany(mappedBy = "chapter")
     private List<Lesson> lessonList = new ArrayList<>();
 }

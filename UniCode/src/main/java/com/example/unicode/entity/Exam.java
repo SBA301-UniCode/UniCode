@@ -23,7 +23,7 @@ public class Exam {
     @JoinColumn(name = "content_id")
     private Content content;
     @OneToMany(mappedBy = "exam")
-    private List<Question> questionList = new ArrayList<>();
+    private List<QuestionExam> questionExamList = new ArrayList<>();
     @OneToMany(mappedBy = "exam")
     private List<ExamAttempt> ExamAttemptList = new ArrayList<>();
 

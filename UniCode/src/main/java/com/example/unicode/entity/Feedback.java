@@ -27,5 +27,5 @@ public class Feedback {
     private Users learner;
     @ManyToOne
     @JoinColumn(name = "course_id")
-    private Courser course;
+    private Course course;
 }

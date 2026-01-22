@@ -26,10 +26,8 @@ public class Users {
     private LocalDateTime createAt = LocalDateTime.now();
     @ManyToMany(mappedBy = "userslist" )
     private Set<Role> rolesList = new HashSet<>();
-    @OneToMany(mappedBy = "instructers")
-    private List<Sylabus> sylabusList = new ArrayList<>();
     @OneToMany(mappedBy = "instructors")
-    private List<Courser> courserList = new ArrayList<>();
+    private List<Course> courseList = new ArrayList<>();
     @OneToMany(mappedBy = "learner")
     private List<Feedback> feedbackList = new ArrayList<>();
     @OneToMany(mappedBy = "learner")

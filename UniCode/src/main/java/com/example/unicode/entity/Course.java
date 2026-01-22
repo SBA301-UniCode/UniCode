@@ -14,7 +14,7 @@ import java.util.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Courser {
+public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID courseId;
@@ -24,15 +24,10 @@ public class Courser {
     @ManyToOne
     @JoinColumn(name = "instructor_id")
     private Users instructors;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "sylabus_id")
     private Sylabus sylabus;
-    @ManyToMany
-    @JoinTable(
-            name ="coursera_rate_condition",
-            joinColumns = @JoinColumn(name="course_id"),
-            inverseJoinColumns = @JoinColumn(name="rate_condition_id")
-    )
+    @OneToMany(mappedBy = "course")
     private Set<RateCondition> rateConditions = new HashSet<>();
     @OneToMany(mappedBy = "course")
     private Set<Feedback> feedbacks = new HashSet<>();

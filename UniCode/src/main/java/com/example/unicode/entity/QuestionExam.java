@@ -9,12 +9,12 @@ import lombok.Setter;
 import java.util.*;
 
 @Entity
-@Table(name = "Question")
+@Table(name = "QuestionExam")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Question {
+public class QuestionExam {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID questionId;
@@ -24,7 +24,7 @@ public class Question {
     @ManyToOne()
     @JoinColumn(name ="question_bank_id")
     private QuestionBank questionBank;
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "questionExam")
     private List<AnwserHistory> anwserHistorieList =  new ArrayList<>();
 
 

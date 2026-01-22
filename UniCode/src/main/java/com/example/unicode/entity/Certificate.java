@@ -25,5 +25,5 @@ public class Certificate {
     private Users learner;
     @OneToOne
     @JoinColumn(name = "course_id")
-    private Courser course;
+    private Course course;
 }
