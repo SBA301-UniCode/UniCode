@@ -38,6 +38,7 @@ public class S3Service {
                 RequestBody.fromBytes(file.getBytes()));
         return key; // lưu key vào DB
     }
+
     public String generateViewUrl(String key) {
 
         GetObjectRequest getReq = GetObjectRequest.builder()

@@ -1,5 +1,6 @@
 package com.example.unicode.entity;
 
+import com.example.unicode.base.BaseEntity;
 import com.example.unicode.enums.StatusPayment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Subcription {
+public class Subcription extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID subcriptionId;

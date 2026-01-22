@@ -1,5 +1,6 @@
 package com.example.unicode.entity;
 
+import com.example.unicode.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "Sylabus")
-public class Sylabus {
+public class Sylabus extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String sylabusId;
@@ -20,5 +21,5 @@ public class Sylabus {
     private String method;
     private String referenceMaterial;
     @OneToOne(mappedBy = "sylabus")
-    private Course course ;
+    private Course course;
 }

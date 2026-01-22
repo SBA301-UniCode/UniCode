@@ -1,5 +1,6 @@
 package com.example.unicode.entity;
 
+import com.example.unicode.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,12 +10,12 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Chapter")
+@Table(name = "AnwserHistory")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class AnwserHistory {
+public class AnwserHistory extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID anwserHistoryId;

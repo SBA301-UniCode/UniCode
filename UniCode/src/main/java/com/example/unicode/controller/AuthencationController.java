@@ -19,31 +19,32 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 @Slf4j
 public class AuthencationController {
     private final AuthencationSevice authencationSevice;
+
     @PostMapping("/login")
-    public ApiResponse login(@RequestBody LoginRequest loginRequest)
-    {
+    public ApiResponse login(@RequestBody LoginRequest loginRequest) {
         log.info("Login attempt for user: {}", loginRequest.getUsername());
         return ApiResponse.success(authencationSevice.login(loginRequest));
     }
 
-   @PostMapping("/refresh-access-token")
+    @PostMapping("/refresh-access-token")
     public ApiResponse refreshAccessToken(@RequestBody RefreshAccessTokenRequest refreshAccessTokenRequest) throws JOSEException {
 
-            String newAccessToken = authencationSevice.refreshAccessToken(refreshAccessTokenRequest);
-            return ApiResponse.success(newAccessToken);
+        String newAccessToken = authencationSevice.refreshAccessToken(refreshAccessTokenRequest);
+        return ApiResponse.success(newAccessToken);
 
     }
+
     @GetMapping("/logout")
-    public ApiResponse logout()
-    {
+    public ApiResponse logout() {
         authencationSevice.Logout();
         return ApiResponse.success("Logout successful");
     }
+
     @GetMapping("/test")
-    public ApiResponse test()
-    {
+    public ApiResponse test() {
         return ApiResponse.success("Test successful");
     }
+
     @GetMapping("/login-google")
     public ApiResponse loginGoogle(OAuth2AuthenticationToken principal) throws JOSEException {
         log.info("Google login attempt for user: {}", principal.getName());

@@ -1,5 +1,6 @@
 package com.example.unicode.entity;
 
+import com.example.unicode.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Chapter {
+public class Chapter extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private java.util.UUID chapterId;

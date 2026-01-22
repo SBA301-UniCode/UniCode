@@ -1,10 +1,11 @@
 package com.example.unicode.entity;
 
+import com.example.unicode.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+
 @Builder
 @Entity
 @Table(name = "RefreshToken")
@@ -12,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-public class RefreshToken {
+public class RefreshToken extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long refreshTokenId;
