@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableMethodSecurity
@@ -46,6 +48,7 @@ public class SecurityConfiguration {
         http.oauth2Login(config -> {
             config.defaultSuccessUrl(SUCCESS_URL, true);
         });
+        http.cors((cor)->cor.configurationSource(corsConfiguration()));
         http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
@@ -58,5 +61,14 @@ public class SecurityConfiguration {
         converter2.setJwtGrantedAuthoritiesConverter(granted);
         return converter2;
     }
-
+  @Bean
+    public CorsConfigurationSource corsConfiguration() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.addAllowedOriginPattern("*");
+        corsConfig.addAllowedHeader("*");
+        corsConfig.addAllowedMethod("*");
+        corsConfig.setAllowCredentials(true);
+        CorsConfigurationSource c = request -> corsConfig;
+        return c;
+    }
 }
