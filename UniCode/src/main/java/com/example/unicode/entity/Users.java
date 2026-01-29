@@ -23,7 +23,7 @@ public class Users extends BaseEntity {
     private int tokenVersion = 0;
     private String avatarUrl;
     private boolean isActive = true;
-
+    private String jwtId;
     @ManyToMany(mappedBy = "userslist")
     private Set<Role> rolesList = new HashSet<>();
     @OneToMany(mappedBy = "instructors")
