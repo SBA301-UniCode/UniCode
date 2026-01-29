@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.StringJoiner;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,10 +31,14 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String generateToken(Users user) throws JOSEException {
+        String jti= UUID.randomUUID().toString();
+        user.setJwtId(jti);
+        usersRepo.save(user);
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                 .claim("email", user.getEmail())
                 .issueTime(new Date())
+                .jwtID(jti)
                 .expirationTime(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .claim("tokenVersion", user.getTokenVersion())
                 .claim("scope", getScope(user))
@@ -51,10 +56,14 @@ public class TokenServiceImpl implements TokenService {
         SignedJWT signedJWT = SignedJWT.parse(token);
         String email = signedJWT.getJWTClaimsSet().getSubject();
         int tokenVersion = signedJWT.getJWTClaimsSet().getIntegerClaim("tokenVersion");
+        String jwt = signedJWT.getJWTClaimsSet().getJWTID();
         Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         Users users = usersRepo.findByEmail(email);
         if (users == null) {
             throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
+        if(!users.getJwtId().equals(jwt)) {
+            return false;
         }
         boolean verified = signedJWT.verify(verifier);
         return verified && users.getTokenVersion() == tokenVersion && expirationTime.after(new Date());
