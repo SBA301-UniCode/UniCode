@@ -2,6 +2,7 @@ package com.example.unicode.service.impl;
 
 import com.example.unicode.dto.request.PrivilegeCreateRequest;
 import com.example.unicode.dto.request.PrivilegeUpdateRequest;
+import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.dto.response.PrivilegeResponse;
 import com.example.unicode.entity.Privilege;
 import com.example.unicode.exception.AppException;
@@ -10,12 +11,14 @@ import com.example.unicode.mapper.PrivilegeMapper;
 import com.example.unicode.repository.PrivilegeRepo;
 import com.example.unicode.service.PrivilegeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -49,8 +52,19 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PrivilegeResponse> getAll() {
-        return privilegeMapper.toResponseList(privilegeRepo.findAllByDeletedFalse());
+    public PageResponse<PrivilegeResponse> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Privilege> privilegePage = privilegeRepo.findAllByDeletedFalse(pageable);
+
+        return PageResponse.<PrivilegeResponse>builder()
+                .content(privilegeMapper.toResponseList(privilegePage.getContent()))
+                .currentPage(privilegePage.getNumber())
+                .pageSize(privilegePage.getSize())
+                .totalElements(privilegePage.getTotalElements())
+                .totalPages(privilegePage.getTotalPages())
+                .first(privilegePage.isFirst())
+                .last(privilegePage.isLast())
+                .build();
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.example.unicode.service.impl;
 
 import com.example.unicode.dto.request.UserCreateRequest;
 import com.example.unicode.dto.request.UserUpdateRequest;
+import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.dto.response.UserResponse;
 import com.example.unicode.entity.Role;
 import com.example.unicode.entity.Users;
@@ -12,6 +13,9 @@ import com.example.unicode.repository.RoleRepo;
 import com.example.unicode.repository.UsersRepo;
 import com.example.unicode.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -82,8 +85,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserResponse> getAll() {
-        return userMapper.toResponseList(usersRepo.findAllByDeletedFalse());
+    public PageResponse<UserResponse> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Users> usersPage = usersRepo.findAllByDeletedFalse(pageable);
+
+        return PageResponse.<UserResponse>builder()
+                .content(userMapper.toResponseList(usersPage.getContent()))
+                .currentPage(usersPage.getNumber())
+                .pageSize(usersPage.getSize())
+                .totalElements(usersPage.getTotalElements())
+                .totalPages(usersPage.getTotalPages())
+                .first(usersPage.isFirst())
+                .last(usersPage.isLast())
+                .build();
     }
 
     @Override

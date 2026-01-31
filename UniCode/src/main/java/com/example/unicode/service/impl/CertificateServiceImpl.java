@@ -2,6 +2,7 @@ package com.example.unicode.service.impl;
 
 import com.example.unicode.dto.request.CertificateCreateRequest;
 import com.example.unicode.dto.response.CertificateResponse;
+import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.entity.Certificate;
 import com.example.unicode.entity.Course;
 import com.example.unicode.entity.Users;
@@ -13,6 +14,9 @@ import com.example.unicode.repository.CourseRepo;
 import com.example.unicode.repository.UsersRepo;
 import com.example.unicode.service.CertificateService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,8 +71,19 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CertificateResponse> getAll() {
-        return certificateMapper.toResponseList(certificateRepo.findAllByDeletedFalse());
+    public PageResponse<CertificateResponse> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Certificate> certificatePage = certificateRepo.findAllByDeletedFalse(pageable);
+
+        return PageResponse.<CertificateResponse>builder()
+                .content(certificateMapper.toResponseList(certificatePage.getContent()))
+                .currentPage(certificatePage.getNumber())
+                .pageSize(certificatePage.getSize())
+                .totalElements(certificatePage.getTotalElements())
+                .totalPages(certificatePage.getTotalPages())
+                .first(certificatePage.isFirst())
+                .last(certificatePage.isLast())
+                .build();
     }
 
     @Override

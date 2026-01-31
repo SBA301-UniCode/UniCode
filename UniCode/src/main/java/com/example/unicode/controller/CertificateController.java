@@ -3,8 +3,10 @@ package com.example.unicode.controller;
 import com.example.unicode.base.ApiResponse;
 import com.example.unicode.dto.request.CertificateCreateRequest;
 import com.example.unicode.dto.response.CertificateResponse;
+import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.service.CertificateService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,9 +44,13 @@ public class CertificateController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all certificates")
-    public ResponseEntity<ApiResponse<List<CertificateResponse>>> getAll() {
-        List<CertificateResponse> response = certificateService.getAll();
+    @Operation(summary = "Get all certificates with pagination")
+    public ResponseEntity<ApiResponse<PageResponse<CertificateResponse>>> getAll(
+            @Parameter(description = "Page number (0-indexed)", example = "0")
+            @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Page size", example = "10")
+            @RequestParam(defaultValue = "10") int size) {
+        PageResponse<CertificateResponse> response = certificateService.getAll(page, size);
         return ResponseEntity.ok(ApiResponse.success("Certificates retrieved successfully", response));
     }
 
