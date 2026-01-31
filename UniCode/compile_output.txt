@@ -1,0 +1,43 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.example:UniCode >-------------------------
+[INFO] Building UniCode 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ UniCode ---
+[INFO] Deleting D:\SBA\UniCode\UniCode\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ UniCode ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ UniCode ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 119 source files with javac [debug parameters release 17] to target\classes
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/entity/Users.java:[23,17] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/entity/Users.java:[25,21] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/entity/Users.java:[28,23] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/entity/Users.java:[30,26] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/entity/Users.java:[32,28] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/entity/Users.java:[34,31] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/entity/Users.java:[36,31] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/entity/Users.java:[38,30] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/entity/Users.java:[40,31] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/entity/Users.java:[42,32] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/exception/AppException.java:[5,1] Generating equals/hashCode implementation but without a call to superclass, even though this class does not extend java.lang.Object. If this is intentional, add '@EqualsAndHashCode(callSuper=false)' to your type.
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/mapper/RoleMapper.java:[15,10] Unmapped target properties: "createdAt, createdBy, updatedAt, updatedBy, deleted, deletedAt, deletedBy, userslist".
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/mapper/RoleMapper.java:[23,10] Unmapped target properties: "createdAt, createdBy, updatedAt, updatedBy, deleted, deletedAt, deletedBy, roleCode, userslist".
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/mapper/UserMapper.java:[16,11] Unmapped target properties: "userId, tokenVersion, isActive, jwtId, courseList, feedbackList, certificateList, subcriptionsList, enrollmentList, examAttemptList, refreshTokens".
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/mapper/UserMapper.java:[19,18] Unmapped target property: "isActive".
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/mapper/UserMapper.java:[26,10] Unmapped target properties: "createdAt, createdBy, updatedAt, updatedBy, deleted, deletedAt, deletedBy, userId, email, tokenVersion, active, jwtId, courseList, feedbackList, certificateList, subcriptionsList, enrollmentList, examAttemptList, refreshTokens".
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/mapper/PrivilegeMapper.java:[14,15] Unmapped target properties: "createdAt, createdBy, updatedAt, updatedBy, deleted, deletedAt, deletedBy, roles".
+[WARNING] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/mapper/PrivilegeMapper.java:[21,10] Unmapped target properties: "createdAt, createdBy, updatedAt, updatedBy, deleted, deletedAt, deletedBy, privilegeCode, roles".
+[INFO] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/controller/CertificateController.java: Some input files use unchecked or unsafe operations.
+[INFO] /D:/SBA/UniCode/UniCode/src/main/java/com/example/unicode/controller/CertificateController.java: Recompile with -Xlint:unchecked for details.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  10.089 s
+[INFO] Finished at: 2026-01-31T09:12:05+07:00
+[INFO] ------------------------------------------------------------------------

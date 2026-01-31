@@ -32,7 +32,16 @@ public enum ErrorCode {
     CERTIFICATE_ALREADY_EXISTS(6002, "Certificate already exists for this user and course", HttpStatus.BAD_REQUEST),
 
     // COURSE ERRORS(7)
-    COURSE_NOT_FOUND(7001, "Course not found", HttpStatus.NOT_FOUND);
+    COURSE_NOT_FOUND(7001, "Course not found", HttpStatus.NOT_FOUND),
+
+    // CHAPTER ERRORS(8)
+    CHAPTER_NOT_FOUND(8001, "Chapter not found", HttpStatus.NOT_FOUND),
+
+    // LESSON ERRORS(9)
+    LESSON_NOT_FOUND(9001, "Lesson not found", HttpStatus.NOT_FOUND),
+
+    // SYLLABUS ERRORS(10)
+    SYLLABUS_NOT_FOUND(10001, "Syllabus not found", HttpStatus.NOT_FOUND);
 
     int code;
     String message;
