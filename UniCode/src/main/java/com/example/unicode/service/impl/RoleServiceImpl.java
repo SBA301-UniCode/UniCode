@@ -2,6 +2,7 @@ package com.example.unicode.service.impl;
 
 import com.example.unicode.dto.request.RoleCreateRequest;
 import com.example.unicode.dto.request.RoleUpdateRequest;
+import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.dto.response.RoleResponse;
 import com.example.unicode.entity.Privilege;
 import com.example.unicode.entity.Role;
@@ -12,13 +13,15 @@ import com.example.unicode.repository.PrivilegeRepo;
 import com.example.unicode.repository.RoleRepo;
 import com.example.unicode.service.RoleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -65,8 +68,19 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RoleResponse> getAll() {
-        return roleMapper.toResponseList(roleRepo.findAllByDeletedFalse());
+    public PageResponse<RoleResponse> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Role> rolePage = roleRepo.findAllByDeletedFalse(pageable);
+
+        return PageResponse.<RoleResponse>builder()
+                .content(roleMapper.toResponseList(rolePage.getContent()))
+                .currentPage(rolePage.getNumber())
+                .pageSize(rolePage.getSize())
+                .totalElements(rolePage.getTotalElements())
+                .totalPages(rolePage.getTotalPages())
+                .first(rolePage.isFirst())
+                .last(rolePage.isLast())
+                .build();
     }
 
     @Override

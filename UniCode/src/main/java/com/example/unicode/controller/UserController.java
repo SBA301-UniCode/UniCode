@@ -3,9 +3,11 @@ package com.example.unicode.controller;
 import com.example.unicode.base.ApiResponse;
 import com.example.unicode.dto.request.UserCreateRequest;
 import com.example.unicode.dto.request.UserUpdateRequest;
+import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.dto.response.UserResponse;
 import com.example.unicode.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -51,9 +52,13 @@ public class UserController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all users")
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getAll() {
-        List<UserResponse> response = userService.getAll();
+    @Operation(summary = "Get all users with pagination")
+    public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> getAll(
+            @Parameter(description = "Page number (0-indexed)", example = "0")
+            @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Page size", example = "10")
+            @RequestParam(defaultValue = "10") int size) {
+        PageResponse<UserResponse> response = userService.getAll(page, size);
         return ResponseEntity.ok(ApiResponse.success("Users retrieved successfully", response));
     }
 
