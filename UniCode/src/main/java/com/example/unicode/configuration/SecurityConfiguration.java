@@ -33,7 +33,13 @@ public class SecurityConfiguration {
                             "/v3/api-docs/**",
                             "/swagger-ui/**",
                             "/swagger-ui.html",
-                            "/api/files/upload").permitAll()
+                            "/api/files/upload"
+                    ).permitAll()
+                    // Public read-only endpoints for courses and syllabuses
+                    .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/courses").permitAll()
+                    .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/courses/**").permitAll()
+                    .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/syllabuses").permitAll()
+                    .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/syllabuses/**").permitAll()
                     .anyRequest().authenticated();
         });
 

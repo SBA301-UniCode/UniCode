@@ -38,7 +38,7 @@ public class CertificateServiceImpl implements CertificateService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         // Check if course exists
-        Course course = courseRepo.findByCourseId(request.getCourseId())
+        Course course = courseRepo.findByCourseIdAndDeletedFalse(request.getCourseId())
                 .orElseThrow(() -> new AppException(ErrorCode.COURSE_NOT_FOUND));
 
         // Check if certificate already exists for this user and course
