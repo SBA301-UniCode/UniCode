@@ -9,10 +9,10 @@ import java.util.UUID;
 @Data
 public class SubcriptionResponse {
     private UUID subcriptionId;
-    private LocalDateTime subcriptionDate = LocalDateTime.now();
+    private LocalDateTime createdAt ;
     private Double subcriptionPrice;
     private String message;
-    private StatusPayment statusPayment =  StatusPayment.PENDING;
+    private StatusPayment statusPayment;
     private UUID courseraId;
     private UUID buyerId;
     private String content;

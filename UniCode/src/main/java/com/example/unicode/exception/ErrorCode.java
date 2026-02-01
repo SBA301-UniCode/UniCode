@@ -1,5 +1,6 @@
 package com.example.unicode.exception;
 
+import lombok.Data;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -46,11 +47,11 @@ public enum ErrorCode {
     SUBCRIPTION_NOT_FOUND(11002,"Subcription not found",HttpStatus.NOT_FOUND),
     VERIFY_SIGN_FAIL(11003,"Verify signature payment fail",HttpStatus.BAD_REQUEST),
     //CONTENT ERRORS(12)
-    CONTENT_NOT_FOUND(12001, "Content  not found", HttpStatus.NOT_FOUND);
-
-
-;
-
+    CONTENT_NOT_FOUND(12001, "Content  not found", HttpStatus.NOT_FOUND),
+    //Enrollment(13)
+    NOT_PAYMNET(13001,"You haven't bought this course yet ", HttpStatus.BAD_REQUEST),
+    ENROLLMENT_NOT_FOUND(13002,"Enrollment not found ", HttpStatus.NOT_FOUND),
+    ;
     int code;
     String message;
     HttpStatus status;

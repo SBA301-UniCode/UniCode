@@ -7,6 +7,7 @@ import com.example.unicode.dto.response.SubcriptionReportResponse;
 import com.example.unicode.dto.response.SubcriptionResponse;
 import com.example.unicode.entity.Subcription;
 import com.example.unicode.service.SubcriptionService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,22 +22,25 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/subscriptions")
+@RequestMapping("/api/v1/subscriptions")
 @RequiredArgsConstructor
 @Tag(name = "Subscriptions", description = "Subscriptions management APIs")
 public class SubcriptionController {
     private final SubcriptionService subcriptionService;
 
-    @PostMapping("/buy/{courseraId}")
-    public ResponseEntity<ApiResponse<String>> buy(@PathVariable("courseraId") UUID courseraId) {
-        return ResponseEntity.ok(ApiResponse.success(subcriptionService.buyCourses(courseraId)));
+    @PostMapping("/buy/{courserId}")
+    @Operation(summary = "Buy course subscription")
+    public ResponseEntity<ApiResponse<String>> buy(@PathVariable("courserId") UUID courserId) {
+        return ResponseEntity.ok(ApiResponse.success(subcriptionService.buyCourses(courserId)));
     }
     // redirect FE
     @GetMapping("/momo/call-back")
+    @Operation(summary = "Handle Momo payment callback")
     public ResponseEntity<ApiResponse<SubcriptionResponse>> callback(HttpServletRequest request) {
         return ResponseEntity.ok(ApiResponse.success(subcriptionService.updateStatus(request)));
     }
-    @GetMapping()
+    @PostMapping("/search")
+    @Operation(    summary = "Get subscriptions with optional filters and pagination")
     public ResponseEntity<ApiResponse<Page<SubcriptionResponse>>> getAll(
             @RequestBody(required = false) SearchSubcriptionRequest request,
             @Parameter(description = "Page number (0-indexed)", example = "0")
@@ -48,9 +52,15 @@ public class SubcriptionController {
     }
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/report")
+    @Operation(summary = "Subscription report")
     public ResponseEntity<ApiResponse<SubcriptionReportResponse>> report(@RequestBody  SubcriptionReportRequest request)
     {
         return ResponseEntity.ok(ApiResponse.success(subcriptionService.report(request)));
+    }
+    @GetMapping("/{id}")
+    @Operation(summary = "Get subscription by ID")
+    public ResponseEntity<ApiResponse<SubcriptionResponse>> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(ApiResponse.success(subcriptionService.getById(id)));
     }
 
 }

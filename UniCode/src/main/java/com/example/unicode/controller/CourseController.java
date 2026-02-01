@@ -4,13 +4,16 @@ import com.example.unicode.base.ApiResponse;
 import com.example.unicode.dto.request.CourseCreateRequest;
 import com.example.unicode.dto.request.CourseUpdateRequest;
 import com.example.unicode.dto.response.CourseResponse;
+import com.example.unicode.dto.response.EnrolmentResponse;
 import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.service.CourseService;
+import com.example.unicode.service.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +34,7 @@ import java.util.UUID;
 public class CourseController {
 
     private final CourseService courseService;
+    private final EnrollmentService enrollmentService;
 
     @PostMapping
     @Operation(summary = "Create a new course")
@@ -75,5 +79,30 @@ public class CourseController {
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID courseId) {
         courseService.delete(courseId);
         return ResponseEntity.ok(ApiResponse.success("Course deleted successfully"));
+    }
+    @GetMapping("/{courseId}/enrollments")
+    @Operation(summary = "Get all enrollments by ID")
+    public ResponseEntity<ApiResponse<Page<EnrolmentResponse>>> getById(
+            @PathVariable UUID courseId,
+            @Parameter(description = "Page number (0-indexed)", example = "0")
+            @RequestParam(defaultValue = "0",required = false) int page,
+            @Parameter(description = "Page size", example = "10")
+            @RequestParam(defaultValue = "10",required = false) int size
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(enrollmentService.getAllByCourse(courseId,page,size)));
+    }
+    @PostMapping("/{courseId}/enrollments")
+    @Operation(summary = "Enroll couser by Id")
+    public ResponseEntity<ApiResponse<EnrolmentResponse>> join(
+            @PathVariable UUID courseId
+    ){
+        return ResponseEntity.ok(ApiResponse.success(enrollmentService.joinCousera(courseId)));
+    }
+    @GetMapping("/{courseId}/enrollments/me")
+    @Operation(summary = "Check this user enrolled or not")
+    public ResponseEntity<ApiResponse<Boolean>> isEnrolled(
+            @PathVariable UUID courseId
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(enrollmentService.isEnrolled(courseId)));
     }
 }

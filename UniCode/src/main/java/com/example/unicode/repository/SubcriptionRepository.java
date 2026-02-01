@@ -2,7 +2,9 @@ package com.example.unicode.repository;
 
 import aj.org.objectweb.asm.commons.Remapper;
 import com.example.unicode.dto.response.SubcriptionResponse;
+import com.example.unicode.entity.Course;
 import com.example.unicode.entity.Subcription;
+import com.example.unicode.entity.Users;
 import com.example.unicode.enums.StatusPayment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,4 +23,8 @@ public interface SubcriptionRepository extends JpaRepository<Subcription, UUID>,
     long countByCreatedAtBetween(LocalDateTime createdAtAfter, LocalDateTime createdAtBefore);
 
     long countByCreatedAtBetweenAndStatusPayment(LocalDateTime createdAtAfter, LocalDateTime createdAtBefore, StatusPayment statusPayment);
+
+    boolean existsByLearnerAndCourse(Users learner, Course course);
+
+    boolean existsByLearnerAndCourseAndStatusPayment(Users learner, Course course, StatusPayment statusPayment);
 }

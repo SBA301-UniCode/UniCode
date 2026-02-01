@@ -191,6 +191,14 @@ public class SubcriptionServiceImpl implements SubcriptionService {
         return response;
     }
 
+    @Override
+    public SubcriptionResponse getById(UUID id) {
+        Subcription subcription = subcriptionRepository.findById(id).orElseThrow(
+                ()-> new AppException(ErrorCode.SUBCRIPTION_NOT_FOUND)
+        );
+        return subcriptionMapper.entityToResponse(subcription);
+    }
+
     public boolean veryfySignature(HttpServletRequest request) {
         Subcription subcription = subcriptionRepository.findById(UUID.fromString(request.getParameter("orderId"))).orElseThrow(
                 () -> new AppException(ErrorCode.SUBCRIPTION_NOT_FOUND)

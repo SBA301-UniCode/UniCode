@@ -16,4 +16,5 @@ public interface SubcriptionService {
    SubcriptionResponse updateStatus(HttpServletRequest request);
    Page<SubcriptionResponse> getAll(SearchSubcriptionRequest request, int page, int size );
    SubcriptionReportResponse report(SubcriptionReportRequest request);
+   SubcriptionResponse getById(UUID id);
 }
