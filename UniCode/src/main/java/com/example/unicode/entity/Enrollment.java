@@ -33,4 +33,5 @@ public class Enrollment extends BaseEntity {
     private Course course;
     @OneToMany(mappedBy = "enrollment")
     private List<Process> processes = new ArrayList<>();
+
 }

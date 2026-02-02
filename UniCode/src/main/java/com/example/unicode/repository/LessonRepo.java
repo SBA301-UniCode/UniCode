@@ -9,10 +9,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Repository for Lesson entity with soft-delete support.
- */
+
 public interface LessonRepo extends JpaRepository<Lesson, UUID> {
+    Lesson findByLessonId(UUID lessonId);
 
     Optional<Lesson> findByLessonIdAndDeletedFalse(UUID lessonId);
 
