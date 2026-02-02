@@ -1,6 +1,5 @@
 package com.example.unicode.exception;
 
-import lombok.Data;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -41,7 +40,12 @@ public enum ErrorCode {
     LESSON_NOT_FOUND(9001, "Lesson not found", HttpStatus.NOT_FOUND),
 
     // SYLLABUS ERRORS(10)
-    SYLLABUS_NOT_FOUND(10001, "Syllabus not found", HttpStatus.NOT_FOUND);
+    SYLLABUS_NOT_FOUND(10001, "Syllabus not found", HttpStatus.NOT_FOUND),
+    //CONTENT ERRORS(11)
+    CONTENT_NOT_FOUND(11001, "Content  not found", HttpStatus.NOT_FOUND);
+
+
+
 
     int code;
     String message;
