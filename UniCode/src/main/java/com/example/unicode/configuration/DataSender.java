@@ -3,9 +3,9 @@ package com.example.unicode.configuration;
 import com.example.unicode.entity.Privilege;
 import com.example.unicode.entity.Role;
 import com.example.unicode.entity.Users;
-import com.example.unicode.repository.PrivilegeRepo;
-import com.example.unicode.repository.RoleRepo;
-import com.example.unicode.repository.UsersRepo;
+import com.example.unicode.repository.PrivilegeRepository;
+import com.example.unicode.repository.RoleRepository;
+import com.example.unicode.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,9 +17,9 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 public class DataSender implements CommandLineRunner {
-    private final RoleRepo roleRepository;
-    private final PrivilegeRepo privilegeRepository;
-    private final UsersRepo usersRepository;
+    private final RoleRepository roleRepository;
+    private final PrivilegeRepository privilegeRepository;
+    private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override

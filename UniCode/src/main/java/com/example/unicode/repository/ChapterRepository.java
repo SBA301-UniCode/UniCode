@@ -12,7 +12,7 @@ import java.util.UUID;
 /**
  * Repository for Chapter entity with soft-delete support.
  */
-public interface ChapterRepo extends JpaRepository<Chapter, UUID> {
+public interface ChapterRepository extends JpaRepository<Chapter, UUID> {
 
     Optional<Chapter> findByChapterIdAndDeletedFalse(UUID chapterId);
 

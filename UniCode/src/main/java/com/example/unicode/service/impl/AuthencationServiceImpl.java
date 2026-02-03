@@ -1,23 +1,19 @@
 package com.example.unicode.service.impl;
 
-import com.example.unicode.configuration.PasswordConfig;
 import com.example.unicode.dto.request.LoginRequest;
-import com.example.unicode.dto.request.LogoutRequest;
 import com.example.unicode.dto.request.RefreshAccessTokenRequest;
 import com.example.unicode.dto.response.LoginResponse;
 import com.example.unicode.entity.Role;
 import com.example.unicode.entity.Users;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
-import com.example.unicode.repository.RoleRepo;
-import com.example.unicode.repository.UsersRepo;
+import com.example.unicode.repository.RoleRepository;
+import com.example.unicode.repository.UsersRepository;
 import com.example.unicode.service.AuthencationSevice;
 import com.example.unicode.service.RefreshTokenService;
 import com.example.unicode.service.TokenService;
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,13 +29,13 @@ import java.util.Set;
 public class AuthencationServiceImpl implements AuthencationSevice {
     private final TokenService tokenService;
     private final RefreshTokenService refreshTokenService;
-    private final UsersRepo usersRepo;
+    private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepo roleRepo;
+    private final RoleRepository roleRepository;
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
-        Users user = usersRepo.findByEmail(loginRequest.getUsername());
+        Users user = usersRepository.findByEmail(loginRequest.getUsername());
         if (user == null) {
             throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
@@ -61,9 +57,9 @@ public class AuthencationServiceImpl implements AuthencationSevice {
 
     @Override
     public LoginResponse loginGoogle(OAuth2AuthenticationToken auth) throws JOSEException {
-        Users user = usersRepo.findByEmail(auth.getPrincipal().getAttribute("email"));
+        Users user = usersRepository.findByEmail(auth.getPrincipal().getAttribute("email"));
         if (user == null) {
-            Role learnerRole = roleRepo.findByRoleCodeAndDeletedFalse("LEARNER")
+            Role learnerRole = roleRepository.findByRoleCodeAndDeletedFalse("LEARNER")
                     .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
             user = Users.builder()
                     .email(auth.getPrincipal().getAttribute("email"))
@@ -71,7 +67,7 @@ public class AuthencationServiceImpl implements AuthencationSevice {
                     .avatarUrl(auth.getPrincipal().getAttribute("picture"))
                     .rolesList(Set.of(learnerRole))
                     .build();
-            usersRepo.save(user);
+            usersRepository.save(user);
         }
         return LoginResponse.builder()
                 .accessToken(tokenService.generateToken(user))
@@ -88,13 +84,13 @@ public class AuthencationServiceImpl implements AuthencationSevice {
     public void Logout() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         log.info("User {} is logging out", email);
-        Users user = usersRepo.findByEmail(email);
+        Users user = usersRepository.findByEmail(email);
         if (user == null) {
             throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
 
         user.setTokenVersion(user.getTokenVersion() + 1);
-        usersRepo.save(user);
+        usersRepository.save(user);
 
     }
 }

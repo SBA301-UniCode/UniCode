@@ -3,7 +3,7 @@ package com.example.unicode.service.impl;
 import com.example.unicode.entity.Users;
 import com.example.unicode.exception.ErrorCode;
 import com.example.unicode.exception.AppException;
-import com.example.unicode.repository.UsersRepo;
+import com.example.unicode.repository.UsersRepository;
 import com.example.unicode.service.TokenService;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -27,13 +27,13 @@ public class TokenServiceImpl implements TokenService {
     private String SECRET_KEY;
     @Value("${jwt.expiration}")
     private Long EXPIRATION_TIME;
-    private final UsersRepo usersRepo;
+    private final UsersRepository usersRepository;
 
     @Override
     public String generateToken(Users user) throws JOSEException {
         String jti= UUID.randomUUID().toString();
         user.setJwtId(jti);
-        usersRepo.save(user);
+        usersRepository.save(user);
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                 .claim("email", user.getEmail())
@@ -58,7 +58,7 @@ public class TokenServiceImpl implements TokenService {
         int tokenVersion = signedJWT.getJWTClaimsSet().getIntegerClaim("tokenVersion");
         String jwt = signedJWT.getJWTClaimsSet().getJWTID();
         Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-        Users users = usersRepo.findByEmail(email);
+        Users users = usersRepository.findByEmail(email);
         if (users == null) {
             throw new AppException(ErrorCode.USER_NOT_FOUND);
         }

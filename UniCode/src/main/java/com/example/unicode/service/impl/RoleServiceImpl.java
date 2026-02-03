@@ -9,8 +9,8 @@ import com.example.unicode.entity.Role;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 import com.example.unicode.mapper.RoleMapper;
-import com.example.unicode.repository.PrivilegeRepo;
-import com.example.unicode.repository.RoleRepo;
+import com.example.unicode.repository.PrivilegeRepository;
+import com.example.unicode.repository.RoleRepository;
 import com.example.unicode.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,14 +29,14 @@ import java.util.Set;
 @Transactional
 public class RoleServiceImpl implements RoleService {
 
-    private final RoleRepo roleRepo;
-    private final PrivilegeRepo privilegeRepo;
+    private final RoleRepository roleRepository;
+    private final PrivilegeRepository privilegeRepository;
     private final RoleMapper roleMapper;
 
     @Override
     public RoleResponse create(RoleCreateRequest request) {
         // Check if role already exists
-        if (roleRepo.existsByRoleCodeAndDeletedFalse(request.getRoleCode())) {
+        if (roleRepository.existsByRoleCodeAndDeletedFalse(request.getRoleCode())) {
             throw new AppException(ErrorCode.ROLE_ALREADY_EXISTS);
         }
 
@@ -46,21 +46,21 @@ public class RoleServiceImpl implements RoleService {
         if (request.getPrivilegeCodes() != null && !request.getPrivilegeCodes().isEmpty()) {
             Set<Privilege> privileges = new HashSet<>();
             for (String privilegeCode : request.getPrivilegeCodes()) {
-                Privilege privilege = privilegeRepo.findByPrivilegeCodeAndDeletedFalse(privilegeCode)
+                Privilege privilege = privilegeRepository.findByPrivilegeCodeAndDeletedFalse(privilegeCode)
                         .orElseThrow(() -> new AppException(ErrorCode.PRIVILEGE_NOT_FOUND));
                 privileges.add(privilege);
             }
             role.setPrivileges(privileges);
         }
 
-        role = roleRepo.save(role);
+        role = roleRepository.save(role);
         return roleMapper.toResponse(role);
     }
 
     @Override
     @Transactional(readOnly = true)
     public RoleResponse getById(String roleCode) {
-        Role role = roleRepo.findByRoleCodeAndDeletedFalse(roleCode)
+        Role role = roleRepository.findByRoleCodeAndDeletedFalse(roleCode)
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
 
         return roleMapper.toResponse(role);
@@ -70,7 +70,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(readOnly = true)
     public PageResponse<RoleResponse> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Role> rolePage = roleRepo.findAllByDeletedFalse(pageable);
+        Page<Role> rolePage = roleRepository.findAllByDeletedFalse(pageable);
 
         return PageResponse.<RoleResponse>builder()
                 .content(roleMapper.toResponseList(rolePage.getContent()))
@@ -85,7 +85,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleResponse update(String roleCode, RoleUpdateRequest request) {
-        Role role = roleRepo.findByRoleCodeAndDeletedFalse(roleCode)
+        Role role = roleRepository.findByRoleCodeAndDeletedFalse(roleCode)
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
 
         roleMapper.updateEntity(request, role);
@@ -94,20 +94,20 @@ public class RoleServiceImpl implements RoleService {
         if (request.getPrivilegeCodes() != null) {
             Set<Privilege> privileges = new HashSet<>();
             for (String privilegeCode : request.getPrivilegeCodes()) {
-                Privilege privilege = privilegeRepo.findByPrivilegeCodeAndDeletedFalse(privilegeCode)
+                Privilege privilege = privilegeRepository.findByPrivilegeCodeAndDeletedFalse(privilegeCode)
                         .orElseThrow(() -> new AppException(ErrorCode.PRIVILEGE_NOT_FOUND));
                 privileges.add(privilege);
             }
             role.setPrivileges(privileges);
         }
 
-        role = roleRepo.save(role);
+        role = roleRepository.save(role);
         return roleMapper.toResponse(role);
     }
 
     @Override
     public void delete(String roleCode) {
-        Role role = roleRepo.findByRoleCodeAndDeletedFalse(roleCode)
+        Role role = roleRepository.findByRoleCodeAndDeletedFalse(roleCode)
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
 
         // Soft delete
@@ -115,7 +115,7 @@ public class RoleServiceImpl implements RoleService {
         role.setDeletedAt(LocalDateTime.now());
         role.setDeletedBy(getCurrentUser());
 
-        roleRepo.save(role);
+        roleRepository.save(role);
     }
 
     private String getCurrentUser() {

@@ -9,8 +9,8 @@ import com.example.unicode.entity.Sylabus;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 import com.example.unicode.mapper.SylabusMapper;
-import com.example.unicode.repository.CourseRepo;
-import com.example.unicode.repository.SylabusRepo;
+import com.example.unicode.repository.CourseRepository;
+import com.example.unicode.repository.SylabusRepository;
 import com.example.unicode.service.SylabusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,22 +32,22 @@ import java.time.LocalDateTime;
 @Transactional
 public class SylabusServiceImpl implements SylabusService {
 
-    private final SylabusRepo sylabusRepo;
-    private final CourseRepo courseRepo;
+    private final SylabusRepository sylabusRepository;
+    private final CourseRepository courseRepository;
     private final SylabusMapper sylabusMapper;
 
     @Override
     public SylabusResponse create(SylabusCreateRequest request) {
         // Map request to entity
         Sylabus sylabus = sylabusMapper.toEntity(request);
-        sylabus = sylabusRepo.save(sylabus);
+        sylabus = sylabusRepository.save(sylabus);
 
         // If courseId provided, link syllabus to course
         if (request.getCourseId() != null) {
-            Course course = courseRepo.findByCourseIdAndDeletedFalse(request.getCourseId())
+            Course course = courseRepository.findByCourseIdAndDeletedFalse(request.getCourseId())
                     .orElseThrow(() -> new AppException(ErrorCode.COURSE_NOT_FOUND));
             course.setSylabus(sylabus);
-            courseRepo.save(course);
+            courseRepository.save(course);
         }
 
         return sylabusMapper.toResponse(sylabus);
@@ -64,7 +64,7 @@ public class SylabusServiceImpl implements SylabusService {
     @Transactional(readOnly = true)
     public PageResponse<SylabusResponse> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Sylabus> sylabusPage = sylabusRepo.findAllByDeletedFalse(pageable);
+        Page<Sylabus> sylabusPage = sylabusRepository.findAllByDeletedFalse(pageable);
 
         return PageResponse.<SylabusResponse>builder()
                 .content(sylabusMapper.toResponseList(sylabusPage.getContent()))
@@ -84,7 +84,7 @@ public class SylabusServiceImpl implements SylabusService {
         // Use MapStruct for partial update (null values are ignored)
         sylabusMapper.updateEntity(request, sylabus);
 
-        sylabus = sylabusRepo.save(sylabus);
+        sylabus = sylabusRepository.save(sylabus);
         return sylabusMapper.toResponse(sylabus);
     }
 
@@ -97,14 +97,14 @@ public class SylabusServiceImpl implements SylabusService {
         sylabus.setDeletedAt(LocalDateTime.now());
         sylabus.setDeletedBy(getCurrentUser());
 
-        sylabusRepo.save(sylabus);
+        sylabusRepository.save(sylabus);
     }
 
     /**
      * DRY: Extracts common syllabus lookup logic
      */
     private Sylabus findSylabusOrThrow(String sylabusId) {
-        return sylabusRepo.findBySylabusIdAndDeletedFalse(sylabusId)
+        return sylabusRepository.findBySylabusIdAndDeletedFalse(sylabusId)
                 .orElseThrow(() -> new AppException(ErrorCode.SYLLABUS_NOT_FOUND));
     }
 

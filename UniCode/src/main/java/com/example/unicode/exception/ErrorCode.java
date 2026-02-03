@@ -41,11 +41,15 @@ public enum ErrorCode {
 
     // SYLLABUS ERRORS(10)
     SYLLABUS_NOT_FOUND(10001, "Syllabus not found", HttpStatus.NOT_FOUND),
-    //CONTENT ERRORS(11)
-    CONTENT_NOT_FOUND(11001, "Content  not found", HttpStatus.NOT_FOUND);
+    //SUBCRIPTION(11)
+    PAYMENT_HASH_DATA_FAIL(11001,"Hash data payment fail",HttpStatus.BAD_REQUEST),
+    SUBCRIPTION_NOT_FOUND(11002,"Subcription not found",HttpStatus.NOT_FOUND),
+    VERIFY_SIGN_FAIL(11003,"Verify signature payment fail",HttpStatus.BAD_REQUEST),
+    //CONTENT ERRORS(12)
+    CONTENT_NOT_FOUND(12001, "Content  not found", HttpStatus.NOT_FOUND);
 
 
-
+;
 
     int code;
     String message;

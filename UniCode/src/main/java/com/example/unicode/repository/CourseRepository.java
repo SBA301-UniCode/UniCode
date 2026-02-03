@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface CourseRepo extends JpaRepository<Course, UUID> {
+public interface CourseRepository extends JpaRepository<Course, UUID> {
 
     Optional<Course> findByCourseIdAndDeletedFalse(UUID courseId);
 
