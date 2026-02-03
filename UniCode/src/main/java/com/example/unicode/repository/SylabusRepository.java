@@ -12,7 +12,7 @@ import java.util.UUID;
 /**
  * Repository for Sylabus entity with soft-delete support.
  */
-public interface SylabusRepo extends JpaRepository<Sylabus, UUID> {
+public interface SylabusRepository extends JpaRepository<Sylabus, UUID> {
 
     Optional<Sylabus> findBySylabusIdAndDeletedFalse(String sylabusId);
 

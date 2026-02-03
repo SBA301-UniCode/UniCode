@@ -27,4 +27,6 @@ public class Chapter extends BaseEntity {
     private Course course;
     @OneToMany(mappedBy = "chapter")
     private List<Lesson> lessonList = new ArrayList<>();
+    @OneToMany(mappedBy = "chapter")
+    private List<Process> processList = new ArrayList<>();
 }

@@ -4,13 +4,16 @@ import com.example.unicode.base.ApiResponse;
 import com.example.unicode.dto.request.CourseCreateRequest;
 import com.example.unicode.dto.request.CourseUpdateRequest;
 import com.example.unicode.dto.response.CourseResponse;
+import com.example.unicode.dto.response.EnrolmentResponse;
 import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.service.CourseService;
+import com.example.unicode.service.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,4 +79,5 @@ public class CourseController {
         courseService.delete(courseId);
         return ResponseEntity.ok(ApiResponse.success("Course deleted successfully"));
     }
+
 }

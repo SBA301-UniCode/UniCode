@@ -9,8 +9,8 @@ import com.example.unicode.entity.Users;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 import com.example.unicode.mapper.CourseMapper;
-import com.example.unicode.repository.CourseRepo;
-import com.example.unicode.repository.UsersRepo;
+import com.example.unicode.repository.CourseRepository;
+import com.example.unicode.repository.UsersRepository;
 import com.example.unicode.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,21 +33,21 @@ import java.util.UUID;
 @Transactional
 public class CourseServiceImpl implements CourseService {
 
-    private final CourseRepo courseRepo;
-    private final UsersRepo usersRepo;
+    private final CourseRepository courseRepository;
+    private final UsersRepository usersRepository;
     private final CourseMapper courseMapper;
 
     @Override
     public CourseResponse create(CourseCreateRequest request) {
         // Validate instructor exists
-        Users instructor = usersRepo.findByUserIdAndDeletedFalse(request.getInstructorId())
+        Users instructor = usersRepository.findByUserIdAndDeletedFalse(request.getInstructorId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         // Map request to entity
         Course course = courseMapper.toEntity(request);
         course.setInstructors(instructor);
 
-        course = courseRepo.save(course);
+        course = courseRepository.save(course);
         return courseMapper.toResponse(course);
     }
 
@@ -62,7 +62,7 @@ public class CourseServiceImpl implements CourseService {
     @Transactional(readOnly = true)
     public PageResponse<CourseResponse> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Course> coursePage = courseRepo.findAllByDeletedFalse(pageable);
+        Page<Course> coursePage = courseRepository.findAllByDeletedFalse(pageable);
 
         return PageResponse.<CourseResponse>builder()
                 .content(courseMapper.toResponseList(coursePage.getContent()))
@@ -82,7 +82,7 @@ public class CourseServiceImpl implements CourseService {
         // Use MapStruct for partial update (null values are ignored)
         courseMapper.updateEntity(request, course);
 
-        course = courseRepo.save(course);
+        course = courseRepository.save(course);
         return courseMapper.toResponse(course);
     }
 
@@ -95,14 +95,14 @@ public class CourseServiceImpl implements CourseService {
         course.setDeletedAt(LocalDateTime.now());
         course.setDeletedBy(getCurrentUser());
 
-        courseRepo.save(course);
+        courseRepository.save(course);
     }
 
     /**
      * DRY: Extracts common course lookup logic
      */
     private Course findCourseOrThrow(UUID courseId) {
-        return courseRepo.findByCourseIdAndDeletedFalse(courseId)
+        return courseRepository.findByCourseIdAndDeletedFalse(courseId)
                 .orElseThrow(() -> new AppException(ErrorCode.COURSE_NOT_FOUND));
     }
 

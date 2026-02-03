@@ -27,8 +27,8 @@ public class QuestionBank extends BaseEntity {
     private int numberAnswers;
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
-    @OneToOne
-    @JoinColumn(name = "lesson_id")
+    @ManyToOne
+    @JoinColumn(name = "lesson_id",unique = false)
     private Lesson lesson;
     @OneToMany(mappedBy = "questionBank")
     private List<QuestionExam> questionExamList = new ArrayList<>();

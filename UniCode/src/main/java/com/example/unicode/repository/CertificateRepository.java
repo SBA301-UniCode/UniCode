@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface CertificateRepo extends JpaRepository<Certificate, UUID> {
+public interface CertificateRepository extends JpaRepository<Certificate, UUID> {
 
     Optional<Certificate> findByCertificateIdAndDeletedFalse(UUID certificateId);
 

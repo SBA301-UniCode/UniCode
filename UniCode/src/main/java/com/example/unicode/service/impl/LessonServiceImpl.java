@@ -9,8 +9,8 @@ import com.example.unicode.entity.Lesson;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 import com.example.unicode.mapper.LessonMapper;
-import com.example.unicode.repository.ChapterRepo;
-import com.example.unicode.repository.LessonRepo;
+import com.example.unicode.repository.ChapterRepository;
+import com.example.unicode.repository.LessonRepository;
 import com.example.unicode.service.LessonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -34,21 +34,21 @@ import java.util.UUID;
 @Transactional
 public class LessonServiceImpl implements LessonService {
 
-    private final LessonRepo lessonRepo;
-    private final ChapterRepo chapterRepo;
+    private final LessonRepository lessonRepository;
+    private final ChapterRepository chapterRepository;
     private final LessonMapper lessonMapper;
 
     @Override
     public LessonResponse create(LessonCreateRequest request) {
         // Validate chapter exists
-        Chapter chapter = chapterRepo.findByChapterIdAndDeletedFalse(request.getChapterId())
+        Chapter chapter = chapterRepository.findByChapterIdAndDeletedFalse(request.getChapterId())
                 .orElseThrow(() -> new AppException(ErrorCode.CHAPTER_NOT_FOUND));
 
         // Map request to entity
         Lesson lesson = lessonMapper.toEntity(request);
         lesson.setChapter(chapter);
 
-        lesson = lessonRepo.save(lesson);
+        lesson = lessonRepository.save(lesson);
         return lessonMapper.toResponse(lesson);
     }
 
@@ -63,7 +63,7 @@ public class LessonServiceImpl implements LessonService {
     @Transactional(readOnly = true)
     public PageResponse<LessonResponse> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Lesson> lessonPage = lessonRepo.findAllByDeletedFalse(pageable);
+        Page<Lesson> lessonPage = lessonRepository.findAllByDeletedFalse(pageable);
 
         return PageResponse.<LessonResponse>builder()
                 .content(lessonMapper.toResponseList(lessonPage.getContent()))
@@ -80,12 +80,12 @@ public class LessonServiceImpl implements LessonService {
     @Transactional(readOnly = true)
     public List<LessonResponse> getByChapterId(UUID chapterId) {
         // Validate chapter exists
-        if (!chapterRepo.findByChapterIdAndDeletedFalse(chapterId).isPresent()) {
+        if (!chapterRepository.findByChapterIdAndDeletedFalse(chapterId).isPresent()) {
             throw new AppException(ErrorCode.CHAPTER_NOT_FOUND);
         }
 
         return lessonMapper.toResponseList(
-                lessonRepo.findByChapter_ChapterIdAndDeletedFalseOrderByOrderIndexAsc(chapterId));
+                lessonRepository.findByChapter_ChapterIdAndDeletedFalseOrderByOrderIndexAsc(chapterId));
     }
 
     @Override
@@ -95,7 +95,7 @@ public class LessonServiceImpl implements LessonService {
         // Use MapStruct for partial update (null values are ignored)
         lessonMapper.updateEntity(request, lesson);
 
-        lesson = lessonRepo.save(lesson);
+        lesson = lessonRepository.save(lesson);
         return lessonMapper.toResponse(lesson);
     }
 
@@ -108,14 +108,14 @@ public class LessonServiceImpl implements LessonService {
         lesson.setDeletedAt(LocalDateTime.now());
         lesson.setDeletedBy(getCurrentUser());
 
-        lessonRepo.save(lesson);
+        lessonRepository.save(lesson);
     }
 
     /**
      * DRY: Extracts common lesson lookup logic
      */
     private Lesson findLessonOrThrow(UUID lessonId) {
-        return lessonRepo.findByLessonIdAndDeletedFalse(lessonId)
+        return lessonRepository.findByLessonIdAndDeletedFalse(lessonId)
                 .orElseThrow(() -> new AppException(ErrorCode.LESSON_NOT_FOUND));
     }
 

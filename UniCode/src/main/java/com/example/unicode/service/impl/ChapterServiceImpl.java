@@ -9,8 +9,8 @@ import com.example.unicode.entity.Course;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 import com.example.unicode.mapper.ChapterMapper;
-import com.example.unicode.repository.ChapterRepo;
-import com.example.unicode.repository.CourseRepo;
+import com.example.unicode.repository.ChapterRepository;
+import com.example.unicode.repository.CourseRepository;
 import com.example.unicode.service.ChapterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -34,21 +34,21 @@ import java.util.UUID;
 @Transactional
 public class ChapterServiceImpl implements ChapterService {
 
-    private final ChapterRepo chapterRepo;
-    private final CourseRepo courseRepo;
+    private final ChapterRepository chapterRepository;
+    private final CourseRepository courseRepository;
     private final ChapterMapper chapterMapper;
 
     @Override
     public ChapterResponse create(ChapterCreateRequest request) {
         // Validate course exists
-        Course course = courseRepo.findByCourseIdAndDeletedFalse(request.getCourseId())
+        Course course = courseRepository.findByCourseIdAndDeletedFalse(request.getCourseId())
                 .orElseThrow(() -> new AppException(ErrorCode.COURSE_NOT_FOUND));
 
         // Map request to entity
         Chapter chapter = chapterMapper.toEntity(request);
         chapter.setCourse(course);
 
-        chapter = chapterRepo.save(chapter);
+        chapter = chapterRepository.save(chapter);
         return chapterMapper.toResponse(chapter);
     }
 
@@ -63,7 +63,7 @@ public class ChapterServiceImpl implements ChapterService {
     @Transactional(readOnly = true)
     public PageResponse<ChapterResponse> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Chapter> chapterPage = chapterRepo.findAllByDeletedFalse(pageable);
+        Page<Chapter> chapterPage = chapterRepository.findAllByDeletedFalse(pageable);
 
         return PageResponse.<ChapterResponse>builder()
                 .content(chapterMapper.toResponseList(chapterPage.getContent()))
@@ -80,12 +80,12 @@ public class ChapterServiceImpl implements ChapterService {
     @Transactional(readOnly = true)
     public List<ChapterResponse> getByCourseId(UUID courseId) {
         // Validate course exists
-        if (!courseRepo.findByCourseIdAndDeletedFalse(courseId).isPresent()) {
+        if (!courseRepository.findByCourseIdAndDeletedFalse(courseId).isPresent()) {
             throw new AppException(ErrorCode.COURSE_NOT_FOUND);
         }
 
         return chapterMapper.toResponseList(
-                chapterRepo.findByCourse_CourseIdAndDeletedFalseOrderByOrderIndexAsc(courseId));
+                chapterRepository.findByCourse_CourseIdAndDeletedFalseOrderByOrderIndexAsc(courseId));
     }
 
     @Override
@@ -95,7 +95,7 @@ public class ChapterServiceImpl implements ChapterService {
         // Use MapStruct for partial update (null values are ignored)
         chapterMapper.updateEntity(request, chapter);
 
-        chapter = chapterRepo.save(chapter);
+        chapter = chapterRepository.save(chapter);
         return chapterMapper.toResponse(chapter);
     }
 
@@ -108,14 +108,14 @@ public class ChapterServiceImpl implements ChapterService {
         chapter.setDeletedAt(LocalDateTime.now());
         chapter.setDeletedBy(getCurrentUser());
 
-        chapterRepo.save(chapter);
+        chapterRepository.save(chapter);
     }
 
     /**
      * DRY: Extracts common chapter lookup logic
      */
     private Chapter findChapterOrThrow(UUID chapterId) {
-        return chapterRepo.findByChapterIdAndDeletedFalse(chapterId)
+        return chapterRepository.findByChapterIdAndDeletedFalse(chapterId)
                 .orElseThrow(() -> new AppException(ErrorCode.CHAPTER_NOT_FOUND));
     }
 
