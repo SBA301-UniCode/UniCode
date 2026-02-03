@@ -37,7 +37,7 @@ public class AuthencationServiceImpl implements AuthencationSevice {
     public LoginResponse login(LoginRequest loginRequest) {
         Users user = usersRepository.findByEmail(loginRequest.getUsername());
         if (user == null) {
-            throw new AppException(ErrorCode.USER_NOT_FOUND);
+            throw new AppException(ErrorCode.INVALID_LOGIN_REQUEST);
         }
         if (!user.isActive()) {
             throw new AppException(ErrorCode.USER_INACTIVE);

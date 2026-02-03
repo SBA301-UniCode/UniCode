@@ -25,7 +25,6 @@ public class ProcessController {
     public ResponseEntity<ApiResponse<TrackingResponse.ProcessResponse>> tracking(@RequestBody ProcessRequest request) {
         return ResponseEntity.ok(ApiResponse.success(processService.trackProcessContent(request)));
     }
-
     @PostMapping("/lessons")
     @Operation(summary = "Get all content process of  Lesson")
     public ResponseEntity<ApiResponse<TrackingResponse>> processLesson(@RequestBody TrackingRequest request) {

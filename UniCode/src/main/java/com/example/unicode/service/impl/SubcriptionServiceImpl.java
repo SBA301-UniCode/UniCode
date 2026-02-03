@@ -42,6 +42,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -154,7 +155,7 @@ public class SubcriptionServiceImpl implements SubcriptionService {
                 SubcripSpecification.searchByCoursId(request.getCourseId()),
                 SubcripSpecification.searchByLernerId(request.getLearnerId()),
                 SubcripSpecification.searchByStatusPayment(request.getStatusPayment()),
-             SubcripSpecification.searchByDate(request.getFrom().atStartOfDay(),request.getTo().plusDays(1).atStartOfDay())
+                SubcripSpecification.searchByDate(request.getFrom(),request.getTo())
                 );
         return subcriptionRepository.findAll(spe,pageable).map(subcriptionMapper::entityToResponse);
     }
@@ -162,7 +163,8 @@ public class SubcriptionServiceImpl implements SubcriptionService {
     @Override
     public SubcriptionReportResponse report(SubcriptionReportRequest request) {
         SubcriptionReportResponse response  = SubcriptionReportResponse.builder().build();
-        List<Summaries> summaries = sumariesRepository.findByLocalDateBetween(request.getFrom(),request.getTo());
+        List<Summaries> summaries = new ArrayList<>();
+        summaries.addAll(sumariesRepository.findByLocalDateBetween(request.getFrom(),request.getTo()));
         if(request.getTo().equals(LocalDate.now()))
         {
             LocalDateTime start = LocalDate.now().atStartOfDay();
@@ -185,7 +187,7 @@ public class SubcriptionServiceImpl implements SubcriptionService {
                 response.setTotalAmount(response.getTotalAmount()+ s.getTotalAmount());
 
             });
-            response.setTotalPending(response.getTotalPayment() -(response.getTotalPending()+ response.getTotalError()));
+            response.setTotalPending(response.getTotalPayment() -(response.getTotalSuccess()+ response.getTotalError()));
         }
         response.setData(summaries.stream().map(sumariesMapper::entityToResponse).toList());
         return response;

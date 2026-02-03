@@ -25,9 +25,9 @@ public class SubcripSpecification {
                 statusPayment == null ? null : cb.equal(root.get("statusPayment"), statusPayment)
         );
     }
-    public static Specification<Subcription> searchByDate(LocalDateTime from, LocalDateTime to) {
+    public static Specification<Subcription> searchByDate(LocalDate from, LocalDate to) {
         return ((root, query, cb) ->
-                from == null && to == null ? null : cb.between(root.get("createdAt"),from,to)
+                from == null || to == null ? null : cb.between(root.get("createdAt"),from.atStartOfDay(),to.plusDays(1).atStartOfDay())
         );
     }
 

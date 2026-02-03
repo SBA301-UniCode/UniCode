@@ -19,8 +19,8 @@ public class Process extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID processId;
+    @Enumerated(EnumType.STRING)
     private StatusContent statusContent;
-    private LocalDateTime updateDate;
     @ManyToOne
     @JoinColumn(name = "enrollment_id")
     private Enrollment enrollment;

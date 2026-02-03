@@ -16,4 +16,5 @@ public class SubcriptionResponse {
     private UUID courseraId;
     private UUID buyerId;
     private String content;
+    private String payType;
 }

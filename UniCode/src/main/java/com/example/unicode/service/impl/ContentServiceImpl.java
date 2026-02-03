@@ -9,7 +9,7 @@ import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 import com.example.unicode.mapper.ContentMapper;
 import com.example.unicode.repository.ContentRepo;
-import com.example.unicode.repository.LessonRepo;
+import com.example.unicode.repository.LessonRepository;
 import com.example.unicode.service.ContentService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ import java.util.UUID;
 public class ContentServiceImpl implements ContentService {
     private final ContentRepo contentRepo;
     private final ContentMapper contentMapper;
-    private final LessonRepo lessonRepo;
+    private final LessonRepository lessonRepo;
 
     @Override
     public ContentResponse create(ContentCreateRequest request) {

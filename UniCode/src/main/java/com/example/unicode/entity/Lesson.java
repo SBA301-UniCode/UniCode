@@ -28,8 +28,8 @@ public class Lesson extends BaseEntity {
     private Chapter chapter;
     @OneToMany(mappedBy = "lesson")
     private List<Content> contentList = new ArrayList<>();
-    @OneToOne(mappedBy = "lesson")
-    private QuestionBank questionBank;
+    @OneToMany(mappedBy = "lesson")
+    private List<QuestionBank> questionBank = new ArrayList<>();
     @OneToMany(mappedBy = "lesson")
     private List<Process> processesList = new ArrayList<>();
 }

@@ -18,4 +18,8 @@ public interface ProcessRepository extends JpaRepository<Process, UUID> {
     Process findByLessonAndEnrollment_EnrollmentId(Lesson lesson, UUID enrollmentEnrollmentId);
 
     Process findByChapterAndEnrollment_EnrollmentId(Chapter chapter, UUID enrollmentEnrollmentId);
+
+    Process findByContentAndEnrollment(Content content, Enrollment enrollment);
+
+    Process findByChapterAndEnrollment(Chapter chapter, Enrollment enrollment);
 }

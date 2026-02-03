@@ -52,5 +52,30 @@ public class EnrollmentController {
     ){
         return ResponseEntity.ok(ApiResponse.success(enrollmentService.update(request)));
     }
+    @GetMapping("/courses/{courseId}")
+    @Operation(summary = "Get all enrollments by ID")
+    public ResponseEntity<ApiResponse<Page<EnrolmentResponse>>> getById(
+            @PathVariable UUID courseId,
+            @Parameter(description = "Page number (0-indexed)", example = "0")
+            @RequestParam(defaultValue = "0",required = false) int page,
+            @Parameter(description = "Page size", example = "10")
+            @RequestParam(defaultValue = "10",required = false) int size
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(enrollmentService.getAllByCourse(courseId,page,size)));
+    }
+    @PostMapping("/courses/{courseId}")
+    @Operation(summary = "Enroll couser by Id")
+    public ResponseEntity<ApiResponse<EnrolmentResponse>> join(
+            @PathVariable UUID courseId
+    ){
+        return ResponseEntity.ok(ApiResponse.success(enrollmentService.joinCousera(courseId)));
+    }
+    @GetMapping("/courses/{courseId}/me")
+    @Operation(summary = "Check this user enrolled or not")
+    public ResponseEntity<ApiResponse<Boolean>> isEnrolled(
+            @PathVariable UUID courseId
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(enrollmentService.isEnrolled(courseId)));
+    }
 
 }
