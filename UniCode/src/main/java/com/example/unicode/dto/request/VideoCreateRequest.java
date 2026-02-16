@@ -1,11 +1,10 @@
 package com.example.unicode.dto.request;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.UUID;
 
 @Data
@@ -13,7 +12,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class VideoCreateRequest {
 
-    MultipartFile file;
+        @NotNull(message = "Content ID is required")
+        private UUID contentId;
 
-    String folder;
+        private int duration;
+
 }
+

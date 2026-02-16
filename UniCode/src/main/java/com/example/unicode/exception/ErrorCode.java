@@ -51,6 +51,7 @@ public enum ErrorCode {
     //Enrollment(13)
     NOT_PAYMNET(13001,"You haven't bought this course yet ", HttpStatus.BAD_REQUEST),
     ENROLLMENT_NOT_FOUND(13002,"Enrollment not found ", HttpStatus.NOT_FOUND),
+    VIDEO_NOT_FOUND(13003, "Video not found", HttpStatus.NOT_FOUND),
     ;
     int code;
     String message;
