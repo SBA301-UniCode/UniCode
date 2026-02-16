@@ -32,8 +32,27 @@ public enum ErrorCode {
     CERTIFICATE_ALREADY_EXISTS(6002, "Certificate already exists for this user and course", HttpStatus.BAD_REQUEST),
 
     // COURSE ERRORS(7)
-    COURSE_NOT_FOUND(7001, "Course not found", HttpStatus.NOT_FOUND);
+    COURSE_NOT_FOUND(7001, "Course not found", HttpStatus.NOT_FOUND),
 
+    // CHAPTER ERRORS(8)
+    CHAPTER_NOT_FOUND(8001, "Chapter not found", HttpStatus.NOT_FOUND),
+
+    // LESSON ERRORS(9)
+    LESSON_NOT_FOUND(9001, "Lesson not found", HttpStatus.NOT_FOUND),
+
+    // SYLLABUS ERRORS(10)
+    SYLLABUS_NOT_FOUND(10001, "Syllabus not found", HttpStatus.NOT_FOUND),
+    //SUBCRIPTION(11)
+    PAYMENT_HASH_DATA_FAIL(11001,"Hash data payment fail",HttpStatus.BAD_REQUEST),
+    SUBCRIPTION_NOT_FOUND(11002,"Subcription not found",HttpStatus.NOT_FOUND),
+    VERIFY_SIGN_FAIL(11003,"Verify signature payment fail",HttpStatus.BAD_REQUEST),
+    //CONTENT ERRORS(12)
+    CONTENT_NOT_FOUND(12001, "Content  not found", HttpStatus.NOT_FOUND),
+    //Enrollment(13)
+    NOT_PAYMNET(13001,"You haven't bought this course yet ", HttpStatus.BAD_REQUEST),
+    ENROLLMENT_NOT_FOUND(13002,"Enrollment not found ", HttpStatus.NOT_FOUND),
+    VIDEO_NOT_FOUND(13003, "Video not found", HttpStatus.NOT_FOUND),
+    ;
     int code;
     String message;
     HttpStatus status;

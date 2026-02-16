@@ -2,9 +2,8 @@ package com.example.unicode.service;
 
 import com.example.unicode.dto.request.PrivilegeCreateRequest;
 import com.example.unicode.dto.request.PrivilegeUpdateRequest;
+import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.dto.response.PrivilegeResponse;
-
-import java.util.List;
 
 public interface PrivilegeService {
 
@@ -12,7 +11,7 @@ public interface PrivilegeService {
 
     PrivilegeResponse getById(String privilegeCode);
 
-    List<PrivilegeResponse> getAll();
+    PageResponse<PrivilegeResponse> getAll(int page, int size);
 
     PrivilegeResponse update(String privilegeCode, PrivilegeUpdateRequest request);
 

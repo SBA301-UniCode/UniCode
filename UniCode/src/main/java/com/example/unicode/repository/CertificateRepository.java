@@ -1,17 +1,21 @@
 package com.example.unicode.repository;
 
 import com.example.unicode.entity.Certificate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface CertificateRepo extends JpaRepository<Certificate, UUID> {
+public interface CertificateRepository extends JpaRepository<Certificate, UUID> {
 
     Optional<Certificate> findByCertificateIdAndDeletedFalse(UUID certificateId);
 
     List<Certificate> findAllByDeletedFalse();
+
+    Page<Certificate> findAllByDeletedFalse(Pageable pageable);
 
     List<Certificate> findAllByLearner_UserIdAndDeletedFalse(UUID learnerId);
 

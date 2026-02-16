@@ -3,17 +3,21 @@ package com.example.unicode.controller;
 import com.example.unicode.base.ApiResponse;
 import com.example.unicode.dto.request.UserCreateRequest;
 import com.example.unicode.dto.request.UserUpdateRequest;
+import com.example.unicode.dto.response.EnrolmentResponse;
+import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.dto.response.UserResponse;
+import com.example.unicode.service.EnrollmentService;
 import com.example.unicode.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -23,6 +27,7 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final EnrollmentService enrollmentService;
 
     @PostMapping
     @Operation(summary = "Create a new user")
@@ -51,9 +56,13 @@ public class UserController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all users")
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getAll() {
-        List<UserResponse> response = userService.getAll();
+    @Operation(summary = "Get all users with pagination")
+    public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> getAll(
+            @Parameter(description = "Page number (0-indexed)", example = "0")
+            @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Page size", example = "10")
+            @RequestParam(defaultValue = "10") int size) {
+        PageResponse<UserResponse> response = userService.getAll(page, size);
         return ResponseEntity.ok(ApiResponse.success("Users retrieved successfully", response));
     }
 
@@ -78,6 +87,17 @@ public class UserController {
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID userId) {
         userService.delete(userId);
         return ResponseEntity.ok(ApiResponse.success("User deleted successfully"));
+    }
+    @GetMapping("/{userId}/enrollments")
+    @Operation(summary = "Get enrollments by  ID")
+    public ResponseEntity<ApiResponse<Page<EnrolmentResponse>>> getByLearnerId(
+            @PathVariable UUID userId,
+            @Parameter(description = "Page number (0-indexed)", example = "0")
+            @RequestParam(defaultValue = "0",required = false) int page,
+            @Parameter(description = "Page size", example = "10")
+            @RequestParam(defaultValue = "10",required = false) int size
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(enrollmentService.getAllByLearner(userId,page,size)));
     }
 }
 

@@ -2,9 +2,9 @@ package com.example.unicode.service;
 
 import com.example.unicode.dto.request.UserCreateRequest;
 import com.example.unicode.dto.request.UserUpdateRequest;
+import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.dto.response.UserResponse;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
@@ -15,7 +15,7 @@ public interface UserService {
 
     UserResponse getByEmail(String email);
 
-    List<UserResponse> getAll();
+    PageResponse<UserResponse> getAll(int page, int size);
 
     UserResponse update(UUID userId, UserUpdateRequest request);
 

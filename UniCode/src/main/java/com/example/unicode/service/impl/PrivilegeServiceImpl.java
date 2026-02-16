@@ -2,38 +2,41 @@ package com.example.unicode.service.impl;
 
 import com.example.unicode.dto.request.PrivilegeCreateRequest;
 import com.example.unicode.dto.request.PrivilegeUpdateRequest;
+import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.dto.response.PrivilegeResponse;
 import com.example.unicode.entity.Privilege;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 import com.example.unicode.mapper.PrivilegeMapper;
-import com.example.unicode.repository.PrivilegeRepo;
+import com.example.unicode.repository.PrivilegeRepository;
 import com.example.unicode.service.PrivilegeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class PrivilegeServiceImpl implements PrivilegeService {
 
-    private final PrivilegeRepo privilegeRepo;
+    private final PrivilegeRepository privilegeRepository;
     private final PrivilegeMapper privilegeMapper;
 
     @Override
     public PrivilegeResponse create(PrivilegeCreateRequest request) {
         // Check if privilege already exists (including soft deleted)
-        if (privilegeRepo.existsByPrivilegeCodeAndDeletedFalse(request.getPrivilegeCode())) {
+        if (privilegeRepository.existsByPrivilegeCodeAndDeletedFalse(request.getPrivilegeCode())) {
             throw new AppException(ErrorCode.PRIVILEGE_ALREADY_EXISTS);
         }
 
         Privilege privilege = privilegeMapper.toEntity(request);
-        privilege = privilegeRepo.save(privilege);
+        privilege = privilegeRepository.save(privilege);
 
         return privilegeMapper.toResponse(privilege);
     }
@@ -41,7 +44,7 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     @Override
     @Transactional(readOnly = true)
     public PrivilegeResponse getById(String privilegeCode) {
-        Privilege privilege = privilegeRepo.findByPrivilegeCodeAndDeletedFalse(privilegeCode)
+        Privilege privilege = privilegeRepository.findByPrivilegeCodeAndDeletedFalse(privilegeCode)
                 .orElseThrow(() -> new AppException(ErrorCode.PRIVILEGE_NOT_FOUND));
 
         return privilegeMapper.toResponse(privilege);
@@ -49,24 +52,35 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PrivilegeResponse> getAll() {
-        return privilegeMapper.toResponseList(privilegeRepo.findAllByDeletedFalse());
+    public PageResponse<PrivilegeResponse> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Privilege> privilegePage = privilegeRepository.findAllByDeletedFalse(pageable);
+
+        return PageResponse.<PrivilegeResponse>builder()
+                .content(privilegeMapper.toResponseList(privilegePage.getContent()))
+                .currentPage(privilegePage.getNumber())
+                .pageSize(privilegePage.getSize())
+                .totalElements(privilegePage.getTotalElements())
+                .totalPages(privilegePage.getTotalPages())
+                .first(privilegePage.isFirst())
+                .last(privilegePage.isLast())
+                .build();
     }
 
     @Override
     public PrivilegeResponse update(String privilegeCode, PrivilegeUpdateRequest request) {
-        Privilege privilege = privilegeRepo.findByPrivilegeCodeAndDeletedFalse(privilegeCode)
+        Privilege privilege = privilegeRepository.findByPrivilegeCodeAndDeletedFalse(privilegeCode)
                 .orElseThrow(() -> new AppException(ErrorCode.PRIVILEGE_NOT_FOUND));
 
         privilegeMapper.updateEntity(request, privilege);
 
-        privilege = privilegeRepo.save(privilege);
+        privilege = privilegeRepository.save(privilege);
         return privilegeMapper.toResponse(privilege);
     }
 
     @Override
     public void delete(String privilegeCode) {
-        Privilege privilege = privilegeRepo.findByPrivilegeCodeAndDeletedFalse(privilegeCode)
+        Privilege privilege = privilegeRepository.findByPrivilegeCodeAndDeletedFalse(privilegeCode)
                 .orElseThrow(() -> new AppException(ErrorCode.PRIVILEGE_NOT_FOUND));
 
         // Soft delete
@@ -74,7 +88,7 @@ public class PrivilegeServiceImpl implements PrivilegeService {
         privilege.setDeletedAt(LocalDateTime.now());
         privilege.setDeletedBy(getCurrentUser());
 
-        privilegeRepo.save(privilege);
+        privilegeRepository.save(privilege);
     }
 
     private String getCurrentUser() {

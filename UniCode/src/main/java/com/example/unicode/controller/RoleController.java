@@ -3,17 +3,17 @@ package com.example.unicode.controller;
 import com.example.unicode.base.ApiResponse;
 import com.example.unicode.dto.request.RoleCreateRequest;
 import com.example.unicode.dto.request.RoleUpdateRequest;
+import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.dto.response.RoleResponse;
 import com.example.unicode.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/roles")
@@ -42,9 +42,13 @@ public class RoleController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all roles")
-    public ResponseEntity<ApiResponse<List<RoleResponse>>> getAll() {
-        List<RoleResponse> response = roleService.getAll();
+    @Operation(summary = "Get all roles with pagination")
+    public ResponseEntity<ApiResponse<PageResponse<RoleResponse>>> getAll(
+            @Parameter(description = "Page number (0-indexed)", example = "0")
+            @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Page size", example = "10")
+            @RequestParam(defaultValue = "10") int size) {
+        PageResponse<RoleResponse> response = roleService.getAll(page, size);
         return ResponseEntity.ok(ApiResponse.success("Roles retrieved successfully", response));
     }
 

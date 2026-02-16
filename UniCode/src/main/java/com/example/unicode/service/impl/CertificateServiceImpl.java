@@ -2,17 +2,21 @@ package com.example.unicode.service.impl;
 
 import com.example.unicode.dto.request.CertificateCreateRequest;
 import com.example.unicode.dto.response.CertificateResponse;
+import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.entity.Certificate;
 import com.example.unicode.entity.Course;
 import com.example.unicode.entity.Users;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 import com.example.unicode.mapper.CertificateMapper;
-import com.example.unicode.repository.CertificateRepo;
-import com.example.unicode.repository.CourseRepo;
-import com.example.unicode.repository.UsersRepo;
+import com.example.unicode.repository.CertificateRepository;
+import com.example.unicode.repository.CourseRepository;
+import com.example.unicode.repository.UsersRepository;
 import com.example.unicode.service.CertificateService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,23 +30,23 @@ import java.util.UUID;
 @Transactional
 public class CertificateServiceImpl implements CertificateService {
 
-    private final CertificateRepo certificateRepo;
-    private final UsersRepo usersRepo;
-    private final CourseRepo courseRepo;
+    private final CertificateRepository certificateRepository;
+    private final UsersRepository usersRepository;
+    private final CourseRepository courseRepository;
     private final CertificateMapper certificateMapper;
 
     @Override
     public CertificateResponse create(CertificateCreateRequest request) {
         // Check if user exists
-        Users learner = usersRepo.findByUserIdAndDeletedFalse(request.getLearnerId())
+        Users learner = usersRepository.findByUserIdAndDeletedFalse(request.getLearnerId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         // Check if course exists
-        Course course = courseRepo.findByCourseId(request.getCourseId())
+        Course course = courseRepository.findByCourseIdAndDeletedFalse(request.getCourseId())
                 .orElseThrow(() -> new AppException(ErrorCode.COURSE_NOT_FOUND));
 
         // Check if certificate already exists for this user and course
-        if (certificateRepo.existsByLearner_UserIdAndCourse_CourseIdAndDeletedFalse(
+        if (certificateRepository.existsByLearner_UserIdAndCourse_CourseIdAndDeletedFalse(
                 request.getLearnerId(), request.getCourseId())) {
             throw new AppException(ErrorCode.CERTIFICATE_ALREADY_EXISTS);
         }
@@ -52,14 +56,14 @@ public class CertificateServiceImpl implements CertificateService {
         certificate.setCourse(course);
         certificate.setCertificateDate(LocalDateTime.now());
 
-        certificate = certificateRepo.save(certificate);
+        certificate = certificateRepository.save(certificate);
         return certificateMapper.toResponse(certificate);
     }
 
     @Override
     @Transactional(readOnly = true)
     public CertificateResponse getById(UUID certificateId) {
-        Certificate certificate = certificateRepo.findByCertificateIdAndDeletedFalse(certificateId)
+        Certificate certificate = certificateRepository.findByCertificateIdAndDeletedFalse(certificateId)
                 .orElseThrow(() -> new AppException(ErrorCode.CERTIFICATE_NOT_FOUND));
 
         return certificateMapper.toResponse(certificate);
@@ -67,25 +71,36 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CertificateResponse> getAll() {
-        return certificateMapper.toResponseList(certificateRepo.findAllByDeletedFalse());
+    public PageResponse<CertificateResponse> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Certificate> certificatePage = certificateRepository.findAllByDeletedFalse(pageable);
+
+        return PageResponse.<CertificateResponse>builder()
+                .content(certificateMapper.toResponseList(certificatePage.getContent()))
+                .currentPage(certificatePage.getNumber())
+                .pageSize(certificatePage.getSize())
+                .totalElements(certificatePage.getTotalElements())
+                .totalPages(certificatePage.getTotalPages())
+                .first(certificatePage.isFirst())
+                .last(certificatePage.isLast())
+                .build();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CertificateResponse> getByLearnerId(UUID learnerId) {
         // Check if user exists
-        if (!usersRepo.existsByUserIdAndDeletedFalse(learnerId)) {
+        if (!usersRepository.existsByUserIdAndDeletedFalse(learnerId)) {
             throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
 
         return certificateMapper.toResponseList(
-                certificateRepo.findAllByLearner_UserIdAndDeletedFalse(learnerId));
+                certificateRepository.findAllByLearner_UserIdAndDeletedFalse(learnerId));
     }
 
     @Override
     public void delete(UUID certificateId) {
-        Certificate certificate = certificateRepo.findByCertificateIdAndDeletedFalse(certificateId)
+        Certificate certificate = certificateRepository.findByCertificateIdAndDeletedFalse(certificateId)
                 .orElseThrow(() -> new AppException(ErrorCode.CERTIFICATE_NOT_FOUND));
 
         // Soft delete
@@ -93,7 +108,7 @@ public class CertificateServiceImpl implements CertificateService {
         certificate.setDeletedAt(LocalDateTime.now());
         certificate.setDeletedBy(getCurrentUser());
 
-        certificateRepo.save(certificate);
+        certificateRepository.save(certificate);
     }
 
     private String getCurrentUser() {

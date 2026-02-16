@@ -5,6 +5,7 @@ import com.example.unicode.dto.request.LoginRequest;
 import com.example.unicode.dto.request.RefreshAccessTokenRequest;
 import com.example.unicode.service.AuthencationSevice;
 import com.nimbusds.jose.JOSEException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +18,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Authencations", description = "Authencations management APIs")
 public class AuthencationController {
     private final AuthencationSevice authencationSevice;
 
@@ -26,25 +28,17 @@ public class AuthencationController {
         return ApiResponse.success(authencationSevice.login(loginRequest));
     }
 
-    @PostMapping("/refresh-access-token")
+    @PostMapping("/refresh-token")
     public ApiResponse refreshAccessToken(@RequestBody RefreshAccessTokenRequest refreshAccessTokenRequest) throws JOSEException {
 
         String newAccessToken = authencationSevice.refreshAccessToken(refreshAccessTokenRequest);
         return ApiResponse.success(newAccessToken);
-
     }
-
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public ApiResponse logout() {
         authencationSevice.Logout();
         return ApiResponse.success("Logout successful");
     }
-
-    @GetMapping("/test")
-    public ApiResponse test() {
-        return ApiResponse.success("Test successful");
-    }
-
     @GetMapping("/login-google")
     public ApiResponse loginGoogle(OAuth2AuthenticationToken principal) throws JOSEException {
         log.info("Google login attempt for user: {}", principal.getName());
