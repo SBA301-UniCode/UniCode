@@ -19,12 +19,14 @@ public class Exam extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID examId;
+    private String name;
     private int duration;
+    private int numberQuestions;
     private double passScore;
     @OneToOne
     @JoinColumn(name = "content_id")
     private Content content;
-    @OneToMany(mappedBy = "exam")
+    @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuestionExam> questionExamList = new ArrayList<>();
     @OneToMany(mappedBy = "exam")
     private List<ExamAttempt> ExamAttemptList = new ArrayList<>();

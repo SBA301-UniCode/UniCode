@@ -51,6 +51,12 @@ public enum ErrorCode {
     //Enrollment(13)
     NOT_PAYMNET(13001,"You haven't bought this course yet ", HttpStatus.BAD_REQUEST),
     ENROLLMENT_NOT_FOUND(13002,"Enrollment not found ", HttpStatus.NOT_FOUND),
+    //Exam(14)
+    EXAM_NOT_FOUND(14001,"Exam not found",HttpStatus.NOT_FOUND),
+
+    //Question bank(15)
+    QUESTION_BANK_NOT_FOUND(15001,"Question bank not found",HttpStatus.NOT_FOUND),
+    INSUFFICIENT_QUESTIONS(15002,"Not enough questions in the question bank to create the exam",HttpStatus.BAD_REQUEST),
     ;
     int code;
     String message;
