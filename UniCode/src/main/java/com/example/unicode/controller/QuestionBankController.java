@@ -33,7 +33,6 @@ public class QuestionBankController {
         return ResponseEntity.ok(ApiResponse.success(questionBankSerivce.getAllQuestionsByLesson(lessonId, page, size)));
     }
 
-
     @GetMapping("/detail/{questionBankId}")
     @Operation(summary = "Get question by ID")
     public ResponseEntity<ApiResponse<QuestionBankResponse>> getQuestionById(@PathVariable UUID questionBankId) {
@@ -45,13 +44,11 @@ public class QuestionBankController {
     public ResponseEntity<ApiResponse<QuestionBankResponse>> updateQuestion(@PathVariable UUID questionBankId,@RequestBody QuestionBankRequest request) {
         return ResponseEntity.ok(ApiResponse.success(questionBankSerivce.updateQuestion(questionBankId, request)));
     }
-
     @DeleteMapping("/{questionBankId}")
     @Operation(summary = "Delete question by ID")
     public ResponseEntity<ApiResponse<Void>> deleteQuestion(@PathVariable UUID questionBankId) {
         questionBankSerivce.deleteQuestion(questionBankId);
         return ResponseEntity.ok(ApiResponse.success("Delete question successfully"));
     }
-
 
 }

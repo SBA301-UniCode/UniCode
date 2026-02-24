@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,9 +24,11 @@ public class ExamAttempt extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID examAttemptId;
+    @CreationTimestamp
     private LocalDateTime attemptStartTime;
     private LocalDateTime attemptEndTime;
     private double score;
+    private Boolean passed;
     @ManyToOne
     @JoinColumn(name = "learner_id")
     private Users learner;

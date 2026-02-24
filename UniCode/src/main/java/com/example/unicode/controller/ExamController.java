@@ -1,9 +1,9 @@
 package com.example.unicode.controller;
 
 import com.example.unicode.base.ApiResponse;
+import com.example.unicode.dto.request.ExamAttemptSubmitRequest;
 import com.example.unicode.dto.request.ExamRequest;
-import com.example.unicode.dto.response.ExamResponse;
-import com.example.unicode.dto.response.QuestionBankResponse;
+import com.example.unicode.dto.response.*;
 import com.example.unicode.service.ExamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -48,8 +48,28 @@ public class ExamController {
     public ResponseEntity<ApiResponse<ExamResponse>> getExamById(@PathVariable UUID examId){
         return ResponseEntity.ok(ApiResponse.success(examService.getExamById(examId)));
     }
+    @PostMapping("/{examId}/start")
+    @Operation(summary = "Start an exam")
+    public ResponseEntity<ApiResponse<ExamAttemptRespone>> startExam(@PathVariable UUID examId){
+        return ResponseEntity.ok(ApiResponse.success(examService.startExam(examId)));
+    }
 
+    @PostMapping("/submit")
+    @Operation(summary = "Submit an exam attempt")
+    public ResponseEntity<ApiResponse<ExamAttempResultsResponse>> submitExam(@RequestBody ExamAttemptSubmitRequest request){
+        return ResponseEntity.ok(ApiResponse.success(examService.submitExam(request)));
+    }
+    @GetMapping("/attempts/{examAttemptId}/history")
+    @Operation(summary = "Get answer history of an exam attempt")
+    public ResponseEntity<ApiResponse<List<AnswerHistoryResponse>>> getExamAttemptHistory(@PathVariable UUID examAttemptId){
+        return ResponseEntity.ok(ApiResponse.success(examService.getExamAttemptHistory(examAttemptId)));
+    }
 
+    @GetMapping("/attempts/{examAttemptId}/results")
+    @Operation(summary = "Get results of an exam attempt")
+    public ResponseEntity<ApiResponse<ExamAttempResultsResponse>> getExamAttemptResults(@PathVariable UUID examAttemptId){
+        return ResponseEntity.ok(ApiResponse.success(examService.getExamAttemptResults(examAttemptId)));
+    }
 
 
 }
