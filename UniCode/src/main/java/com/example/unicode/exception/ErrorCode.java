@@ -51,6 +51,9 @@ public enum ErrorCode {
     //Enrollment(13)
     NOT_PAYMNET(13001,"You haven't bought this course yet ", HttpStatus.BAD_REQUEST),
     ENROLLMENT_NOT_FOUND(13002,"Enrollment not found ", HttpStatus.NOT_FOUND),
+
+    VIDEO_NOT_FOUND(13003, "Video not found", HttpStatus.NOT_FOUND),
+
     //Exam(14)
     EXAM_NOT_FOUND(14001,"Exam not found",HttpStatus.NOT_FOUND),
     EXAM_INACTIVE(14002,"Exam is inactive",HttpStatus.BAD_REQUEST),

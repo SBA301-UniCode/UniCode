@@ -5,17 +5,19 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class VideoCreateRequest {
+public class DocumentCreateRequest {
 
-        @NotNull(message = "Content ID is required")
-        private UUID contentId;
+    @NotNull(message = "Document URl is required")
+    private String documentUrl;
+    @NotNull(message = "Document title is required")
+    private String title;
 
-        private int duration;
+    private UUID contentId;
 
 }
-
