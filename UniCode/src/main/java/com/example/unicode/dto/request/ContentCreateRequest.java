@@ -18,7 +18,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ContentCreateRequest {
 
-
     @NotNull(message = "ContentType is required")
     private ContentType contentType;
     @NotNull(message = "LessonId is required")
