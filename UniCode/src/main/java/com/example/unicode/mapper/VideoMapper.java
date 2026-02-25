@@ -10,7 +10,10 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface VideoMapper {
+    @Mapping(source = "videoUrl", target = "url")
     @Mapping(source = "content.contentId", target = "contentId")
     VideoResponse toResponse(Video video);
     List<VideoResponse> toResponseList(List<Video> videos);
+
+
 }

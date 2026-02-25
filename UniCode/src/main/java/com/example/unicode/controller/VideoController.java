@@ -40,6 +40,7 @@ public class VideoController {
 
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Create a new video with file upload")
     public ResponseEntity<ApiResponse<VideoResponse>> create(
             @RequestPart("request") @Valid VideoCreateRequest request,
             @RequestPart("file") MultipartFile file
@@ -51,13 +52,14 @@ public class VideoController {
         ));
     }
     @GetMapping
+    @Operation(summary = "Get all list videos")
     public  ResponseEntity<ApiResponse<List<VideoResponse>>> getAcctiveVideo(){
         List<VideoResponse> response = videoService.getAllActiveVideos();
         return ResponseEntity.ok(ApiResponse.success("Get list active video successfully", response));
     }
 
     @DeleteMapping("/{contentId}")
-    @Operation(summary = "Delete Vid")
+    @Operation(summary = "Delete Video by ID (soft delete)")
     public ResponseEntity<ApiResponse<Void>> deleteVideo(@PathVariable UUID contentId) throws IOException {
         videoService.delete(contentId);
         return ResponseEntity.ok(ApiResponse.<Void>builder()
@@ -66,6 +68,7 @@ public class VideoController {
     }
 
     @GetMapping("/{contentId}")
+    @Operation(summary = "Get detail video")
     public  ResponseEntity<ApiResponse<VideoResponse>> getVideoDetail(@PathVariable UUID contentId) throws AccessDeniedException {
         VideoResponse response = videoService.getVideoDetails(contentId);
         return ResponseEntity.ok(ApiResponse.success("Get video detail successfully", response));
