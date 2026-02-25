@@ -19,10 +19,15 @@ public class AnwserHistory extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID anwserHistoryId;
-    private String anwserText;
+
+    @ManyToOne
+    @JoinColumn(name = "selected_option_id")
+    private QuestionOption selectedOption; // Quan hệ tới option đã chọn
+
     @ManyToOne
     @JoinColumn(name = "question_exam_id")
     private QuestionExam questionExam;
+
     @ManyToOne
     @JoinColumn(name = "examAttempt_id")
     private ExamAttempt examAttempt;
