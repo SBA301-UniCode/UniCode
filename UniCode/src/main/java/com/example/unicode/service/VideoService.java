@@ -13,9 +13,14 @@ import java.util.List;
 import java.util.UUID;
 
 public interface VideoService {
-    VideoResponse create(VideoCreateRequest request, MultipartFile file) throws IOException;
+
+    @Transactional
+    VideoResponse create(VideoCreateRequest request);
+
     List<VideoResponse> getAllActiveVideos();
-    VideoResponse getVideoDetails(UUID contentId) throws AccessDeniedException;
+
+    VideoResponse getVideoDetail(UUID videoId);
+
     @Transactional
     void delete(UUID contentId) throws IOException;
 }
