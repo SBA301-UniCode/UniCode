@@ -2,24 +2,25 @@ package com.example.unicode.service.impl;
 
 import com.example.unicode.dto.request.VideoCreateRequest;
 import com.example.unicode.dto.response.VideoResponse;
-import com.example.unicode.entity.Course;
-import com.example.unicode.entity.Users;
+import com.example.unicode.entity.Content;
+import com.example.unicode.entity.Lesson;
 import com.example.unicode.entity.Video;
+import com.example.unicode.enums.ContentType;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 import com.example.unicode.mapper.VideoMapper;
 import com.example.unicode.repository.ContentRepo;
 import com.example.unicode.repository.EnrollmentRepository;
+import com.example.unicode.repository.LessonRepository;
 import com.example.unicode.repository.VideoRepository;
 import com.example.unicode.service.CloudinaryService;
+import com.example.unicode.service.ContentService;
 import com.example.unicode.service.VideoService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -29,32 +30,32 @@ import java.util.UUID;
 @Transactional
 public class VideoServiceImpl implements VideoService {
     private final VideoRepository videoRepository;
-    private final ContentRepo contentRepo;
+    private final LessonRepository lessonRepository;
     private final VideoMapper videoMapper;
     private final CloudinaryService cloudinaryService;
+    private final ContentRepo contentRepo;
     private final EnrollmentRepository enrollmentRepository;
 
 
-    @Override
     @Transactional
-    public VideoResponse create(VideoCreateRequest request, MultipartFile file) throws IOException {
-        var content = contentRepo.findById(request.getContentId())
-                .orElseThrow(() -> new AppException(ErrorCode.CONTENT_NOT_FOUND));
-        var uploadResult = cloudinaryService.uploadVideo(file);
-        String secureUrl = (String) uploadResult.get("secure_url");
-        String publicId = (String) uploadResult.get("public_id");
+    @Override
+    public VideoResponse create(VideoCreateRequest request) {
+        Lesson lesson = lessonRepository.findById(request.getLessonId())
+                .orElseThrow(() -> new RuntimeException("Lesson not found"));
 
-        Video video = Video.builder()
-                .videoUrl(secureUrl)
-                .publicId(publicId)
-                .duration(request.getDuration())
-                .content(content)
-                .build();
-        video.setDeleted(false);
-
-        video = videoRepository.save(video);
-        return videoMapper.toResponse(video);
+        Content content = new Content();
+        content.setLesson(lesson);
+        content.setContentType(ContentType.VIDEO);
+        content = contentRepo.save(content);
+        Video video = new Video();
+        video.setVideoUrl(request.getUrl());
+        video.setPublicId(request.getPublicId());
+        video.setDuration(request.getDuration());
+        video.setContent(content);
+        return videoMapper.toResponse(videoRepository.save(video));
     }
+
+
 
     @Override
     public List<VideoResponse> getAllActiveVideos() {
@@ -63,10 +64,18 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public VideoResponse getVideoDetails(UUID contentId) throws AccessDeniedException {
-        Video video = videoRepository.findByContent_ContentId(contentId)
-                .orElseThrow(() -> new AppException(ErrorCode.VIDEO_NOT_FOUND));
-        return videoMapper.toResponse(video);
+    public VideoResponse getVideoDetail(UUID videoId) {
+        Video video = videoRepository.findById(videoId)
+                .orElseThrow(() -> new RuntimeException("Video not found"));
+
+        String publicId = video.getPublicId();
+
+        String signedUrl = cloudinaryService.generateSignedUrl(publicId);
+
+        return VideoResponse.builder()
+                .url(signedUrl)
+                .duration(video.getDuration())
+                .build();
     }
 
 

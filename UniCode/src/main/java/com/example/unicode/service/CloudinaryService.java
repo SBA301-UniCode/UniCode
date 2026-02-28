@@ -9,4 +9,6 @@ public interface CloudinaryService {
     Map uploadVideo(MultipartFile file) throws IOException;
     String generateSignedUrl(String publicId);
     void deleteVideo(String publicId) throws IOException;
+
+    Map<String, Object> getUploadSignature();
 }
