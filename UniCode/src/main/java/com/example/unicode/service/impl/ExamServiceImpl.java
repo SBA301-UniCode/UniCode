@@ -5,6 +5,7 @@ import com.example.unicode.dto.request.ExamAttemptSubmitRequest.AnswerSubmitRequ
 import com.example.unicode.dto.request.ExamRequest;
 import com.example.unicode.dto.response.*;
 import com.example.unicode.entity.*;
+import com.example.unicode.enums.ContentType;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 
@@ -37,12 +38,18 @@ public class ExamServiceImpl implements ExamService {
     private final QuestionOptionRepository questionOptionRepository;
     private final AnswerHistoryRepository answerHistoryRepository;
     private final ExamAttemptMapper examAttemptMapper;
+    private final LessonRepository lessonRepository;
 
-    public ExamResponse createExam(UUID contentId, ExamRequest request) {
-        Content content = contentRepo.findByContentId(contentId);
-        if(content==null){
-            throw new AppException(ErrorCode.CONTENT_NOT_FOUND);
+    public ExamResponse createExam(UUID lessonId, ExamRequest request) {
+        Lesson lesson = lessonRepository.findByLessonId(lessonId);
+        if (lesson == null) {
+            throw new AppException(ErrorCode.LESSON_NOT_FOUND);
         }
+        Content content = new Content();
+        content.setLesson(lesson);
+        content.setContentType(ContentType.QUIZ);
+        content = contentRepo.save(content);
+
         Exam exam = examMapper.toEntity(request);
         exam.setContent(content);
         List<QuestionBank> questionBankList = questionBankRepository.findByLesson_LessonId(content.getLesson().getLessonId());

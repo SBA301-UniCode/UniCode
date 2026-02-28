@@ -21,10 +21,10 @@ import java.util.UUID;
 public class ExamController {
     private final ExamService examService;
 
-    @PostMapping("/{contentId}")
+    @PostMapping("/{lessonId}")
     @Operation(summary = "Create exam from lesson")
-    public ResponseEntity<ApiResponse<ExamResponse>> createExam(@PathVariable UUID contentId,@RequestBody ExamRequest request) {
-            return ResponseEntity.ok(ApiResponse.success(examService.createExam(contentId,request)));
+    public ResponseEntity<ApiResponse<ExamResponse>> createExam(@PathVariable UUID lessonId,@RequestBody ExamRequest request) {
+            return ResponseEntity.ok(ApiResponse.success(examService.createExam(lessonId,request)));
     }
     @PatchMapping("/{examId}")
     @Operation(summary = "Change duration and pass score of exam ")

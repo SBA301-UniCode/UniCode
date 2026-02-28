@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ExamService {
-    ExamResponse createExam(UUID contentId, ExamRequest request);
+    ExamResponse createExam(UUID lessonId, ExamRequest request);
     ExamResponse updateExam(UUID examId, ExamRequest request);
     void changeStatus(UUID examId);
     List<QuestionBankResponse> getQuestionsByExam(UUID examId);
