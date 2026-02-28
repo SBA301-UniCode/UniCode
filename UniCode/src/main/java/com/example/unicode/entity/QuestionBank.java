@@ -32,7 +32,7 @@ public class QuestionBank extends BaseEntity {
     private Lesson lesson;
     @OneToMany(mappedBy = "questionBank")
     private List<QuestionExam> questionExamList = new ArrayList<>();
-    @OneToMany(mappedBy = "questionBank")
+    @OneToMany(mappedBy = "questionBank" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuestionOption> questionOptionList = new ArrayList<>();
 
 

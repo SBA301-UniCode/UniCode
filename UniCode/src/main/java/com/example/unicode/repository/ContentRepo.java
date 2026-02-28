@@ -15,4 +15,6 @@ public interface ContentRepo extends JpaRepository<Content, UUID> {
     List<Content> findAllByLesson(Lesson lesson);
 
     Optional<Content>findByContentIdAndDeletedFalse(UUID contentId);
+
+    Content findByContentId(UUID contentId);
 }
