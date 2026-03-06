@@ -18,8 +18,7 @@ cloudinary:
    cloud_name: duswlfkbc
    api_key: 927358387459548
    api_secret: AJbJFhnLJE33i0qhLwWMCXhUc8E
-
-
+FRONT_END_URL: http://localhost:3000
 
 
 

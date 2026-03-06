@@ -13,10 +13,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +29,8 @@ import java.util.UUID;
 @Tag(name = "Subscriptions", description = "Subscriptions management APIs")
 public class SubcriptionController {
     private final SubcriptionService subcriptionService;
+    @Value("${FRONT_END_URL}")
+    private  String FRONT_END_URL;
 
     @PostMapping("/buy/{courserId}")
     @Operation(summary = "Buy course subscription")
@@ -36,8 +40,13 @@ public class SubcriptionController {
     // redirect FE
     @GetMapping("/momo/call-back")
     @Operation(summary = "Handle Momo payment callback")
-    public ResponseEntity<ApiResponse<SubcriptionResponse>> callback(HttpServletRequest request) {
-        return ResponseEntity.ok(ApiResponse.success(subcriptionService.updateStatus(request)));
+    public RedirectView callback(HttpServletRequest request) {
+
+      SubcriptionResponse response =   subcriptionService.updateStatus(request);
+        return new RedirectView("" + FRONT_END_URL + "/payment/success?courseId=" + response.getCourseraId()
+                + "&statusPayment=" + response.getStatusPayment()+"&message=" + response.getMessage()
+        +"&resultCode=" +request.getParameter("resultCode")
+        );
     }
     @PostMapping("/search")
     @Operation(    summary = "Get subscriptions with optional filters and pagination")
