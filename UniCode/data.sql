@@ -180,9 +180,9 @@ VALUES (gen_random_uuid(), '44444444-0000-0000-0000-000000000003', 'Slide bài g
         NOW(), false);
 
 -- 13. Bảng EXAM (Bài kiểm tra) - Link với ContentType 2
-INSERT INTO exam (exam_id, content_id, duration, pass_score, created_at, deleted)
-VALUES ('55555555-0000-0000-0000-000000000001', '44444444-0000-0000-0000-000000000004', 15, 8.0, NOW(), false),
-       ('55555555-0000-0000-0000-000000000002', '44444444-0000-0000-0000-000000000010', 30, 7.0, NOW(), false);
+INSERT INTO exam (exam_id, content_id, duration, pass_score, created_at, deleted,number_questions)
+VALUES ('55555555-0000-0000-0000-000000000001', '44444444-0000-0000-0000-000000000004', 15, 8.0, NOW(), false, 10),
+       ('55555555-0000-0000-0000-000000000002', '44444444-0000-0000-0000-000000000010', 30, 7.0, NOW(), false, 9);
 
 -- 14. Bảng QUESTION_BANK (Ngân hàng câu hỏi)
 INSERT INTO question_bank (question_bank_id, lesson_id, question_text, question_type, number_answers, created_at,

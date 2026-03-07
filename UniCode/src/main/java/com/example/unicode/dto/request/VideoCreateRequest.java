@@ -12,10 +12,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class VideoCreateRequest {
 
-        @NotNull(message = "Content ID is required")
-        private UUID contentId;
+        @NotNull(message = "LessonId ID is required")
+        private UUID lessonId;
 
         private int duration;
+
+        private String url;
+
+        private String publicId;
 
 }
 
