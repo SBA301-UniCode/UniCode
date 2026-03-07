@@ -36,8 +36,6 @@ import java.util.UUID;
 @Tag(name = "Video", description = "Video management APIs")
 public class VideoController {
     private final VideoServiceImpl videoService;
-    private final UserService userService;
-    private final UsersRepository usersRepository;
     private final CloudinaryService cloudinaryService;
 
 

@@ -21,6 +21,7 @@ public class Document extends BaseEntity {
     private UUID documentId;
     private String documentUrl;
     private String title;
+    private String publicId;
     @OneToOne
     @JoinColumn(name = "content_id")
     private Content content;

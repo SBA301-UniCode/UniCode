@@ -18,6 +18,9 @@ public class DocumentCreateRequest {
     @NotNull(message = "Document title is required")
     private String title;
 
-    private UUID contentId;
+    @NotNull(message = "LessonId ID is required")
+    private UUID lessonId;
+
+    private String publicId;
 
 }

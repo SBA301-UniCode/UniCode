@@ -13,9 +13,10 @@ public interface DocumentService {
 
      List<DocumentResponse> getAllDocumentByLessonId(UUID lesonId);
 
-     void delete(UUID lesonId);
 
-     DocumentResponse update(UUID documentId, DocumentUpdateRequest request);
+    void delete(UUID documentId);
+
+    DocumentResponse update(UUID documentId, DocumentUpdateRequest request);
 
 }
 
