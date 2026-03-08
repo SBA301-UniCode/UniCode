@@ -14,11 +14,12 @@ import com.example.unicode.repository.EnrollmentRepository;
 import com.example.unicode.repository.LessonRepository;
 import com.example.unicode.repository.VideoRepository;
 import com.example.unicode.service.CloudinaryService;
-import com.example.unicode.service.ContentService;
 import com.example.unicode.service.VideoService;
+import com.example.unicode.ultils.CloudiaryUltils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -32,29 +33,34 @@ public class VideoServiceImpl implements VideoService {
     private final VideoRepository videoRepository;
     private final LessonRepository lessonRepository;
     private final VideoMapper videoMapper;
+    private final CloudiaryUltils cloudiaryUltils;
     private final CloudinaryService cloudinaryService;
     private final ContentRepo contentRepo;
     private final EnrollmentRepository enrollmentRepository;
 
-
     @Transactional
     @Override
-    public VideoResponse create(VideoCreateRequest request) {
+    public VideoResponse create(VideoCreateRequest request,MultipartFile file) {
         Lesson lesson = lessonRepository.findById(request.getLessonId())
                 .orElseThrow(() -> new RuntimeException("Lesson not found"));
 
+        List<String> cloudiary = null;
+        try {
+            cloudiary = cloudiaryUltils.getUrlCloudiary(file,"video_coures");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Content content = new Content();
         content.setLesson(lesson);
         content.setContentType(ContentType.VIDEO);
         content = contentRepo.save(content);
         Video video = new Video();
-        video.setVideoUrl(request.getUrl());
-        video.setPublicId(request.getPublicId());
+        video.setVideoUrl(cloudiary.get(1));
+        video.setPublicId(cloudiary.get(0));
         video.setDuration(request.getDuration());
         video.setContent(content);
         return videoMapper.toResponse(videoRepository.save(video));
     }
-
 
 
     @Override

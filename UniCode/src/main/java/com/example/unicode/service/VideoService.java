@@ -15,7 +15,7 @@ import java.util.UUID;
 public interface VideoService {
 
     @Transactional
-    VideoResponse create(VideoCreateRequest request);
+    VideoResponse create(VideoCreateRequest request,MultipartFile file);
 
     List<VideoResponse> getAllActiveVideos();
 
