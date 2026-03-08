@@ -40,14 +40,15 @@ public class VideoController {
 
 
 
-    @PostMapping("/create")
+    @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Create video record after client-side upload")
     public ResponseEntity<ApiResponse<VideoResponse>> create(
-            @RequestBody @Valid VideoCreateRequest request
+            @RequestPart @Valid VideoCreateRequest request,
+            @RequestPart MultipartFile file
     ) {
         return ResponseEntity.ok(ApiResponse.success(
                 "Video record created successfully",
-                videoService.create(request)
+                videoService.create(request,file)
         ));
     }
     @GetMapping
