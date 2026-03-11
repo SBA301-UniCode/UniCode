@@ -5,25 +5,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f277c353-2cd4-4b01-8273-da8df743cfa8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/.env" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/controller/SubcriptionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/controller/SubcriptionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/ContentResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/ContentResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/mapper/ContentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/mapper/ContentMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/ChapterRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/ChapterRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/ContentRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/ContentRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/LessonRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/LessonRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/ProcessServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/ProcessServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/VideoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/VideoServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_D:/Semester 7/SBA/BE" value="39BfKkcjJIPw4AzkdrbGU8CeX4A" />
+    </persistenceIdMap>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "DavidDo24"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/SBA301-UniCode/UniCode.git",
+    "accountId": "9fee2f50-3872-43da-861a-c1e9ee02252e"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -49,8 +64,11 @@
     "git-widget-placeholder": "develop",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/sba/UniCode/exam",
+    "last_opened_file_path": "D:/Bonus/SBA",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -72,11 +90,12 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.138" />
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.29346.138" />
+        <option value="bundled-jdk-9823dce3aa75-84258761d1cc-intellij.indexing.shared.core-IU-243.28141.18" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.28141.18" />
       </set>
     </attachedChunks>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="f277c353-2cd4-4b01-8273-da8df743cfa8" name="Changes" comment="" />
@@ -85,6 +104,7 @@
       <option name="presentableId" value="Default" />
       <updated>1770174323120</updated>
       <workItem from="1770174324598" duration="37000" />
+      <workItem from="1773203072213" duration="9018000" />
     </task>
     <servers />
   </component>

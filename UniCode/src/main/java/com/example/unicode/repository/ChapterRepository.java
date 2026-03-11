@@ -1,6 +1,7 @@
 package com.example.unicode.repository;
 
 import com.example.unicode.entity.Chapter;
+import com.example.unicode.entity.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +24,6 @@ public interface ChapterRepository extends JpaRepository<Chapter, UUID> {
     List<Chapter> findByCourse_CourseIdAndDeletedFalseOrderByOrderIndexAsc(UUID courseId);
 
     boolean existsByTitleAndCourse_CourseIdAndDeletedFalse(String title, UUID courseId);
+
+    List<Chapter> findALlByCourseAndDeleted(Course course, Boolean deleted);
 }
