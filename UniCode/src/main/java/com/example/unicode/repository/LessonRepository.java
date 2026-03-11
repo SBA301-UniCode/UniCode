@@ -1,5 +1,6 @@
 package com.example.unicode.repository;
 
+import com.example.unicode.entity.Chapter;
 import com.example.unicode.entity.Lesson;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,4 +25,6 @@ public interface LessonRepository extends JpaRepository<Lesson, UUID> {
     List<Lesson> findByChapter_ChapterIdAndDeletedFalseOrderByOrderIndexAsc(UUID chapterId);
 
     boolean existsByTitleAndChapter_ChapterIdAndDeletedFalse(String title, UUID chapterId);
+
+    List<Lesson> findByChapterAndDeleted(Chapter chapter, Boolean deleted);
 }
