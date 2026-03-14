@@ -19,7 +19,7 @@ cloudinary:
    api_key: 927358387459548
    api_secret: AJbJFhnLJE33i0qhLwWMCXhUc8E
    signature: 956778e937d0899e1e385d154ebae28872504b62
-   url: https://api.cloudinary.com/v1_1/duswlfkbc/video/upload
+   url: https://api.cloudinary.com/v1_1/duswlfkbc/auto/upload
 FRONT_END_URL: http://localhost:3000
 
 
