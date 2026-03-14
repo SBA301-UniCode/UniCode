@@ -65,6 +65,9 @@ public enum ErrorCode {
     INSUFFICIENT_QUESTIONS(15002,"Not enough questions in the question bank to create the exam",HttpStatus.BAD_REQUEST),
     QUESTION_NOT_FOUND(15003,"Question not found",HttpStatus.NOT_FOUND),
     ANSWER_NOT_FOUND(15004,"Answer not found",HttpStatus.NOT_FOUND),
+
+    // CLODUIARY(16)
+    CAN_UPLOAD_MATERIAL(16001,"Can not upload material", HttpStatus.BAD_REQUEST),
     ;
     int code;
     String message;

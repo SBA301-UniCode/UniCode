@@ -4,6 +4,7 @@ import com.example.unicode.dto.request.CourseCreateRequest;
 import com.example.unicode.dto.request.CourseUpdateRequest;
 import com.example.unicode.dto.response.CourseResponse;
 import com.example.unicode.dto.response.PageResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +20,7 @@ public interface CourseService {
      * @param request course creation request
      * @return created course response
      */
-    CourseResponse create(CourseCreateRequest request);
+    CourseResponse create(CourseCreateRequest request, MultipartFile file);
 
     /**
      * Get course by ID

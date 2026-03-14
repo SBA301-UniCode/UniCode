@@ -12,15 +12,19 @@ import com.example.unicode.mapper.CourseMapper;
 import com.example.unicode.repository.CourseRepository;
 import com.example.unicode.repository.UsersRepository;
 import com.example.unicode.service.CourseService;
+import com.example.unicode.ultils.CloudiaryUltils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -31,14 +35,16 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final UsersRepository usersRepository;
     private final CourseMapper courseMapper;
+    private final CloudiaryUltils cloudiaryUltils;
 
     @Override
-    public CourseResponse create(CourseCreateRequest request) {
+    public CourseResponse create(CourseCreateRequest request, MultipartFile file) {
         // Validate instructor exists
         Users instructor = usersRepository.findByUserIdAndDeletedFalse(request.getInstructorId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -46,7 +52,19 @@ public class CourseServiceImpl implements CourseService {
         // Map request to entity
         Course course = courseMapper.toEntity(request);
         course.setInstructors(instructor);
+        if(file != null) {
+            try {
+                List<String> list = cloudiaryUltils.getUrlCloudiary(file,"image");
+                if(list.size() == 2){
+                    course.setImage(list.get(1));
+                    course.setPublicId(list.get(0));
+                }
+            }catch (Exception e)
+            {
+               throw  new AppException(ErrorCode.CAN_UPLOAD_MATERIAL);
+            }
 
+        }
         course = courseRepository.save(course);
         return courseMapper.toResponse(course);
     }

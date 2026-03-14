@@ -22,6 +22,8 @@ public class CourseResponse {
 
     private Double price;
 
+    private String image;
+
     private String instructorId;
 
     private String instructorName;
