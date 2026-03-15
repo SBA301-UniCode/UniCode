@@ -26,6 +26,17 @@ public class CloudinaryServiceImpl implements CloudinaryService {
                         "type", "upload"
                 ));
     }
+
+    @Override
+    public Map uploadDocument(MultipartFile file) throws IOException {
+        return cloudinary.uploader().upload(file.getBytes(),
+                ObjectUtils.asMap(
+                        "resource_type", "raw",
+                        "folder", "documents",
+                        "type", "upload",
+                        "access_mode", "public"
+                ));
+    }
     @Override
     public String generateSignedUrl(String publicId) {
         return cloudinary.url()
@@ -44,6 +55,16 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     @Override
     public void deleteVideo(String publicId) throws IOException {
         cloudinary.uploader().destroy(publicId, ObjectUtils.asMap("resource_type", "video"));
+    }
+
+    @Override
+    public String generateSignedDocumentUrl(String publicId, String resourceType) {
+        // Generate a signed URL that allows authenticated download of the resource
+        return cloudinary.url()
+                .resourceType(resourceType != null ? resourceType : "image")
+                .type("upload")
+                .signed(true)
+                .generate(publicId);
     }
 
     @Override
