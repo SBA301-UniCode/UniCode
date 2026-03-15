@@ -69,6 +69,9 @@ public enum ErrorCode {
 
     // CLODUIARY(16)
     CAN_UPLOAD_MATERIAL(16001,"Can not upload material", HttpStatus.BAD_REQUEST),
+
+    // DOCUMENT/WATERMARK ERRORS(17)
+    DOCUMENT_NOT_FOUND(17001, "Document not found", HttpStatus.NOT_FOUND),
     ;
     int code;
     String message;

@@ -29,17 +29,26 @@ public class DocumentServiceImpl implements DocumentService {
     private final ContentRepo contentRepository;
     private final DocumentMapper documentMapper;
     private final LessonRepository lessonRepository;
+    private final com.example.unicode.service.CloudinaryService cloudinaryService;
 
     @Override
-    public DocumentResponse create(DocumentCreateRequest request) {
+    public DocumentResponse create(DocumentCreateRequest request, org.springframework.web.multipart.MultipartFile file) throws java.io.IOException {
         Lesson lesson = lessonRepository.findById(request.getLessonId())
                 .orElseThrow(() -> new RuntimeException("Lesson not found"));
+                
+        // Upload file to Cloudinary
+        java.util.Map uploadResult = cloudinaryService.uploadDocument(file);
+        String documentUrl = uploadResult.get("secure_url").toString();
+        String publicId = uploadResult.get("public_id").toString();
+
         Content  content = new Content();
         content.setLesson(lesson);
         content.setContentType(ContentType.DOCUMENT);
         content = contentRepository.save(content);
+        
         Document document = new Document();
-        document.setDocumentUrl(request.getDocumentUrl());
+        document.setDocumentUrl(documentUrl);
+        document.setPublicId(publicId);
         document.setTitle(request.getTitle());
         document.setContent(content);
         return documentMapper.toResponse(documentRepository.save(document));

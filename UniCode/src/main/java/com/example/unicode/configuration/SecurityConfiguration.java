@@ -76,6 +76,8 @@ public class SecurityConfiguration {
         corsConfig.addAllowedOriginPattern("*");
         corsConfig.addAllowedHeader("*");
         corsConfig.addAllowedMethod("*");
+        corsConfig.addExposedHeader("Content-Disposition");
+        corsConfig.addExposedHeader("Content-Type");
         corsConfig.setAllowCredentials(true);
         CorsConfigurationSource c = request -> corsConfig;
         return c;
