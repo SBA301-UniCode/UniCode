@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, UUID>, JpaSpecificationExecutor<Enrollment> {
@@ -21,4 +22,6 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, UUID>, J
     Page<Enrollment> getByLearner(Users learner, Pageable pageable);
 
     Page<Enrollment> getByLearnerAndStatusCourse(Users learner, StatusCourse statusCourse, Pageable pageable);
+
+    List<Enrollment> findAllByLearner_UserIdAndCourse_CourseIdAndDeletedFalse(UUID learnerId, UUID courseId);
 }

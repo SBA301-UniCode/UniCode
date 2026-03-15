@@ -41,6 +41,8 @@ public class SecurityConfiguration {
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/courses/**").permitAll()
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/syllabuses").permitAll()
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/syllabuses/**").permitAll()
+                    // Public certificate verification
+                    .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/certificates/verify/**").permitAll()
                     .anyRequest().authenticated();
         });
 

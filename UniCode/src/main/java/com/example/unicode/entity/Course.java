@@ -34,8 +34,8 @@ public class Course extends BaseEntity {
     private Set<RateCondition> rateConditions = new HashSet<>();
     @OneToMany(mappedBy = "course")
     private Set<Feedback> feedbacks = new HashSet<>();
-    @OneToOne(mappedBy = "course")
-    private Certificate certificate;
+    @OneToMany(mappedBy = "course")
+    private List<Certificate> certificates = new ArrayList<>();
     @OneToMany(mappedBy = "course")
     private List<Subcription> subcriptionList = new ArrayList<>();
     @OneToMany(mappedBy = "course")

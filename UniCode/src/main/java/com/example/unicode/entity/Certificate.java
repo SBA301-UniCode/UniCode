@@ -20,11 +20,17 @@ public class Certificate extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID certificateId;
+
+    @Column(unique = true)
+    private String serialNumber;
+
     private LocalDateTime certificateDate;
+
     @ManyToOne
     @JoinColumn(name = "learner_id")
     private Users learner;
-    @OneToOne
-    @JoinColumn(name = "course_id",unique = false)
+
+    @ManyToOne
+    @JoinColumn(name = "course_id")
     private Course course;
 }

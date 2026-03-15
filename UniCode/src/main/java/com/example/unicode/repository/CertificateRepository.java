@@ -22,5 +22,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, UUID> 
     boolean existsByCertificateIdAndDeletedFalse(UUID certificateId);
 
     boolean existsByLearner_UserIdAndCourse_CourseIdAndDeletedFalse(UUID learnerId, UUID courseId);
+
+    Optional<Certificate> findBySerialNumberAndDeletedFalse(String serialNumber);
 }
 
