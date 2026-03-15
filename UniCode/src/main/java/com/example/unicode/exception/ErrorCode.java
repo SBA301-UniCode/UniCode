@@ -30,6 +30,7 @@ public enum ErrorCode {
     // CERTIFICATE ERRORS(6)
     CERTIFICATE_NOT_FOUND(6001, "Certificate not found", HttpStatus.NOT_FOUND),
     CERTIFICATE_ALREADY_EXISTS(6002, "Certificate already exists for this user and course", HttpStatus.BAD_REQUEST),
+    COURSE_NOT_COMPLETED(6003, "Course not completed yet. Progress must be 100%", HttpStatus.BAD_REQUEST),
 
     // COURSE ERRORS(7)
     COURSE_NOT_FOUND(7001, "Course not found", HttpStatus.NOT_FOUND),

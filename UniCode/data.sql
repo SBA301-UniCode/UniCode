@@ -242,25 +242,49 @@ VALUES (gen_random_uuid(), '55555555-0000-0000-0000-000000000001', '66666666-000
        (gen_random_uuid(), '55555555-0000-0000-0000-000000000002', '66666666-0000-0000-0000-000000000010', NOW(),
         false);
 -- 20. Bảng CERTIFICATE (Chứng chỉ)
-INSERT INTO certificate (certificate_id, course_id, learner_id, certificate_date, created_at, deleted)
-VALUES (gen_random_uuid(), '11111111-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000008', NOW(), NOW(),
-        false),
-       (gen_random_uuid(), '11111111-0000-0000-0000-000000000007', '00000000-0000-0000-0000-000000000007', NOW(), NOW(),
-        false),
-       (gen_random_uuid(), '11111111-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000008', NOW(), NOW(),
-        false),
-       (gen_random_uuid(), '11111111-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000005', NOW(), NOW(),
-        false),
-       (gen_random_uuid(), '11111111-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000004', NOW(), NOW(),
-        false),
-       (gen_random_uuid(), '11111111-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000006', NOW(), NOW(),
-        false),
-       (gen_random_uuid(), '11111111-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000004', NOW(), NOW(),
-        false),
-       (gen_random_uuid(), '11111111-0000-0000-0000-000000000008', '00000000-0000-0000-0000-000000000004', NOW(), NOW(),
-        false),
-       (gen_random_uuid(), '11111111-0000-0000-0000-000000000009', '00000000-0000-0000-0000-000000000007', NOW(), NOW(),
-        false);
+-- KHÔNG insert certificate trực tiếp vào DB!
+-- Certificate chỉ nên được tạo qua API (POST /api/v1/certificates) vì backend sẽ validate 100% progress.
+-- Nếu insert trực tiếp, certificate sẽ xuất hiện dù learner chưa hoàn thành khóa học.
+
+-- 21. Bảng ENROLLMENT (Ghi danh) - Dữ liệu test cho certificate flow
+-- StatusCourse enum ordinals: COMPLETED=0, IN_PROGRESS=1, NOT_STARTED=2
+INSERT INTO enrollment (enrollment_id, course_id, learner_id, enrollment_date, status_course, created_at, deleted)
+VALUES
+    -- student1 enrolled in Java Masterclass (COMPLETED)
+    ('AAAAAAAA-0000-0000-0000-000000000001', '11111111-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000004', NOW(), 0, NOW(), false),
+    -- student2 enrolled in Python Data Science (COMPLETED)
+    ('AAAAAAAA-0000-0000-0000-000000000002', '11111111-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000005', NOW(), 0, NOW(), false),
+    -- student1 enrolled in ReactJS Frontend (COMPLETED)
+    ('AAAAAAAA-0000-0000-0000-000000000003', '11111111-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000004', NOW(), 0, NOW(), false),
+    -- student3 enrolled in Business English (IN_PROGRESS)
+    ('AAAAAAAA-0000-0000-0000-000000000004', '11111111-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000006', NOW(), 1, NOW(), false),
+    -- student1 enrolled in Agile (IN_PROGRESS)
+    ('AAAAAAAA-0000-0000-0000-000000000005', '11111111-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000004', NOW(), 1, NOW(), false)
+ON CONFLICT (enrollment_id) DO NOTHING;
+
+-- 22. Process (Tiến trình) - Đánh dấu hoàn thành cho các enrollment COMPLETED
+-- StatusContent enum sử dụng EnumType.STRING nên giá trị là 'COMPLETED'
+-- Java Masterclass: student1 - tất cả chapter hoàn thành
+INSERT INTO process (process_id, enrollment_id, chapter_id, status_content, created_at, deleted)
+VALUES
+    (gen_random_uuid(), 'AAAAAAAA-0000-0000-0000-000000000001', '22222222-0000-0000-0000-000000000001', 'COMPLETED', NOW(), false),
+    (gen_random_uuid(), 'AAAAAAAA-0000-0000-0000-000000000001', '22222222-0000-0000-0000-000000000002', 'COMPLETED', NOW(), false),
+    (gen_random_uuid(), 'AAAAAAAA-0000-0000-0000-000000000001', '22222222-0000-0000-0000-000000000003', 'COMPLETED', NOW(), false)
+ON CONFLICT DO NOTHING;
+
+-- Python Data Science: student2 - tất cả chapter hoàn thành
+INSERT INTO process (process_id, enrollment_id, chapter_id, status_content, created_at, deleted)
+VALUES
+    (gen_random_uuid(), 'AAAAAAAA-0000-0000-0000-000000000002', '22222222-0000-0000-0000-000000000004', 'COMPLETED', NOW(), false),
+    (gen_random_uuid(), 'AAAAAAAA-0000-0000-0000-000000000002', '22222222-0000-0000-0000-000000000005', 'COMPLETED', NOW(), false)
+ON CONFLICT DO NOTHING;
+
+-- ReactJS Frontend: student1 - tất cả chapter hoàn thành
+INSERT INTO process (process_id, enrollment_id, chapter_id, status_content, created_at, deleted)
+VALUES
+    (gen_random_uuid(), 'AAAAAAAA-0000-0000-0000-000000000003', '22222222-0000-0000-0000-000000000006', 'COMPLETED', NOW(), false),
+    (gen_random_uuid(), 'AAAAAAAA-0000-0000-0000-000000000003', '22222222-0000-0000-0000-000000000007', 'COMPLETED', NOW(), false)
+ON CONFLICT DO NOTHING;
 
 -- 23. Bảng RATE_CONDITION (Điều kiện đánh giá)
 INSERT INTO rate_condition (rate_condition_id, course_id, rate, description, created_at, deleted)

@@ -16,6 +16,8 @@ public class CertificateResponse {
 
     private UUID certificateId;
 
+    private String serialNumber;
+
     private LocalDateTime certificateDate;
 
     private UUID learnerId;
@@ -28,6 +30,7 @@ public class CertificateResponse {
 
     private String courseTitle;
 
+    private String instructorName;
+
     private LocalDateTime createdAt;
 }
-

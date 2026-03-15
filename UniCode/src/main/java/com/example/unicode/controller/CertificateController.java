@@ -35,6 +35,21 @@ public class CertificateController {
                 .body(ApiResponse.success("Certificate created successfully", response));
     }
 
+    @GetMapping("/me")
+    @Operation(summary = "Get certificates of the currently logged-in learner")
+    public ResponseEntity<ApiResponse<List<CertificateResponse>>> getMyList() {
+        List<CertificateResponse> response = certificateService.getMyList();
+        return ResponseEntity.ok(ApiResponse.success("Certificates retrieved successfully", response));
+    }
+
+    @GetMapping("/verify/{serialNumber}")
+    @Operation(summary = "Verify a certificate by serial number (public)")
+    public ResponseEntity<ApiResponse<CertificateResponse>> verifyBySerialNumber(
+            @PathVariable String serialNumber) {
+        CertificateResponse response = certificateService.getBySerialNumber(serialNumber);
+        return ResponseEntity.ok(ApiResponse.success("Certificate verified successfully", response));
+    }
+
     @GetMapping("/{certificateId}")
     @Operation(summary = "Get certificate by ID")
     public ResponseEntity<ApiResponse<CertificateResponse>> getById(
@@ -69,4 +84,3 @@ public class CertificateController {
         return ResponseEntity.ok(ApiResponse.success("Certificate deleted successfully"));
     }
 }
-
