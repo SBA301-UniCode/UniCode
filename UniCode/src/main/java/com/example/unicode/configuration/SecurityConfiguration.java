@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableMethodSecurity
@@ -40,6 +41,8 @@ public class SecurityConfiguration {
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/courses/**").permitAll()
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/syllabuses").permitAll()
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/syllabuses/**").permitAll()
+                    // Public certificate verification
+                    .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/certificates/verify/**").permitAll()
                     .anyRequest().authenticated();
         });
 
@@ -73,6 +76,8 @@ public class SecurityConfiguration {
         corsConfig.addAllowedOriginPattern("*");
         corsConfig.addAllowedHeader("*");
         corsConfig.addAllowedMethod("*");
+        corsConfig.addExposedHeader("Content-Disposition");
+        corsConfig.addExposedHeader("Content-Type");
         corsConfig.setAllowCredentials(true);
         CorsConfigurationSource c = request -> corsConfig;
         return c;

@@ -30,6 +30,7 @@ public abstract class BaseEntity {
     @LastModifiedBy
     private String updatedBy;
 
+
     private Boolean deleted = false;
 
     private LocalDateTime deletedAt;

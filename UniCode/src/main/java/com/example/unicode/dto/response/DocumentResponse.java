@@ -23,7 +23,7 @@ public class DocumentResponse {
 
     private String title;
 
-    private Content content;
+    private UUID contentId;
 
     private LocalDateTime createdAt;
 

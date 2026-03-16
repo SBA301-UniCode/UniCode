@@ -16,10 +16,7 @@ public class VideoCreateRequest {
         private UUID lessonId;
 
         private int duration;
-
-        private String url;
-
+        private String videoUrl;
         private String publicId;
-
 }
 

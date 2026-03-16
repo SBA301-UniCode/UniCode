@@ -36,20 +36,18 @@ import java.util.UUID;
 @Tag(name = "Video", description = "Video management APIs")
 public class VideoController {
     private final VideoServiceImpl videoService;
-    private final UserService userService;
-    private final UsersRepository usersRepository;
     private final CloudinaryService cloudinaryService;
 
 
 
     @PostMapping("/create")
-    @Operation(summary = "Create video record after client-side upload")
+    @Operation(summary = "Create video record after direct upload or simple upload")
     public ResponseEntity<ApiResponse<VideoResponse>> create(
             @RequestBody @Valid VideoCreateRequest request
     ) {
         return ResponseEntity.ok(ApiResponse.success(
                 "Video record created successfully",
-                videoService.create(request)
+                videoService.create(request, null) // Truyền null cho file vì đã up thẳng
         ));
     }
     @GetMapping
@@ -83,6 +81,34 @@ public class VideoController {
                 "Signature generated successfully",
                 cloudinaryService.getUploadSignature()
         ));
+    }
+
+    @PostMapping(value = "/upload-chunk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Upload video chunk by chunk (safe & resumable)")
+    public ResponseEntity<ApiResponse<VideoResponse>> uploadChunk(
+            @RequestParam UUID lessonId,
+            @RequestPart MultipartFile file,
+            @RequestParam String uploadId,
+            @RequestParam long startByte,
+            @RequestParam long totalSize
+    ) throws IOException {
+        VideoResponse response = videoService.uploadChunk(lessonId, file, uploadId, startByte, totalSize);
+        String message = (response != null) ? "Video upload hoàn tất" : "Mảnh video đã tải lên thành công";
+        return ResponseEntity.ok(ApiResponse.success(message, response));
+    }
+
+    @PostMapping(value = "/upload-local-chunk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Upload video chunk in parallel to local server and background process")
+    public ResponseEntity<ApiResponse<VideoResponse>> uploadLocalChunk(
+            @RequestParam UUID lessonId,
+            @RequestPart MultipartFile file,
+            @RequestParam String uploadId,
+            @RequestParam int chunkIndex,
+            @RequestParam int totalChunks
+    ) throws IOException {
+        VideoResponse response = videoService.uploadLocalChunk(lessonId, file, uploadId, chunkIndex, totalChunks);
+        String message = (response != null) ? "Video tải lên thành công. Đang xử lý ngầm!" : "Mảnh video tải lên thành công";
+        return ResponseEntity.ok(ApiResponse.success(message, response));
     }
 
 

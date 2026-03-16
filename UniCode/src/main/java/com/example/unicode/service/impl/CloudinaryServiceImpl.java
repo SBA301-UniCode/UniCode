@@ -18,12 +18,37 @@ import java.util.Map;
 public class CloudinaryServiceImpl implements CloudinaryService {
     private final Cloudinary cloudinary;
     @Override
-    public Map uploadVideo(MultipartFile file) throws IOException {
-        return cloudinary.uploader().upload(file.getBytes(),
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> uploadVideo(MultipartFile file) throws IOException {
+        return cloudinary.uploader().uploadLarge(file.getInputStream(),
                 ObjectUtils.asMap(
                         "resource_type", "video",
                         "folder", "video_courses",
-                        "type", "upload"
+                        "type", "upload",
+                        "chunk_size", 10 * 1024 * 1024 // 10MB mỗi chunk
+                ));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<String, Object> uploadVideoFile(java.io.File file) throws IOException {
+        return cloudinary.uploader().uploadLarge(file,
+                ObjectUtils.asMap(
+                        "resource_type", "video",
+                        "folder", "video_courses",
+                        "type", "upload",
+                        "chunk_size", 10 * 1024 * 1024 // 10MB mỗi chunk
+                ));
+    }
+
+    @Override
+    public Map uploadDocument(MultipartFile file) throws IOException {
+        return cloudinary.uploader().upload(file.getBytes(),
+                ObjectUtils.asMap(
+                        "resource_type", "raw",
+                        "folder", "documents",
+                        "type", "upload",
+                        "access_mode", "public"
                 ));
     }
     @Override
@@ -44,6 +69,16 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     @Override
     public void deleteVideo(String publicId) throws IOException {
         cloudinary.uploader().destroy(publicId, ObjectUtils.asMap("resource_type", "video"));
+    }
+
+    @Override
+    public String generateSignedDocumentUrl(String publicId, String resourceType) {
+        // Generate a signed URL that allows authenticated download of the resource
+        return cloudinary.url()
+                .resourceType(resourceType != null ? resourceType : "image")
+                .type("upload")
+                .signed(true)
+                .generate(publicId);
     }
 
     @Override
@@ -68,7 +103,18 @@ public class CloudinaryServiceImpl implements CloudinaryService {
         response.put("cloud_name", cloudinary.config.cloudName);
         return response;
     }
+    @Override
+    public Map<String, Object> uploadChunk(byte[] chunkData, String uploadId, long startByte, long totalSize) throws java.io.IOException {
+        long endByte = startByte + chunkData.length - 1;
+        String contentRange = "bytes " + startByte + "-" + endByte + "/" + totalSize;
 
-
+        return cloudinary.uploader().upload(chunkData, ObjectUtils.asMap(
+                "resource_type", "video",
+                "folder", "video_courses",
+                "type", "upload",
+                "header", ObjectUtils.asMap("X-Unique-Upload-Id", uploadId),
+                "content_range", contentRange
+        ));
+    }
 
 }

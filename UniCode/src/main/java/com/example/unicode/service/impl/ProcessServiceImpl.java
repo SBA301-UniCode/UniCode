@@ -89,7 +89,7 @@ public class ProcessServiceImpl implements ProcessService {
         Lesson lesson = lessonRepository.findById(request.getId()).orElseThrow(
                 () -> new AppException(ErrorCode.LESSON_NOT_FOUND)
         );
-        List<Content> contents = lesson.getContentList();
+        List<Content> contents = contentRepo.findAllByLessonAndDeleted(lesson,false);
         List<TrackingResponse.ProcessResponse> processRespons = new ArrayList<>();
         long success = 0 ;
         if (contents != null && !contents.isEmpty()) {
@@ -117,7 +117,7 @@ public class ProcessServiceImpl implements ProcessService {
         Chapter chapter = chapterRepository.findById(request.getId()).orElseThrow(
                 ()-> new AppException(ErrorCode.CHAPTER_NOT_FOUND)
         );
-        List<Lesson> lessonList = chapter.getLessonList();
+        List<Lesson> lessonList = lessonRepository.findByChapterAndDeleted(chapter,false);
         List<TrackingResponse.ProcessResponse> processRespons = new ArrayList<>();
         long success = 0 ;
         if (lessonList != null && !lessonList.isEmpty()) {
@@ -144,7 +144,7 @@ public class ProcessServiceImpl implements ProcessService {
         Course course = courseRepository.findById(request.getId()).orElseThrow(
                 ()-> new AppException(ErrorCode.COURSE_NOT_FOUND)
         );
-        List<Chapter> chapters = course.getChapterList();
+        List<Chapter> chapters = chapterRepository.findALlByCourseAndDeleted(course,false);
         List<TrackingResponse.ProcessResponse> processRespons = new ArrayList<>();
         long success = 0 ;
         if (chapters != null && !chapters.isEmpty()) {

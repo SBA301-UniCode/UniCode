@@ -17,6 +17,9 @@ public interface CertificateService {
 
     List<CertificateResponse> getByLearnerId(UUID learnerId);
 
+    List<CertificateResponse> getMyList();
+
+    CertificateResponse getBySerialNumber(String serialNumber);
+
     void delete(UUID certificateId);
 }
-

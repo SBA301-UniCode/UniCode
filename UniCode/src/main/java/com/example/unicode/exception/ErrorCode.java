@@ -30,6 +30,7 @@ public enum ErrorCode {
     // CERTIFICATE ERRORS(6)
     CERTIFICATE_NOT_FOUND(6001, "Certificate not found", HttpStatus.NOT_FOUND),
     CERTIFICATE_ALREADY_EXISTS(6002, "Certificate already exists for this user and course", HttpStatus.BAD_REQUEST),
+    COURSE_NOT_COMPLETED(6003, "Course not completed yet. Progress must be 100%", HttpStatus.BAD_REQUEST),
 
     // COURSE ERRORS(7)
     COURSE_NOT_FOUND(7001, "Course not found", HttpStatus.NOT_FOUND),
@@ -65,6 +66,12 @@ public enum ErrorCode {
     INSUFFICIENT_QUESTIONS(15002,"Not enough questions in the question bank to create the exam",HttpStatus.BAD_REQUEST),
     QUESTION_NOT_FOUND(15003,"Question not found",HttpStatus.NOT_FOUND),
     ANSWER_NOT_FOUND(15004,"Answer not found",HttpStatus.NOT_FOUND),
+
+    // CLODUIARY(16)
+    CAN_UPLOAD_MATERIAL(16001,"Can not upload material", HttpStatus.BAD_REQUEST),
+
+    // DOCUMENT/WATERMARK ERRORS(17)
+    DOCUMENT_NOT_FOUND(17001, "Document not found", HttpStatus.NOT_FOUND),
     ;
     int code;
     String message;

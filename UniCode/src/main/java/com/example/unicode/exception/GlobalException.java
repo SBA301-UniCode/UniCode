@@ -20,8 +20,13 @@ public class GlobalException {
     }
 
     @ExceptionHandler(JwtException.class)
-    public ResponseEntity<ApiResponse> handleAppException(JwtException ex) {
-
+    public ResponseEntity<ApiResponse> handleJwtException(JwtException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(ex.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse> handleGenericException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error("Internal Server Error: " + ex.getMessage()));
     }
 }

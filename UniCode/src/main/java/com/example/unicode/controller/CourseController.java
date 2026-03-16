@@ -15,8 +15,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -35,11 +37,12 @@ public class CourseController {
 
     private final CourseService courseService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Create a new course")
     public ResponseEntity<ApiResponse<CourseResponse>> create(
-            @Valid @RequestBody CourseCreateRequest request) {
-        CourseResponse response = courseService.create(request);
+            @Valid @RequestPart CourseCreateRequest request,
+            @RequestPart MultipartFile file) {
+        CourseResponse response = courseService.create(request,file);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Course created successfully", response));
