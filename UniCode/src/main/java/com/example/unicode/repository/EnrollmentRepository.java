@@ -24,4 +24,6 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, UUID>, J
     Page<Enrollment> getByLearnerAndStatusCourse(Users learner, StatusCourse statusCourse, Pageable pageable);
 
     List<Enrollment> findAllByLearner_UserIdAndCourse_CourseIdAndDeletedFalse(UUID learnerId, UUID courseId);
+
+    boolean existsByCourseAndLearnerAndStatusCourse(Course course, Users learner, StatusCourse statusCourse);
 }
