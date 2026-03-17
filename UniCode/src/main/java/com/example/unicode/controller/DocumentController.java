@@ -23,14 +23,15 @@ public class DocumentController {
 
     private final DocumentService documentService;
 
-    @PostMapping("/create")
+    @PostMapping(value = "/create", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Create a new document")
     public ResponseEntity<ApiResponse<DocumentResponse>> create(
-            @RequestBody @Valid DocumentCreateRequest request
-    ) {
+            @RequestPart @Valid DocumentCreateRequest request,
+            @RequestPart org.springframework.web.multipart.MultipartFile file
+    ) throws java.io.IOException {
         return ResponseEntity.ok(ApiResponse.success(
                 "Document created successfully",
-                documentService.create(request)
+                documentService.create(request, file)
         ));
     }
 

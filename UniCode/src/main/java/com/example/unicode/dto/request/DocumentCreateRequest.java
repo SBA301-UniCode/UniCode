@@ -13,7 +13,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class DocumentCreateRequest {
 
-    @NotNull(message = "Document URl is required")
     private String documentUrl;
     @NotNull(message = "Document title is required")
     private String title;
