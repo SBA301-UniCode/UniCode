@@ -145,6 +145,16 @@ public class UserServiceImpl implements UserService {
         return userMapper.toResponse(user);
     }
 
+    @Override
+    public Users getUsers() {
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            Users users = usersRepository.findByEmail(email);
+            if (users == null) {
+                throw new AppException(ErrorCode.USER_NOT_FOUND);
+            }
+            return users;
+    }
+
     private String getCurrentUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
