@@ -40,14 +40,15 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     @Override
     public String generateSignedUrl(String publicId) {
         return cloudinary.url()
+                .secure(true)
                 .resourceType("video")
                 .type("upload")
                 .transformation(new Transformation()
-                        .overlay(new Layer().publicId("logo_folder/my_logo")) // Public ID của file Logo đã up
-                        .gravity("north_east") // Đặt ở góc trên bên phải
-                        .x(20).y(20)           // Cách lề 20px
-                        .width(150)            // Độ rộng của logo
-                        .opacity(50)           // Làm mờ 50% để không che nội dung bài giảng
+                        .overlay(new Layer().publicId("logo_folder/my_logo"))
+                        .gravity("north_east")
+                        .x(20).y(20)
+                        .width(150)
+                        .opacity(50)
                 )
                 .generate(publicId);
     }

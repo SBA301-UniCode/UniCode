@@ -15,6 +15,7 @@ import java.util.UUID;
 public class VideoResponse {
     private UUID videoId;
     private String url;
+    private String streamUrl;
     private int duration;
     private UUID contentId;
     private String publicId;

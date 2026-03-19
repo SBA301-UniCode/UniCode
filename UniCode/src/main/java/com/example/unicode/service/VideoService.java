@@ -21,6 +21,8 @@ public interface VideoService {
 
     VideoResponse getVideoDetail(UUID videoId);
 
+    String getInternalVideoUrl(UUID videoId);
+
     @Transactional
     void delete(UUID contentId) throws IOException;
 }
