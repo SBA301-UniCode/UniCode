@@ -18,6 +18,7 @@ import com.example.unicode.service.VideoService;
 import com.example.unicode.ultils.CloudiaryUltils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +30,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class VideoServiceImpl implements VideoService {
     private final VideoRepository videoRepository;
     private final LessonRepository lessonRepository;
@@ -79,7 +81,9 @@ public class VideoServiceImpl implements VideoService {
         String signedUrl = cloudinaryService.generateSignedUrl(publicId);
 
         return VideoResponse.builder()
+                .videoId(video.getVideoId())
                 .url(signedUrl)
+                .streamUrl("/api/v1/videos/" + videoId + "/stream")
                 .duration(video.getDuration())
                 .build();
     }
@@ -101,9 +105,33 @@ public class VideoServiceImpl implements VideoService {
         videoRepository.save(video);
     }
 
+    @Override
+    public String getInternalVideoUrl(UUID videoId) {
+        Video video = videoRepository.findById(videoId)
+                .orElseThrow(() -> new AppException(ErrorCode.VIDEO_NOT_FOUND));
 
+        String url = null;
 
-
-
+        // Try signed URL first, fallback to stored videoUrl
+        if (video.getPublicId() != null && !video.getPublicId().isEmpty()) {
+            String signedUrl = cloudinaryService.generateSignedUrl(video.getPublicId());
+            if (signedUrl != null && !signedUrl.isEmpty()) {
+                url = signedUrl;
+            }
+        }
+        // Fallback: use the raw URL stored in DB
+        if (url == null && video.getVideoUrl() != null && !video.getVideoUrl().isEmpty()) {
+            url = video.getVideoUrl();
+        }
+        if (url == null) {
+            throw new AppException(ErrorCode.VIDEO_NOT_FOUND);
+        }
+        // Ensure URL has protocol prefix
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            url = "https://" + url;
+        }
+        log.info("Stream URL for video {}: {}", videoId, url);
+        return url;
+    }
 
 }
