@@ -76,13 +76,8 @@ public class VideoServiceImpl implements VideoService {
         Video video = videoRepository.findById(videoId)
                 .orElseThrow(() -> new RuntimeException("Video not found"));
 
-        String publicId = video.getPublicId();
-
-        String signedUrl = cloudinaryService.generateSignedUrl(publicId);
-
         return VideoResponse.builder()
                 .videoId(video.getVideoId())
-                .url(signedUrl)
                 .streamUrl("/api/v1/videos/" + videoId + "/stream")
                 .duration(video.getDuration())
                 .build();
