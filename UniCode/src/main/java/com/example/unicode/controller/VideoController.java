@@ -12,6 +12,7 @@ import com.example.unicode.repository.UsersRepository;
 import com.example.unicode.service.CloudinaryService;
 import com.example.unicode.service.UserService;
 import com.example.unicode.service.impl.VideoServiceImpl;
+import com.example.unicode.ultils.S3Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -43,21 +44,31 @@ import java.util.UUID;
 @Tag(name = "Video", description = "Video management APIs")
 public class VideoController {
     private final VideoServiceImpl videoService;
-    private final CloudinaryService cloudinaryService;
+    private final S3Service s3Service;
+    private  final  CloudinaryService cloudinaryService;
 
-
-
-    @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/create")
     @Operation(summary = "Create video record after client-side upload")
     public ResponseEntity<ApiResponse<VideoResponse>> create(
-            @RequestPart @Valid VideoCreateRequest request,
-            @RequestPart MultipartFile file
+            @RequestPart @Valid VideoCreateRequest request
     ) {
         return ResponseEntity.ok(ApiResponse.success(
                 "Video record created successfully",
-                videoService.create(request,file)
+                videoService.create(request)
         ));
     }
+
+    // @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    //    @Operation(summary = "Create video record after client-side upload")
+    //    public ResponseEntity<ApiResponse<VideoResponse>> create(
+    //            @RequestPart @Valid VideoCreateRequest request,
+    //            @RequestPart MultipartFile file
+    //    ) {
+    //        return ResponseEntity.ok(ApiResponse.success(
+    //                "Video record created successfully",
+    //                videoService.create(request,file)
+    //        ));
+    //    }
     @GetMapping
     @Operation(summary = "Get all list videos")
     public  ResponseEntity<ApiResponse<List<VideoResponse>>> getAcctiveVideo(){
@@ -90,65 +101,79 @@ public class VideoController {
                 cloudinaryService.getUploadSignature()
         ));
     }
+    @PostMapping("/generate-upload-url")
+    public ResponseEntity<?> generateUploadUrl(@RequestBody Map<String, String> request) {
 
-    @GetMapping("/{videoId}/stream")
-    @Operation(summary = "Stream video through backend proxy (Cloudinary URL is hidden from client)")
-    public ResponseEntity<StreamingResponseBody> streamVideo(
-            @PathVariable UUID videoId,
-            @RequestHeader(value = "Range", required = false) String rangeHeader
-    ) {
-        String internalUrl = videoService.getInternalVideoUrl(videoId);
+        String fileName = request.get("fileName");
+        String contentType = request.get("contentType");
+        String size = request.get("size");
 
-        try {
-            URL url = new URL(internalUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-
-            if (rangeHeader != null) {
-                connection.setRequestProperty("Range", rangeHeader);
-            }
-
-            int responseCode = connection.getResponseCode();
-            long contentLength = connection.getContentLengthLong();
-            String contentType = connection.getContentType();
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Content-Type", contentType != null ? contentType : "video/mp4");
-            headers.set("Accept-Ranges", "bytes");
-
-            if (contentLength >= 0) {
-                headers.set("Content-Length", String.valueOf(contentLength));
-            }
-
-            String cloudContentRange = connection.getHeaderField("Content-Range");
-            if (cloudContentRange != null) {
-                headers.set("Content-Range", cloudContentRange);
-            }
-
-            HttpStatus status = (responseCode == 206) ? HttpStatus.PARTIAL_CONTENT : HttpStatus.OK;
-
-            StreamingResponseBody stream = outputStream -> {
-                try (InputStream inputStream = connection.getInputStream()) {
-                    byte[] buffer = new byte[8192];
-                    int bytesRead;
-                    while ((bytesRead = inputStream.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                        outputStream.flush();
-                    }
-                } catch (IOException e) {
-                    log.debug("Client disconnected during video stream: {}", e.getMessage());
-                } finally {
-                    connection.disconnect();
-                }
-            };
-
-            return ResponseEntity.status(status)
-                    .headers(headers)
-                    .body(stream);
-
-        } catch (IOException e) {
-            log.error("Failed to stream video {}: {}", videoId, e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok(s3Service.generateUploadUrl(fileName, contentType,Long.valueOf(size)));
     }
+    @GetMapping("/video-url/{videoId}")
+    public ResponseEntity<?> getVideo(@PathVariable UUID videoId) {
+
+        return ResponseEntity.ok(videoService.getUrlToShow(videoId));
+    }
+
+// @GetMapping("/{videoId}/stream")
+//    @Operation(summary = "Stream video through backend proxy (Cloudinary URL is hidden from client)")
+//    public ResponseEntity<StreamingResponseBody> streamVideo(
+//            @PathVariable UUID videoId,
+//            @RequestHeader(value = "Range", required = false) String rangeHeader
+//    ) {
+//        String internalUrl = videoService.getInternalVideoUrl(videoId);
+//
+//        try {
+//            URL url = new URL(internalUrl);
+//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//            connection.setRequestMethod("GET");
+//
+//            if (rangeHeader != null) {
+//                connection.setRequestProperty("Range", rangeHeader);
+//            }
+//
+//            int responseCode = connection.getResponseCode();
+//            long contentLength = connection.getContentLengthLong();
+//            String contentType = connection.getContentType();
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.set("Content-Type", contentType != null ? contentType : "video/mp4");
+//            headers.set("Accept-Ranges", "bytes");
+//
+//            if (contentLength >= 0) {
+//                headers.set("Content-Length", String.valueOf(contentLength));
+//            }
+//
+//            String cloudContentRange = connection.getHeaderField("Content-Range");
+//            if (cloudContentRange != null) {
+//                headers.set("Content-Range", cloudContentRange);
+//            }
+//
+//            HttpStatus status = (responseCode == 206) ? HttpStatus.PARTIAL_CONTENT : HttpStatus.OK;
+//
+//            StreamingResponseBody stream = outputStream -> {
+//                try (InputStream inputStream = connection.getInputStream()) {
+//                    byte[] buffer = new byte[8192];
+//                    int bytesRead;
+//                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+//                        outputStream.write(buffer, 0, bytesRead);
+//                        outputStream.flush();
+//                    }
+//                } catch (IOException e) {
+//                    log.debug("Client disconnected during video stream: {}", e.getMessage());
+//                } finally {
+//                    connection.disconnect();
+//                }
+//            };
+//
+//            return ResponseEntity.status(status)
+//                    .headers(headers)
+//                    .body(stream);
+//
+//        } catch (IOException e) {
+//            log.error("Failed to stream video {}: {}", videoId, e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
 }

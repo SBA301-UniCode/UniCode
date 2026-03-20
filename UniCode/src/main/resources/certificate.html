@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Bắt HtmlConverter xuất PDF full page, không viền trắng */
+        @page {
+            size: 1000px 650px;  /* đổi 650px nếu muốn cao hơn/thấp hơn */
+            margin: 0;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 1000px;
+            height: 650px;
+        }
+        body {
+            width: 1000px;
+            height: 650px;
+            text-align: center;
+            font-family: 'Times New Roman', serif;
+            background: linear-gradient(#fdf6e3, #f5e6c8);
+            border: 12px solid #c9a646;
+            position: relative;
+            box-sizing: border-box;
+            padding: 40px;
+            overflow: hidden; /* tránh bị tràn gây thêm trang */
+        }
+        .border-inner {
+            border: 2px solid #c9a646;
+            padding: 40px;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        .border-inner {
+            border: 2px solid #c9a646;
+            padding: 40px;
+            height: 100%;          /* cho khung trong cao hết trang */
+            box-sizing: border-box;
+        }
+
+        .title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #c9a646;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-size: 22px;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .text {
+            font-size: 18px;
+        }
+
+        .name {
+            font-size: 40px;
+            font-family: 'Brush Script MT', cursive;
+            margin: 20px 0;
+        }
+
+        .course {
+            font-size: 26px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 80px;
+            padding: 0 40px;
+        }
+
+        .line {
+            border-top: 1px solid black;
+            width: 200px;
+            margin: auto;
+        }
+
+        .gold-seal {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, gold, #b8860b);
+            border-radius: 50%;
+        }
+        .instructor{
+            font-family: "Rage Italic";
+        }
+    </style>
+</head>
+
+<body>
+<div class="border-inner">
+
+    <div class="title">CERTIFICATE</div>
+    <div class="subtitle">of Achievement</div>
+
+    <p class="text">This Certificate is proudly presented to</p>
+
+    <!-- 👇 NAME -->
+    <div class="name">${name}</div>
+
+    <p class="text">has successfully completed the course</p>
+
+    <!-- 👇 COURSE -->
+    <div class="course">${course}</div>
+
+    <div class="gold-seal"></div>
+
+    <div class="footer">
+        <div>
+            <div class="line"></div>
+            <p>Date: ${date}</p>
+        </div>
+
+        <div class="instructor">
+            <div class="line"></div>
+            <p>${instructor}</p>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

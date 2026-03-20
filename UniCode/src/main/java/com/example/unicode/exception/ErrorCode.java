@@ -54,6 +54,8 @@ public enum ErrorCode {
     ENROLLMENT_NOT_FOUND(13002,"Enrollment not found ", HttpStatus.NOT_FOUND),
 
     VIDEO_NOT_FOUND(13003, "Video not found", HttpStatus.NOT_FOUND),
+    NOT_HAVE_PERMISION_TO_VIEW(13004,"You do not has permision to view this video ",HttpStatus.BAD_REQUEST),
+
 
     //Exam(14)
     EXAM_NOT_FOUND(14001,"Exam not found",HttpStatus.NOT_FOUND),

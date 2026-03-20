@@ -18,6 +18,7 @@ import com.example.unicode.repository.EnrollmentRepository;
 import com.example.unicode.repository.UsersRepository;
 import com.example.unicode.service.CertificateService;
 import com.example.unicode.service.ProcessService;
+import com.example.unicode.ultils.ExportCertificateUltils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +43,7 @@ public class CertificateServiceImpl implements CertificateService {
     private final EnrollmentRepository enrollmentRepository;
     private final CertificateMapper certificateMapper;
     private final ProcessService processService;
+    private final ExportCertificateUltils exportCertificateUltils;
 
     @Override
     public CertificateResponse create(CertificateCreateRequest request) {
@@ -98,7 +100,9 @@ public class CertificateServiceImpl implements CertificateService {
         certificate.setCourse(course);
         certificate.setCertificateDate(LocalDateTime.now());
         certificate.setSerialNumber(serialNumber);
-
+        // create certificate for user
+        certificate.setKeyUrl(exportCertificateUltils.generateCertificate(learner.getName(),course));
+        //
         certificate = certificateRepository.save(certificate);
         return certificateMapper.toResponse(certificate);
     }

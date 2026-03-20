@@ -5,8 +5,10 @@ aws:
 spring:
   servlet:
     multipart:
-      max-file-size: 10GB
-      max-request-size: 10GB
+      max-file-size: 2GB
+      max-request-size: 2GB
+ffmpeg:
+    path: ${FFMPEG_PATH}
 momo:
   partner-code: MOMO
   access-key: F8BBA842ECF85
@@ -15,12 +17,13 @@ momo:
   return-url: http://localhost:8080/api/v1/subscriptions/momo/call-back
   request-type: payWithMethod
 cloudinary:
-   cloud_name: duswlfkbc
-   api_key: 927358387459548
-   api_secret: AJbJFhnLJE33i0qhLwWMCXhUc8E
-   signature: 956778e937d0899e1e385d154ebae28872504b62
-   url: https://api.cloudinary.com/v1_1/duswlfkbc/auto/upload
-FRONT_END_URL: http://localhost:3000
+  cloud_name: duswlfkbc
+  api_key: 927358387459548
+  api_secret: AJbJFhnLJE33i0qhLwWMCXhUc8E
+  signature: 956778e937d0899e1e385d154ebae28872504b62
+  url: https://api.cloudinary.com/v1_1/duswlfkbc/auto/upload
+FRONT_END_URL: ${FRONT_END_URL:http://localhost:3000}
+AI_URL: ${AI_CERTIFICATION:http://localhost:5001/generate-certificate}
 
 
 
