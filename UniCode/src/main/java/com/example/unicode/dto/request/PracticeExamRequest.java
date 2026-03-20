@@ -19,6 +19,8 @@ public class PracticeExamRequest {
     private String starterCode;
     private String rightCode;
     private List<TestCaseRequest> testCases;
+    private String inputType;
+    private String returnType;
 
 }
 

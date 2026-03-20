@@ -62,6 +62,8 @@ public enum ErrorCode {
     EXAM_INACTIVE(14002,"Exam is inactive",HttpStatus.BAD_REQUEST),
     EXAM_ATTEMPT_NOT_FOUND(14003,"Exam attempt not found",HttpStatus.NOT_FOUND),
     ANSWER_HISTORY_NOT_FOUND(14004,"Answer history not found",HttpStatus.NOT_FOUND),
+    PRACTICAL_EXAM_TIMLE_LIMIT(14005, "Time Limit Exceeded ", HttpStatus.BAD_REQUEST),
+    CODE_WRONG_FORMAT(14006, "Execution Error: ", HttpStatus.BAD_REQUEST),
 
     //Question bank(15)
     QUESTION_BANK_NOT_FOUND(15001,"Question bank not found",HttpStatus.NOT_FOUND),

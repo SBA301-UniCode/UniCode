@@ -1,5 +1,8 @@
 package com.example.unicode.service.impl;
 
+import com.example.unicode.configuration.JavaConfig;
+import com.example.unicode.configuration.LanguageConfig;
+
 import com.example.unicode.dto.request.*;
 import com.example.unicode.dto.request.ExamAttemptSubmitRequest.AnswerSubmitRequest;
 import com.example.unicode.dto.response.*;
@@ -13,17 +16,32 @@ import com.example.unicode.mapper.ExamMapper;
 import com.example.unicode.mapper.PracticeExamMapper;
 import com.example.unicode.mapper.QuestionBankMapper;
 import com.example.unicode.repository.*;
+import com.example.unicode.service.ContentService;
 import com.example.unicode.service.ExamService;
 
+import com.example.unicode.service.ProcessService;
 import com.example.unicode.service.UserService;
+import com.example.unicode.ultils.CodeRunnerService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.Process;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ExamServiceImpl implements ExamService {
     private final ExamMapper examMapper;
@@ -44,6 +62,8 @@ public class ExamServiceImpl implements ExamService {
     private final PracticeResultRepository practiceResultRepository;
     private final TestCaseRepository testCaseRepository;
     private final UserService userService;
+    private final ProcessService processService;
+    private final CodeRunnerService codeRunnerService;
 
     @Override
     public ExamResponse createExam(UUID lessonId, ExamRequest request) {
@@ -271,7 +291,6 @@ public class ExamServiceImpl implements ExamService {
         exam.setDescription(request.getDescription());
         exam.setDifficulty(request.getDifficulty());
         exam.setLanguage(request.getLanguage());
-        exam.setStarterCode(request.getStarterCode());
         exam.setRightCode(request.getRightCode());
         exam.setTotalTestCase(request.getTestCases().size());
 
@@ -310,7 +329,7 @@ public class ExamServiceImpl implements ExamService {
                 .toList();
 
         return PracticeStartResponse.builder()
-                .starterCode(exam.getStarterCode())
+                . starterCode(exam.getStarterCode())
                 .visibleTestCases(visibleCases)
                 .difficulty(exam.getDifficulty())
                 .language(exam.getLanguage())
@@ -335,12 +354,26 @@ public class ExamServiceImpl implements ExamService {
         List<TestCaseResultResponse> results = new ArrayList<>();
 
         for (TestCase tc : exam.getTestCaseList()) {
+            LanguageConfig ja = new JavaConfig();
+            if(exam.getLanguage().equals(PracticeExam.CodeLanguage.JAVA))
+            {
+             ja = new JavaConfig();
+            }
+
             // chạy code học viên với input
-            String actual = "";
-            //String actual = codeRunnerService.run(request.getLearnerCode(), tc.getInputData(), exam.getLanguage());
+//            String actual = "";
+            log.info("Learner code {}",request.getLearnerCode());
+            List<String> paramTypes = parseParamTypes(exam.getInputType());
 
+            String fullCode = ja.wrapCode(
+                    request.getLearnerCode(),
+                    paramTypes,
+                    "solve"
+            );
+
+            String actual = codeRunnerService.run(fullCode, tc.getInputData(), ja);
             boolean ok = compareOutput(tc.getOutputType(), actual, tc.getExpectedOutput());
-
+log.info("actual {}",actual);
             if (ok) passed++;
             else failed++;
             PracticeResult result = new PracticeResult();
@@ -372,8 +405,6 @@ public class ExamServiceImpl implements ExamService {
                 results
         );
     }
-
-
     private boolean compareOutput(TestCase.OutputType type, String actual, String expected) {
         switch (type) {
             case NUMBER:
@@ -396,6 +427,13 @@ public class ExamServiceImpl implements ExamService {
                 return actual.trim().equals(expected.trim());
         }
     }
-
+    public List<String> parseParamTypes(String json) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(json, new TypeReference<List<String>>() {});
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid paramTypes JSON", e);
+        }
+    }
 
 }
