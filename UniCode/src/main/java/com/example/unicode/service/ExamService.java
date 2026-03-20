@@ -3,6 +3,7 @@ package com.example.unicode.service;
 import com.example.unicode.dto.request.ExamAttemptSubmitRequest;
 import com.example.unicode.dto.request.ExamRequest;
 import com.example.unicode.dto.request.PracticeExamRequest;
+import com.example.unicode.dto.request.PracticeSubmitRequest;
 import com.example.unicode.dto.response.*;
 
 import java.util.List;
@@ -22,4 +23,6 @@ public interface ExamService {
     PracticeExamResponse getPracticeExamById(UUID id);
     void deletePracticeExam(UUID id);
     PracticeExamResponse updatePracticeExam(UUID id, PracticeExamRequest request);
+    PracticeStartResponse startPracticeExam(UUID contentId);
+    PracticeResultResponse submitPracticeExam(PracticeSubmitRequest request);
 }

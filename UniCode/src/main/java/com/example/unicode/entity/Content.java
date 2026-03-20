@@ -33,6 +33,8 @@ public class Content extends BaseEntity {
     private Document document;
     @OneToOne(mappedBy = "content")
     private Exam exam;
+    @OneToOne(mappedBy = "content")
+    private PracticeExam practiceExam;
     @OneToMany(mappedBy = "content")
     private List<Process> processList = new ArrayList<>();
 

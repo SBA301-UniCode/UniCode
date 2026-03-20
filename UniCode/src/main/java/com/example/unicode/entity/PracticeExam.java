@@ -31,7 +31,7 @@ public class PracticeExam extends BaseEntity {
     private String starterCode;
     private String rightCode;
     private int totalTestCase;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "content_id")
     private Content content;
     @OneToMany(mappedBy = "practiceExam", cascade = CascadeType.ALL, orphanRemoval = true)
