@@ -3,6 +3,8 @@ package com.example.unicode.service.impl;
 import com.example.unicode.dto.request.ExamAttemptSubmitRequest;
 import com.example.unicode.dto.request.ExamAttemptSubmitRequest.AnswerSubmitRequest;
 import com.example.unicode.dto.request.ExamRequest;
+import com.example.unicode.dto.request.PracticeExamRequest;
+import com.example.unicode.dto.request.TestCaseRequest;
 import com.example.unicode.dto.response.*;
 import com.example.unicode.entity.*;
 import com.example.unicode.enums.ContentType;
@@ -11,6 +13,7 @@ import com.example.unicode.exception.ErrorCode;
 
 import com.example.unicode.mapper.ExamAttemptMapper;
 import com.example.unicode.mapper.ExamMapper;
+import com.example.unicode.mapper.PracticeExamMapper;
 import com.example.unicode.mapper.QuestionBankMapper;
 import com.example.unicode.repository.*;
 import com.example.unicode.service.ExamService;
@@ -39,8 +42,13 @@ public class ExamServiceImpl implements ExamService {
     private final AnswerHistoryRepository answerHistoryRepository;
     private final ExamAttemptMapper examAttemptMapper;
     private final LessonRepository lessonRepository;
+    private final PracticeExamMapper practiceExamMapper;
+    private final PracticeSubmissionRepository practiceSubmissionRepository;
+    private final PracticeExamRepository practiceExamRepository;
+    private final PracticeResultRepository practiceResultRepository;
+    private final TestCaseRepository testCaseRepository;
 
-    public ExamResponse createExam(UUID lessonId, ExamRequest request) {
+    public ExamResponse createExam(UUID lessonId, ExamRequest request ) {
         Lesson lesson = lessonRepository.findByLessonId(lessonId);
         if (lesson == null) {
             throw new AppException(ErrorCode.LESSON_NOT_FOUND);
@@ -72,14 +80,42 @@ public class ExamServiceImpl implements ExamService {
         exam.setQuestionExamList(questionExamList);
         return examMapper.toResponse(examRepository.save(exam));
     }
+    public PracticeExamResponse createPracticeExam(UUID lessonId, PracticeExamRequest request) {
+        Lesson lesson = lessonRepository.findByLessonId(lessonId);
+        if (lesson == null) {
+            throw new AppException(ErrorCode.LESSON_NOT_FOUND);
+        }
+
+        Content content = new Content();
+        content.setLesson(lesson);
+        content.setContentType(ContentType.PRACTICE);
+        content = contentRepo.save(content);
+
+        PracticeExam exam = practiceExamMapper.toEntity(request);
+        exam.setContent(content);
+        if (request.getTestCases() != null&&!request.getTestCases().isEmpty()) {
+            for (TestCaseRequest tcReq : request.getTestCases()) {
+                TestCase tc = practiceExamMapper.toEntity(tcReq);
+                tc.setPracticeExam(exam);// gắn ngược lại
+                exam.getTestCaseList().add(tc); // gắn vào list
+            }
+        }
+
+        exam.setTotalTestCase(request.getTestCases().size());
+        exam = practiceExamRepository.save(exam);
+
+        return practiceExamMapper.toResponse(exam);
+    }
 
     public ExamResponse updateExam(UUID examId, ExamRequest request) {
         Exam exam = examRepository.findByExamId(examId);
         if (exam == null) {
             throw new AppException(ErrorCode.EXAM_NOT_FOUND);
         }
-        exam = examMapper.toEntity(request);
-        return examMapper.toResponse(exam);
+        exam.setDuration(request.getDuration());
+        exam.setPassScore(request.getPassScore());
+        exam.setName(request.getName());
+        return examMapper.toResponse(examRepository.save(exam));
     }
 
     public void changeStatus(UUID examId) {
@@ -206,4 +242,40 @@ public class ExamServiceImpl implements ExamService {
                 .orElseThrow(() -> new AppException(ErrorCode.EXAM_ATTEMPT_NOT_FOUND));
         return examAttemptMapper.toResultsResponse(examAttempt);
     }
+    public PracticeExamResponse getPracticeExamById(UUID id) {
+        PracticeExam exam = practiceExamRepository.findByPracticeId(id)
+                .orElseThrow(() -> new AppException(ErrorCode.EXAM_NOT_FOUND));
+        return practiceExamMapper.toResponse(exam);
+    }
+    public void deletePracticeExam(UUID id) {
+        PracticeExam exam = practiceExamRepository.findByPracticeId(id)
+                .orElseThrow(() -> new AppException(ErrorCode.EXAM_NOT_FOUND));
+        exam.setDeleted(true);
+        practiceExamRepository.save(exam);
+    }
+    public PracticeExamResponse updatePracticeExam(UUID id, PracticeExamRequest request) {
+        PracticeExam exam = practiceExamRepository.findByPracticeId(id)
+                .orElseThrow(() -> new AppException(ErrorCode.EXAM_NOT_FOUND));
+        exam.setTitle(request.getTitle());
+        exam.setDescription(request.getDescription());
+        exam.setDifficulty(request.getDifficulty());
+        exam.setLanguage(request.getLanguage());
+        exam.setStarterCode(request.getStarterCode());
+        exam.setRightCode(request.getRightCode());
+        exam.setTotalTestCase(request.getTestCases().size());
+
+        exam.getTestCaseList().clear();
+        for (TestCaseRequest tcReq : request.getTestCases()) {
+            TestCase tc = new TestCase();
+            tc.setInputData(tcReq.getInputData());
+            tc.setExpectedOutput(tcReq.getExpectedOutput());
+            tc.setOutputType(tcReq.getOutputType());
+            tc.setHidden(tcReq.isHidden());
+            tc.setDescription(tcReq.getDescription());
+            tc.setPracticeExam(exam);
+            exam.getTestCaseList().add(tc);
+        }
+        return practiceExamMapper.toResponse(practiceExamRepository.save(exam));
+    }
+
 }
