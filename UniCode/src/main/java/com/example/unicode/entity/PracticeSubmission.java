@@ -24,7 +24,8 @@ public class PracticeSubmission {
     private LocalDateTime submittedAt;
     private String submittedCode;
     private boolean passedAll;
-
+    private int pass;
+    private int totalCases;
     @ManyToOne
     @JoinColumn(name = "practice_id")
     private PracticeExam practiceExam;

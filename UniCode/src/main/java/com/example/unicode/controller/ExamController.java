@@ -4,6 +4,7 @@ import com.example.unicode.base.ApiResponse;
 import com.example.unicode.dto.request.ExamAttemptSubmitRequest;
 import com.example.unicode.dto.request.ExamRequest;
 import com.example.unicode.dto.request.PracticeExamRequest;
+import com.example.unicode.dto.request.PracticeSubmitRequest;
 import com.example.unicode.dto.response.*;
 import com.example.unicode.service.ExamService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -95,6 +96,17 @@ public class ExamController {
     public ResponseEntity<ApiResponse<Void>> deletePracticeExam(@PathVariable UUID id) {
         examService.deletePracticeExam(id);
         return ResponseEntity.ok(ApiResponse.success("Practice exam deleted successfully"));
+    }
+    @GetMapping("/practice/start/{contentId}")
+    @Operation(summary = "Start practice exam")
+    public ResponseEntity<ApiResponse<PracticeStartResponse>> startPracticeExam(@PathVariable UUID contentId) {
+        return ResponseEntity.ok(ApiResponse.success(examService.startPracticeExam(contentId)));
+    }
+    @PostMapping("/practice-exams/submit")
+    @Operation(summary = "Submit practice exam solution")
+    public ResponseEntity<ApiResponse<PracticeResultResponse>> submitPracticeExam(
+            @RequestBody PracticeSubmitRequest request) {
+        return ResponseEntity.ok(ApiResponse.success(examService.submitPracticeExam(request)));
     }
 
 

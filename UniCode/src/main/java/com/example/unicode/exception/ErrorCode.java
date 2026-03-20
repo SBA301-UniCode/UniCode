@@ -75,6 +75,8 @@ public enum ErrorCode {
 
     // FEEDBACK NOT FOUND(18)
     FEEDBACK_NOT_FOUND(18001,"Feedback not found ", HttpStatus.NOT_FOUND),
+    //Submission(19)
+    SUBMISSION_NOT_FOUND(19001,"Submission not found",HttpStatus.NOT_FOUND),
     ;
     int code;
     String message;
