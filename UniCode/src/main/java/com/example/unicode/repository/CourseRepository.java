@@ -1,6 +1,7 @@
 package com.example.unicode.repository;
 
 import com.example.unicode.entity.Course;
+import com.example.unicode.entity.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,5 +19,7 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
     Page<Course> findAllByDeletedFalse(Pageable pageable);
 
     boolean existsByTitleAndDeletedFalse(String title);
+
+    boolean existsByInstructors(Users instructors);
 }
 

@@ -20,7 +20,7 @@ public class Certificate extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID certificateId;
-
+    private String keyUrl;
     @Column(unique = true)
     private String serialNumber;
 
