@@ -1,5 +1,7 @@
 package com.example.unicode.exception;
 
+import ch.qos.logback.core.model.processor.ProcessorException;
+import com.cloudinary.api.exceptions.BadRequest;
 import com.example.unicode.base.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,5 +30,12 @@ public class GlobalException {
     public ResponseEntity<ApiResponse> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error("Internal Server Error: " + ex.getMessage()));
+    }
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiResponse> handleProcessorException(RuntimeException ex) {
+        ApiResponse apiResponse = ApiResponse.error(
+                ex.getMessage()
+        );
+        return ResponseEntity.status(400).body(apiResponse);
     }
 }

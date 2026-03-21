@@ -31,6 +31,8 @@ public class PracticeExam extends BaseEntity {
     private String starterCode;
     private String rightCode;
     private int totalTestCase;
+    private String inputType;
+    private String returnType;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "content_id")
     private Content content;

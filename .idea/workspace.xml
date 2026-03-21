@@ -5,34 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f277c353-2cd4-4b01-8273-da8df743cfa8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/VideoResponseUrl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/enums/VideoStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/ultils/ExportCertificateUltils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UniCode/src/main/resources/certificate.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/.env" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UniCode/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/configuration/S3Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/configuration/S3Config.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/controller/VideoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/controller/VideoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/request/VideoCreateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/request/VideoCreateRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/CertificateResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/CertificateResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/VideoResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/VideoResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/entity/Certificate.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/entity/Certificate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/entity/Video.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/entity/Video.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/exception/ErrorCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/exception/ErrorCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/mapper/CertificateMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/mapper/CertificateMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/mapper/VideoMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/mapper/VideoMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/CourseRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/CourseRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/VideoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/VideoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/CertificateServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/CertificateServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/VideoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/VideoServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/ultils/S3Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/ultils/S3Service.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/configuration/JavaConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/configuration/JavaConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/ExamServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/ExamServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/ultils/CodeRunnerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/ultils/CodeRunnerService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UniCode/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,6 +22,14 @@
     <persistenceIdMap>
       <entry key="_D:/Semester 7/SBA/BE" value="39BfKkcjJIPw4AzkdrbGU8CeX4A" />
     </persistenceIdMap>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -59,10 +46,10 @@
     &quot;accountId&quot;: &quot;9fee2f50-3872-43da-861a-c1e9ee02252e&quot;
   }
 }</component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -75,6 +62,7 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Maven.UniCode [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.UniCode [install].executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
@@ -85,10 +73,10 @@
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;Spring Boot.UniCodeApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feat/video-restored&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feat/practical-exam&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lenovo/OneDrive/Desktop/Spring2026/SBA391/GIT_2/UniCode/UniCode/src/main/resources&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lenovo/OneDrive/Desktop/Spring2026/SBA391/GIT_BE/UniCode&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
@@ -147,6 +135,11 @@
       <workItem from="1773203072213" duration="9018000" />
       <workItem from="1773997902807" duration="1595000" />
       <workItem from="1773999527485" duration="1961000" />
+      <workItem from="1774004723041" duration="25821000" />
+      <workItem from="1774051018563" duration="4178000" />
+      <workItem from="1774061072478" duration="2594000" />
+      <workItem from="1774064610441" duration="20000" />
+      <workItem from="1774071907121" duration="5971000" />
     </task>
     <servers />
   </component>
