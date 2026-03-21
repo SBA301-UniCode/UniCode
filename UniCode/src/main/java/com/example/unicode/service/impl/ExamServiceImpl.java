@@ -117,6 +117,30 @@ public class ExamServiceImpl implements ExamService {
                 TestCase tc = practiceExamMapper.toEntity(tcReq);
                 tc.setPracticeExam(exam);// gắn ngược lại
                 exam.getTestCaseList().add(tc); // gắn vào list
+                LanguageConfig ja = new JavaConfig();
+                if(exam.getLanguage().equals(PracticeExam.CodeLanguage.JAVA))
+                {
+                    ja = new JavaConfig();
+                }
+
+                // chạy code học viên với input
+//            String actual = "";
+                log.info("Learner code {}",request.getRightCode());
+                List<String> paramTypes = parseParamTypes(exam.getInputType());
+
+                String fullCode = ja.wrapCode(
+                        request.getRightCode(),
+                        paramTypes,
+                        "solve"
+                );
+
+                String actual = codeRunnerService.run(fullCode, tc.getInputData(), ja);
+                boolean ok = compareOutput(tc.getOutputType(), actual, tc.getExpectedOutput());
+                if(!ok){
+                    throw new RuntimeException(
+                            "Test case "+tc.getInputData() +" wrong. Expection result  " + tc.getExpectedOutput() +" dbut program run is "+actual
+                    );
+                }
             }
         }
         exam.setTotalTestCase(request.getTestCases().size());

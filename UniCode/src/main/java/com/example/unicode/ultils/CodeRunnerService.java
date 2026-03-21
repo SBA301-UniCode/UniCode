@@ -6,6 +6,7 @@ import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 import org.springframework.stereotype.Component;
 
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,15 +20,19 @@ public class CodeRunnerService {
             tempDir = Files.createTempDirectory("judge_");
             Files.writeString(tempDir.resolve(config.getFileName()), fullCode);
 
-            // Chỉ Java mới cần tải GSON
-            String innerCmd = config.getCompileCmd() + " && " + config.getRunCmd();
+            boolean gsonFromHost = false;
             if (config instanceof JavaConfig) {
-                String setup = "wget -q -O gson.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar";
-                innerCmd = setup + " && " + innerCmd;
+                gsonFromHost = copyJudgeGsonJar(tempDir);
+            }
+
+            String innerCmd = config.getCompileCmd() + " && " + config.getRunCmd();
+            if (config instanceof JavaConfig && !gsonFromHost) {
+                String wget = "wget -q -O gson.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar";
+                innerCmd = wget + " && " + innerCmd;
             }
 
             String dockerCmd = String.format(
-                    "docker run -i --rm --memory=128m --cpus=0.5 -v %s:/app -w /app %s sh -c \"%s\"",
+                    "docker run -i --rm --memory=256m --cpus=1 -v %s:/app -w /app %s sh -c \"%s\"",
                     tempDir.toAbsolutePath().toString().replace("\\", "/"),
                     config.getDockerImage(),
                     innerCmd
@@ -56,7 +61,7 @@ public class CodeRunnerService {
                 error = new String(stderr.readAllBytes(), StandardCharsets.UTF_8).trim();
             }
 
-            if (!process.waitFor(7, TimeUnit.SECONDS)) { // Tăng lên 7s vì tốn time tải jar
+            if (!process.waitFor(15, TimeUnit.SECONDS)) {
                 process.destroyForcibly();
                 throw new AppException(ErrorCode.PRACTICAL_EXAM_TIMLE_LIMIT);
             }
@@ -84,6 +89,20 @@ public class CodeRunnerService {
                     org.apache.tomcat.util.http.fileupload.FileUtils.deleteDirectory(tempDir.toFile());
                 } catch (Exception ignored) {}
             }
+        }
+    }
+
+    /**
+     * Copy gson.jar từ classpath (maven-dependency-plugin) vào temp để tránh wget trong container.
+     * @return true nếu copy thành công, false nếu không có file (fallback: wget trong container).
+     */
+    private static boolean copyJudgeGsonJar(Path tempDir) {
+        try (InputStream in = CodeRunnerService.class.getResourceAsStream("/judge/gson.jar")) {
+            if (in == null) return false;
+            Files.copy(in, tempDir.resolve("gson.jar"));
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 }
