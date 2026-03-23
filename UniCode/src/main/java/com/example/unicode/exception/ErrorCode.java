@@ -72,9 +72,6 @@ public enum ErrorCode {
 
     // DOCUMENT/WATERMARK ERRORS(17)
     DOCUMENT_NOT_FOUND(17001, "Document not found", HttpStatus.NOT_FOUND),
-
-    // FEEDBACK NOT FOUND(18)
-    FEEDBACK_NOT_FOUND(18001,"Feedback not found ", HttpStatus.NOT_FOUND),
     ;
     int code;
     String message;
