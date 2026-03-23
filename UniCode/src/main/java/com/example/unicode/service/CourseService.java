@@ -6,7 +6,6 @@ import com.example.unicode.dto.response.CourseResponse;
 import com.example.unicode.dto.response.PageResponse;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -43,7 +42,15 @@ public interface CourseService {
      * @param request update request
      * @return updated course response
      */
-    CourseResponse update(UUID courseId, CourseUpdateRequest request);
+    CourseResponse update(UUID courseId, CourseUpdateRequest request, MultipartFile file);
+
+    /**
+     * Update only course image by ID
+     * @param courseId course UUID
+     * @param file image file
+     * @return updated course response
+     */
+    CourseResponse updateImage(UUID courseId, MultipartFile file);
 
     /**
      * Soft delete course by ID
