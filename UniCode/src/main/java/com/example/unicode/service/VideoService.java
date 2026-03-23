@@ -2,6 +2,7 @@ package com.example.unicode.service;
 
 import com.example.unicode.dto.request.VideoCreateRequest;
 import com.example.unicode.dto.response.VideoResponse;
+import com.example.unicode.dto.response.VideoResponseUrl;
 import com.example.unicode.entity.Users;
 import com.example.unicode.entity.Video;
 import jakarta.transaction.Transactional;
@@ -15,11 +16,13 @@ import java.util.UUID;
 public interface VideoService {
 
     @Transactional
-    VideoResponse create(VideoCreateRequest request,MultipartFile file);
+    VideoResponse create(VideoCreateRequest request);
 
     List<VideoResponse> getAllActiveVideos();
 
     VideoResponse getVideoDetail(UUID videoId);
+
+    //  String getInternalVideoUrl(UUID videoId);
 
     @Transactional
     void delete(UUID contentId) throws IOException;
@@ -27,4 +30,5 @@ public interface VideoService {
     VideoResponse uploadChunk(UUID lessonId, MultipartFile file, String uploadId, long startByte, long totalSize) throws IOException;
 
     VideoResponse uploadLocalChunk(UUID lessonId, MultipartFile file, String uploadId, int chunkIndex, int totalChunks) throws IOException;
+    VideoResponseUrl getUrlToShow(UUID uuid);
 }

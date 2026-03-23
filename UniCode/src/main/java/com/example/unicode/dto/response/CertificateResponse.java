@@ -32,5 +32,7 @@ public class CertificateResponse {
 
     private String instructorName;
 
+    private String certicateUrl;
+
     private LocalDateTime createdAt;
 }
