@@ -85,9 +85,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<UserResponse> getAll(int page, int size) {
+    public PageResponse<UserResponse> getAll(int page, int size,boolean deleted) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Users> usersPage = usersRepository.findAllByDeletedFalse(pageable);
+        Page<Users> usersPage = usersRepository.findAllByDeletedAndUserIdNot(deleted,getUsers().getUserId(),pageable);
 
         return PageResponse.<UserResponse>builder()
                 .content(userMapper.toResponseList(usersPage.getContent()))

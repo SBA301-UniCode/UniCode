@@ -39,7 +39,7 @@ public class AuthencationServiceImpl implements AuthencationSevice {
         if (user == null) {
             throw new AppException(ErrorCode.INVALID_LOGIN_REQUEST);
         }
-        if (!user.isActive()) {
+        if (user.getDeleted()) {
             throw new AppException(ErrorCode.USER_INACTIVE);
         }
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {

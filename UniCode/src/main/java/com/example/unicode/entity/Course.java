@@ -20,6 +20,7 @@ public class Course extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID courseId;
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private Double price;
     private String image;

@@ -16,7 +16,7 @@ public interface UserService {
 
     UserResponse getByEmail(String email);
 
-    PageResponse<UserResponse> getAll(int page, int size);
+    PageResponse<UserResponse> getAll(int page, int size,boolean deleted);
 
     UserResponse update(UUID userId, UserUpdateRequest request);
 
