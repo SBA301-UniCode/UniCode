@@ -61,8 +61,9 @@ public class UserController {
             @Parameter(description = "Page number (0-indexed)", example = "0")
             @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Page size", example = "10")
-            @RequestParam(defaultValue = "10") int size) {
-        PageResponse<UserResponse> response = userService.getAll(page, size);
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "false") boolean deleted) {
+        PageResponse<UserResponse> response = userService.getAll(page, size,deleted);
         return ResponseEntity.ok(ApiResponse.success("Users retrieved successfully", response));
     }
 

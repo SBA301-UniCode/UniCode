@@ -25,4 +25,6 @@ public interface UsersRepository extends JpaRepository<Users, UUID> {
     boolean existsByEmailAndDeletedFalse(String email);
 
     boolean existsByUserIdAndDeletedFalse(UUID userId);
+
+    Page<Users> findAllByDeletedAndUserIdNot(Boolean deleted, UUID userId, Pageable pageable);
 }
