@@ -23,4 +23,8 @@ public interface VideoService {
 
     @Transactional
     void delete(UUID contentId) throws IOException;
+
+    VideoResponse uploadChunk(UUID lessonId, MultipartFile file, String uploadId, long startByte, long totalSize) throws IOException;
+
+    VideoResponse uploadLocalChunk(UUID lessonId, MultipartFile file, String uploadId, int chunkIndex, int totalChunks) throws IOException;
 }
