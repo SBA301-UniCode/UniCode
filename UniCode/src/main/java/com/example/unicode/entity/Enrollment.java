@@ -24,7 +24,6 @@ public class Enrollment extends BaseEntity {
     @Builder.Default
     private LocalDateTime enrollmentDate = LocalDateTime.now();
     @Builder.Default
-    @Enumerated(EnumType.STRING)
     private StatusCourse statusCourse = StatusCourse.IN_PROGRESS;
     @ManyToOne
     @JoinColumn(name = "learner_id")

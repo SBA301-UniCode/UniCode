@@ -22,7 +22,5 @@ public class ContentResponse {
 
     private UUID lessonId;
 
-    private UUID examId;
-
 
 }

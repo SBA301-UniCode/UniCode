@@ -94,44 +94,12 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public CourseResponse update(UUID courseId, CourseUpdateRequest request, MultipartFile file) {
+    public CourseResponse update(UUID courseId, CourseUpdateRequest request) {
         Course course = findCourseOrThrow(courseId);
 
         // Use MapStruct for partial update (null values are ignored)
         courseMapper.updateEntity(request, course);
-        if(file != null && !file.isEmpty()) {
-            try {
-                List<String> list = cloudiaryUltils.getUrlCloudiary(file,"image");
-                if(list.size() == 2){
-                    course.setImage(list.get(1));
-                    course.setPublicId(list.get(0));
-                }
-            }catch (Exception e)
-            {
-                throw  new AppException(ErrorCode.CAN_UPLOAD_MATERIAL);
-            }
-        }
 
-        course = courseRepository.save(course);
-        return courseMapper.toResponse(course);
-    }
-
-    @Override
-    public CourseResponse updateImage(UUID courseId, MultipartFile file) {
-        Course course = findCourseOrThrow(courseId);
-        if(file == null || file.isEmpty()) {
-            throw new AppException(ErrorCode.CAN_UPLOAD_MATERIAL);
-        }
-        try {
-            List<String> list = cloudiaryUltils.getUrlCloudiary(file, "image");
-            if(list.size() == 2){
-                course.setImage(list.get(1));
-                course.setPublicId(list.get(0));
-            }
-        }catch (Exception e)
-        {
-            throw  new AppException(ErrorCode.CAN_UPLOAD_MATERIAL);
-        }
         course = courseRepository.save(course);
         return courseMapper.toResponse(course);
     }
