@@ -30,10 +30,20 @@ public class WatermarkController {
     public ResponseEntity<byte[]> downloadWithWatermark(@PathVariable UUID documentId) {
         WatermarkDownloadResult result = watermarkService.downloadWithWatermark(documentId);
 
+        // RFC 5987: encode filename for non-ASCII characters
+        String rawName = result.getFileName();
+        String asciiName = rawName.replaceAll("[^\\x20-\\x7E]", "_"); // fallback for old browsers
+        String encodedName;
+        try {
+            encodedName = java.net.URLEncoder.encode(rawName, "UTF-8").replace("+", "%20");
+        } catch (java.io.UnsupportedEncodingException e) {
+            encodedName = asciiName;
+        }
+
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(result.getContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + result.getFileName() + "\"")
+                        "attachment; filename=\"" + asciiName + "\"; filename*=UTF-8''" + encodedName)
                 .body(result.getFileBytes());
     }
 

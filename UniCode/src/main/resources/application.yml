@@ -8,7 +8,7 @@ spring:
       max-file-size: 2GB
       max-request-size: 2GB
 ffmpeg:
-    path: ${FFMPEG_PATH}
+  path: ${FFMPEG_PATH}
 momo:
   partner-code: MOMO
   access-key: F8BBA842ECF85
@@ -24,8 +24,7 @@ cloudinary:
   url: https://api.cloudinary.com/v1_1/duswlfkbc/auto/upload
 FRONT_END_URL: ${FRONT_END_URL:http://localhost:3000}
 AI_URL: ${AI_CERTIFICATION:http://localhost:5001/generate-certificate}
-
-
-
-
-
+gemini:
+  api-key: ${GEMINI_API_KEY:AIzaSyBJo349L2iIx_ZiwtFU554gFg26AT6hwNs}
+  model: gemini-2.0-flash-lite
+  url: https://generativelanguage.googleapis.com/v1beta/models
