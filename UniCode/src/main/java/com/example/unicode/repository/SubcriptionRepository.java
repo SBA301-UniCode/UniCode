@@ -17,9 +17,9 @@ import java.util.UUID;
 
 public interface SubcriptionRepository extends JpaRepository<Subcription, UUID>, JpaSpecificationExecutor<Subcription> {
     @Query("""
-      SELECT SUM(s.subcriptionPrice) from Subcription  s where s.createdAt between :subcriptionDateAfter and :subcriptionDateBefore and s.statusPayment = 'SUCCESS'
+      SELECT COALESCE(SUM(s.subcriptionPrice), 0) from Subcription  s where s.createdAt between :subcriptionDateAfter and :subcriptionDateBefore and s.statusPayment = 'SUCCESS'
 """)
-    long sumBySubcriptionDate(LocalDateTime subcriptionDateAfter, LocalDateTime subcriptionDateBefore);
+    Long sumBySubcriptionDate(LocalDateTime subcriptionDateAfter, LocalDateTime subcriptionDateBefore);
     long countByCreatedAtBetween(LocalDateTime createdAtAfter, LocalDateTime createdAtBefore);
 
     long countByCreatedAtBetweenAndStatusPayment(LocalDateTime createdAtAfter, LocalDateTime createdAtBefore, StatusPayment statusPayment);

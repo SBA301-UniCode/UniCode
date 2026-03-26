@@ -23,7 +23,7 @@ public class UserResponse {
 
     private String avatarUrl;
 
-    private boolean isActive;
+    private boolean active;
 
     private LocalDateTime createdAt;
 
