@@ -29,10 +29,7 @@ public class Role extends BaseEntity {
     )
     private Set<Privilege> privileges = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "role_code"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @ManyToMany(mappedBy = "rolesList") // Trỏ đúng tên biến bên class Users
     private Set<Users> userslist = new HashSet<>();
 
 }
