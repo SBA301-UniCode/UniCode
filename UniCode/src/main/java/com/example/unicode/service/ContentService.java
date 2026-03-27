@@ -17,4 +17,6 @@ public interface ContentService {
     void delete(UUID lesonId);
 
     ContentResponse update(UUID contentId, ContentUpdateRequest request);
+
+    ContentResponse getById(UUID contentId);
 }

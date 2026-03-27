@@ -177,7 +177,9 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public List<QuestionBankResponse> getQuestionsByExam(UUID examId) {
-        Exam exam = examRepository.findByExamId(examId);
+        Content content = contentRepo.findByContentId(examId)
+                .orElseThrow(()-> new AppException(ErrorCode.CONTENT_NOT_FOUND));
+        Exam exam = content.getExam();
         if (exam == null) {
             throw new AppException(ErrorCode.EXAM_NOT_FOUND);
         }
@@ -189,7 +191,9 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public ExamResponse getExamById(UUID examId) {
-        Exam exam = examRepository.findByExamId(examId);
+        Content content = contentRepo.findByContentId(examId)
+                .orElseThrow(()-> new AppException(ErrorCode.CONTENT_NOT_FOUND));
+        Exam exam = content.getExam();
         if (exam == null) {
             throw new AppException(ErrorCode.EXAM_NOT_FOUND);
         }
