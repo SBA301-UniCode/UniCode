@@ -43,6 +43,12 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
+    public ContentResponse getById(UUID contentId){
+        Content content = contentRepo.findByContentId(contentId)
+                .orElseThrow(()->new AppException(ErrorCode.CONTENT_NOT_FOUND));
+        return contentMapper.toResponse(content);
+    }
+    @Override
     public void delete(UUID contentId) {
         Content content = contentRepo.getReferenceById(contentId);
 

@@ -44,6 +44,13 @@ public class ContentController {
         return ResponseEntity.ok(ApiResponse.success("Get list Content successfully", response));
     }
 
+    @GetMapping("/{contentId}/detail")
+    @Operation(summary = "Get detail content")
+    public ResponseEntity<ApiResponse<ContentResponse>> getDetail(@PathVariable UUID contentId) {
+        ContentResponse response = contentService.getById(contentId);
+        return ResponseEntity.ok(ApiResponse.success("Get list Content successfully", response));
+    }
+
     @PutMapping("/{contentId}")
     @Operation(summary = "Update content by ID")
     public ResponseEntity<ApiResponse<ContentResponse>> update(
@@ -61,6 +68,8 @@ public class ContentController {
         contentService.delete(contentId);
         return ResponseEntity.ok(ApiResponse.success("Content deleted successfully"));
     }
+
+
 
 
 
