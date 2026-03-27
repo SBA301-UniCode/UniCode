@@ -3,7 +3,9 @@ package com.example.unicode.controller;
 import com.example.unicode.base.ApiResponse;
 import com.example.unicode.dto.request.CourseCreateRequest;
 import com.example.unicode.dto.request.CourseUpdateRequest;
+import com.example.unicode.dto.request.ReportRequest;
 import com.example.unicode.dto.response.CourseResponse;
+import com.example.unicode.dto.response.InstructorReport;
 import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.service.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -98,5 +100,9 @@ public class CourseController {
         courseService.delete(courseId);
         return ResponseEntity.ok(ApiResponse.success("Course deleted successfully", (Void) null));
     }
-
+    @PostMapping("/instructor-report")
+    public ResponseEntity<ApiResponse<InstructorReport>> getReportForInstructor(
+                @RequestBody ReportRequest request) {
+        return ResponseEntity.ok(ApiResponse.success(courseService.instructorReport(request)));
+    }
 }

@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,4 +27,6 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, UUID>, J
     List<Enrollment> findAllByLearner_UserIdAndCourse_CourseIdAndDeletedFalse(UUID learnerId, UUID courseId);
 
     boolean existsByCourseAndLearnerAndStatusCourse(Course course, Users learner, StatusCourse statusCourse);
+
+    long countByCourseIn(Collection<Course> courses);
 }
