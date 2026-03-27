@@ -11,10 +11,7 @@ import com.example.unicode.enums.ContentType;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 
-import com.example.unicode.mapper.ExamAttemptMapper;
-import com.example.unicode.mapper.ExamMapper;
-import com.example.unicode.mapper.PracticeExamMapper;
-import com.example.unicode.mapper.QuestionBankMapper;
+import com.example.unicode.mapper.*;
 import com.example.unicode.repository.*;
 import com.example.unicode.service.ContentService;
 import com.example.unicode.service.ExamService;
@@ -27,7 +24,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +64,7 @@ public class ExamServiceImpl implements ExamService {
     private final UserService userService;
     private final ProcessService processService;
     private final CodeRunnerService codeRunnerService;
+    private final QuestionOptionMapper questionOptionMapper;
 
     @Override
     public ExamResponse createExam(UUID lessonId, ExamRequest request) {
@@ -119,14 +119,13 @@ public class ExamServiceImpl implements ExamService {
                 tc.setPracticeExam(exam);// gắn ngược lại
                 exam.getTestCaseList().add(tc); // gắn vào list
                 LanguageConfig ja = new JavaConfig();
-                if(exam.getLanguage().equals(PracticeExam.CodeLanguage.JAVA))
-                {
+                if (exam.getLanguage().equals(PracticeExam.CodeLanguage.JAVA)) {
                     ja = new JavaConfig();
                 }
 
                 // chạy code học viên với input
 //            String actual = "";
-                log.info("Learner code {}",request.getRightCode());
+                log.info("Learner code {}", request.getRightCode());
                 List<String> paramTypes = parseParamTypes(exam.getInputType());
 
                 String fullCode = ja.wrapCode(
@@ -137,9 +136,9 @@ public class ExamServiceImpl implements ExamService {
 
                 String actual = codeRunnerService.run(fullCode, tc.getInputData(), ja);
                 boolean ok = compareOutput(tc.getOutputType(), actual, tc.getExpectedOutput());
-                if(!ok){
+                if (!ok) {
                     throw new RuntimeException(
-                            "Test case "+tc.getInputData() +" wrong. Expection result  " + tc.getExpectedOutput() +" dbut program run is "+actual
+                            "Test case " + tc.getInputData() + " wrong. Expection result  " + tc.getExpectedOutput() + " dbut program run is " + actual
                     );
                 }
             }
@@ -180,7 +179,7 @@ public class ExamServiceImpl implements ExamService {
     public List<QuestionBankResponse> getQuestionsByExam(UUID examId) {
         log.info("Loi lay question");
         Content content = contentRepo.findByContentId(examId)
-                .orElseThrow(()-> new AppException(ErrorCode.CONTENT_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.CONTENT_NOT_FOUND));
         Exam exam = content.getExam();
         if (exam == null) {
             throw new AppException(ErrorCode.EXAM_NOT_FOUND);
@@ -194,7 +193,7 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public ExamResponse getExamById(UUID examId) {
         Content content = contentRepo.findByContentId(examId)
-                .orElseThrow(()-> new AppException(ErrorCode.CONTENT_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.CONTENT_NOT_FOUND));
         Exam exam = content.getExam();
         if (exam == null) {
             throw new AppException(ErrorCode.EXAM_NOT_FOUND);
@@ -205,7 +204,7 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public ExamAttemptRespone startExam(UUID examId) {
         Content content = contentRepo.findByContentId(examId)
-                .orElseThrow(()-> new AppException(ErrorCode.CONTENT_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.CONTENT_NOT_FOUND));
         Exam exam = content.getExam();
         if (exam == null) {
             throw new AppException(ErrorCode.EXAM_NOT_FOUND);
@@ -256,8 +255,11 @@ public class ExamServiceImpl implements ExamService {
             }
             anwserHistories.add(anwserHistory);
         }
+
         answerHistoryRepository.saveAll(anwserHistories);
         double score = (double) correctAnswers / examAttempt.getExam().getNumberQuestions() * 100;
+        score = Math.round(score * 100.0) / 100.0;
+
         examAttempt.setScore(score);
 
         if (score >= examAttempt.getExam().getPassScore()) {
@@ -285,6 +287,7 @@ public class ExamServiceImpl implements ExamService {
             answer.setQuestionText(anwserHistory.getQuestionExam().getQuestionBank().getQuestionText());
             answer.setSelectedAnswer(anwserHistory.getSelectedOption().getAnswerText());
             answer.setCorrect(anwserHistory.getSelectedOption().isCorrect());
+            answer.setQuestionBankResponse(questionBankMapper.toResponse(anwserHistory.getQuestionExam().getQuestionBank()));
             if (!anwserHistory.getSelectedOption().isCorrect()) {
                 QuestionOption questionOption = questionOptionRepository.findByQuestionBankAndIsCorrectTrue(anwserHistory.getQuestionExam().getQuestionBank());
                 if (questionOption != null) {
@@ -364,7 +367,7 @@ public class ExamServiceImpl implements ExamService {
                 .toList();
 
         return PracticeStartResponse.builder()
-                . starterCode(exam.getStarterCode())
+                .starterCode(exam.getStarterCode())
                 .visibleTestCases(visibleCases)
                 .difficulty(exam.getDifficulty())
                 .language(exam.getLanguage())
@@ -390,14 +393,13 @@ public class ExamServiceImpl implements ExamService {
 
         for (TestCase tc : exam.getTestCaseList()) {
             LanguageConfig ja = new JavaConfig();
-            if(exam.getLanguage().equals(PracticeExam.CodeLanguage.JAVA))
-            {
-             ja = new JavaConfig();
+            if (exam.getLanguage().equals(PracticeExam.CodeLanguage.JAVA)) {
+                ja = new JavaConfig();
             }
 
             // chạy code học viên với input
 //            String actual = "";
-            log.info("Learner code {}",request.getLearnerCode());
+            log.info("Learner code {}", request.getLearnerCode());
             List<String> paramTypes = parseParamTypes(exam.getInputType());
 
             String fullCode = ja.wrapCode(
@@ -408,7 +410,7 @@ public class ExamServiceImpl implements ExamService {
 
             String actual = codeRunnerService.run(fullCode, tc.getInputData(), ja);
             boolean ok = compareOutput(tc.getOutputType(), actual, tc.getExpectedOutput());
-log.info("actual {}",actual);
+            log.info("actual {}", actual);
             if (ok) passed++;
             else failed++;
             PracticeResult result = new PracticeResult();
@@ -440,6 +442,7 @@ log.info("actual {}",actual);
                 results
         );
     }
+
     private boolean compareOutput(TestCase.OutputType type, String actual, String expected) {
         switch (type) {
             case NUMBER:
@@ -453,37 +456,46 @@ log.info("actual {}",actual);
             case ARRAY:
                 // chuẩn hóa mảng: bỏ khoảng trắng, bỏ dấu [ ]
                 String[] actualArr = actual.replaceAll("\\s+", "")
-                        .replaceAll("[\\[\\]]", "") .split(",");
+                        .replaceAll("[\\[\\]]", "").split(",");
                 String[] expectedArr = expected.replaceAll("\\s+", "")
                         .replaceAll("[\\[\\]]", "")
-                    .split(",");
+                        .split(",");
                 return Arrays.equals(actualArr, expectedArr);
             default:
                 return actual.trim().equals(expected.trim());
         }
     }
+
     public List<String> parseParamTypes(String json) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(json, new TypeReference<List<String>>() {});
+            return mapper.readValue(json, new TypeReference<List<String>>() {
+            });
         } catch (Exception e) {
             throw new RuntimeException("Invalid paramTypes JSON", e);
         }
     }
 
     @Override
-    public List<ExamAttempResultsResponse> getMyExamAttempt(int page ,int size , UUID examId){
+    public List<ExamAttempResultsResponse> getMyExamAttempt(int page, int size, UUID examId) {
         Exam exam = examRepository.findByExamId(examId);
-        if(exam==null){
+        if (exam == null) {
             throw new AppException(ErrorCode.EXAM_NOT_FOUND);
         }
-        Pageable pageable = Pageable.ofSize(size).withPage(page);
-        List<ExamAttempt> myAttemp = examAttemptRepository.findByLearner_userIdAndExam(userService.getUsers().getUserId(),exam,pageable);
-        if(myAttemp==null){
+        Pageable pageable = PageRequest.of(page, size, Sort.by("attemptEndTime").descending());
+        List<ExamAttempt> myAttemp = examAttemptRepository.findByLearner_userIdAndExam(userService.getUsers().getUserId(), exam, pageable);
+        List<ExamAttempResultsResponse> responses = new ArrayList<>();
+        if (myAttemp == null) {
             throw new AppException(ErrorCode.EXAM_ATTEMPT_NOT_FOUND);
         }
+        for (ExamAttempt attempt : myAttemp) {
+            ExamAttempResultsResponse exa = examAttemptMapper.toResultsResponse(attempt);
+            double rightAnswer = (attempt.getScore() * attempt.getExam().getNumberQuestions()) / 100.0;
 
-        return myAttemp.stream().map(examAttemptMapper::toResultsResponse).toList();
+            exa.setRightAnswer((int) Math.round(rightAnswer));
+            responses.add(exa);
+        }
+        return responses;
     }
 
 }

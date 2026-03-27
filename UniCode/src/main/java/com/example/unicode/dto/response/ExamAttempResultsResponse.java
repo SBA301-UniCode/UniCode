@@ -12,6 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ExamAttempResultsResponse {
     private UUID examAttemptId;
+    private UUID examId;
     private String examName;
     private String learnerName;
     private double score;
