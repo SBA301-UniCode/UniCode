@@ -16,6 +16,7 @@ import com.example.unicode.repository.UsersRepository;
 import com.example.unicode.service.UserService;
 import com.example.unicode.ultils.ExportCertificateUltils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -108,7 +110,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse update(UUID userId, UserUpdateRequest request) {
-        Users user = usersRepository.findByUserIdAndDeletedFalse(userId)
+        Users user = usersRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         if (request.getName() != user.getName()) {
 
@@ -123,6 +125,7 @@ public class UserServiceImpl implements UserService {
 
         // Update roles if provided
         if (request.getRoleCodes() != null) {
+            user.getRolesList().clear();
             Set<Role> roles = new HashSet<>();
             for (String roleCode : request.getRoleCodes()) {
                 Role role = roleRepository.findByRoleCodeAndDeletedFalse(roleCode)
@@ -131,19 +134,17 @@ public class UserServiceImpl implements UserService {
             }
             user.setRolesList(roles);
         }
-
-
         user = usersRepository.save(user);
         return userMapper.toResponse(user);
     }
 
     @Override
-    public void delete(UUID userId) {
-        Users user = usersRepository.findByUserIdAndDeletedFalse(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
+    public void modifiUser(UUID userId,boolean delete) {
+        Users user = usersRepository.findById(userId).orElseThrow(
+                ()-> new AppException(ErrorCode.USER_NOT_FOUND)
+        );
         // Soft delete
-        user.setDeleted(true);
+        user.setDeleted(delete);
         user.setDeletedAt(LocalDateTime.now());
         user.setDeletedBy(getCurrentUser());
 

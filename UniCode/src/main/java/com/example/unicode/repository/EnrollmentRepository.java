@@ -29,4 +29,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, UUID>, J
     boolean existsByCourseAndLearnerAndStatusCourse(Course course, Users learner, StatusCourse statusCourse);
 
     long countByCourseIn(Collection<Course> courses);
+
+    boolean existsByCourseAndLearnerAndDeleted(Course course, Users learner, Boolean deleted);
+
+    Enrollment findByCourseAndLearner(Course course, Users learner);
 }

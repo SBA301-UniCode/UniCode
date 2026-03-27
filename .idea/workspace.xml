@@ -5,30 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f277c353-2cd4-4b01-8273-da8df743cfa8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/request/ReportRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/InstructorReport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/180fb3d0-eaa7-43b9-b6d0-6e1c427c85bd.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/180fb3d0-eaa7-43b9-b6d0-6e1c427c85bd/storage_v2/_src_/database/unicode.3Xrk7g.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/180fb3d0-eaa7-43b9-b6d0-6e1c427c85bd/storage_v2/_src_/database/unicode.3Xrk7g/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/180fb3d0-eaa7-43b9-b6d0-6e1c427c85bd/storage_v2/_src_/database/unicode.3Xrk7g/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/180fb3d0-eaa7-43b9-b6d0-6e1c427c85bd/storage_v2/_src_/database/unicode.3Xrk7g/schema/public.abK9xQ.meta" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/request/EnrollementBannerRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/EnrollmentReportResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/6efd5b9a-4e66-4733-bc8f-779e907eb562.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/6efd5b9a-4e66-4733-bc8f-779e907eb562.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/controller/AuthencationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/controller/AuthencationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/controller/CourseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/controller/CourseController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/CertificateRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/CertificateRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/CourseRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/CourseRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/controller/EnrollmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/controller/EnrollmentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/LoginResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/LoginResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/PrivilegeResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/PrivilegeResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/RoleResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/RoleResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/UserResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/UserResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/mapper/EnrollmentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/mapper/EnrollmentMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/EnrollmentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/EnrollmentRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/SubcriptionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/SubcriptionRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/CourseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/CourseService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/CourseServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/CourseServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/UsersRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/UsersRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/EnrollmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/EnrollmentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/ProcessService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/ProcessService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/AuthencationServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/AuthencationServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/EnrollmentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/EnrollmentServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/RoleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/RoleServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/ultils/S3Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/ultils/S3Service.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/test.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/specification/EnrollmentSpecification.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/specification/EnrollmentSpecification.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

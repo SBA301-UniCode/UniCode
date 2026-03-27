@@ -36,4 +36,23 @@ public class EnrollmentSpecification {
                 learnerId == null ? null : cb.equal(root.get("learner").get("userId"), learnerId)
         );
     }
+    public static Specification<Enrollment> findBySearchKeyLeaner(String keySearch) {
+        return (root, query, cb) -> {
+            if (keySearch == null || keySearch.trim().isEmpty()) {
+                return cb.conjunction();
+            }
+            String keyword = "%" + keySearch.toLowerCase() + "%";
+
+            return cb.or(
+                    cb.like(cb.lower(root.get("learner").get("name")), keyword),
+                    cb.like(cb.lower(root.get("learner").get("email")), keyword)
+            );
+        };
+    }
+    public static Specification<Enrollment> findbyDeleted(boolean deleted) {
+        return  ((root, query, cb) ->
+
+            cb.equal(root.get("deleted"), deleted)
+        );
+    }
 }

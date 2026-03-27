@@ -1,8 +1,10 @@
 package com.example.unicode.controller;
 
 import com.example.unicode.base.ApiResponse;
+import com.example.unicode.dto.request.EnrollementBannerRequest;
 import com.example.unicode.dto.request.SearchEnrollRequest;
 import com.example.unicode.dto.request.UpdateEnrollmentRequest;
+import com.example.unicode.dto.response.EnrollmentReportResponse;
 import com.example.unicode.dto.response.EnrolmentResponse;
 import com.example.unicode.enums.StatusCourse;
 import com.example.unicode.service.EnrollmentService;
@@ -77,5 +79,36 @@ public class EnrollmentController {
     ) {
         return ResponseEntity.ok(ApiResponse.success(enrollmentService.isEnrolled(courseId)));
     }
-
+    @PostMapping("/is-banned")
+    public ResponseEntity<ApiResponse<Boolean>> isBanned(
+            @RequestBody EnrollementBannerRequest request
+            ){
+        return  ResponseEntity.ok(ApiResponse.success(enrollmentService.isbanned(request)));
+    }
+    @PostMapping("/ban-learner")
+    public ResponseEntity<ApiResponse<Void>> banUser(
+            @RequestBody EnrollementBannerRequest request
+    ) {
+        enrollmentService.banLearner(request,true);
+        return ResponseEntity.ok(ApiResponse.success());
+    }
+    @PostMapping("/open-ban-learner")
+    public ResponseEntity<ApiResponse<Void>> openBand(
+            @RequestBody EnrollementBannerRequest request
+    ) {
+        enrollmentService.banLearner(request,false);
+        return ResponseEntity.ok(ApiResponse.success());
+    }
+    @GetMapping("/learners/{coureId}")
+    public ResponseEntity<ApiResponse<Page<EnrollmentReportResponse>>> reportEnrollmentS(
+            @PathVariable UUID coureId,
+            @RequestParam(required = false) String keysearch,
+            @RequestParam(defaultValue = "false",required = false) boolean banned,
+            @Parameter(description = "Page number (0-indexed)", example = "0")
+            @RequestParam(defaultValue = "0",required = false) int page,
+            @Parameter(description = "Page size", example = "10")
+            @RequestParam(defaultValue = "10",required = false) int size
+    ){
+        return  ResponseEntity.ok(ApiResponse.success(enrollmentService.getReportEnrollmentFollowByCourse(coureId,keysearch,banned,page,size)));
+    }
 }
