@@ -12,5 +12,6 @@ public class AnswerHistoryResponse {
     private String selectedAnswer;
     private boolean isCorrect;
     private String rightAnswer;
+    private QuestionBankResponse questionBankResponse;
 
 }

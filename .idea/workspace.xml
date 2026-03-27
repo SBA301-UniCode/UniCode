@@ -5,13 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f277c353-2cd4-4b01-8273-da8df743cfa8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/specification/CouresSpecification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/controller/CourseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/controller/CourseController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/CourseResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/CourseResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/CourseRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/repository/CourseRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/CourseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/CourseService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/CourseServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/CourseServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/.env" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/AnswerHistoryResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/AnswerHistoryResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/ExamAttempResultsResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/dto/response/ExamAttempResultsResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/mapper/ExamAttemptMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/mapper/ExamAttemptMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/ExamServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UniCode/src/main/java/com/example/unicode/service/impl/ExamServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
