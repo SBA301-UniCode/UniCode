@@ -2,7 +2,9 @@ package com.example.unicode.service;
 
 import com.example.unicode.dto.request.CourseCreateRequest;
 import com.example.unicode.dto.request.CourseUpdateRequest;
+import com.example.unicode.dto.request.ReportRequest;
 import com.example.unicode.dto.response.CourseResponse;
+import com.example.unicode.dto.response.InstructorReport;
 import com.example.unicode.dto.response.PageResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,4 +59,7 @@ public interface CourseService {
      * @param courseId course UUID
      */
     void delete(UUID courseId);
+
+
+    InstructorReport instructorReport(ReportRequest request);
 }

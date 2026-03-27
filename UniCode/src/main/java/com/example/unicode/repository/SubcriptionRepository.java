@@ -13,6 +13,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 public interface SubcriptionRepository extends JpaRepository<Subcription, UUID>, JpaSpecificationExecutor<Subcription> {
@@ -27,4 +29,12 @@ public interface SubcriptionRepository extends JpaRepository<Subcription, UUID>,
     boolean existsByLearnerAndCourse(Users learner, Course course);
 
     boolean existsByLearnerAndCourseAndStatusPayment(Users learner, Course course, StatusPayment statusPayment);
+    @Query("""
+      SELECT COALESCE(SUM(s.subcriptionPrice), 0) from Subcription  
+      s where s.createdAt between :subcriptionDateAfter and :subcriptionDateBefore 
+      and s.statusPayment = 'SUCCESS' and s.course in (:courses)
+""")
+    double sumBySubcriptionDateAndCourseIn(Collection<Course> courses,LocalDateTime subcriptionDateAfter, LocalDateTime subcriptionDateBefore);
+
+    List<Subcription> findByCreatedAtBetween(LocalDateTime createdAtAfter, LocalDateTime createdAtBefore);
 }

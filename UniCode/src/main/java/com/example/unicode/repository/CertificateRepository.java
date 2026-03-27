@@ -1,6 +1,7 @@
 package com.example.unicode.repository;
 
 import com.example.unicode.entity.Certificate;
+import com.example.unicode.entity.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,5 +25,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, UUID> 
     boolean existsByLearner_UserIdAndCourse_CourseIdAndDeletedFalse(UUID learnerId, UUID courseId);
 
     Optional<Certificate> findBySerialNumberAndDeletedFalse(String serialNumber);
+
+    List<Certificate> getByLearner(Users learner);
 }
 

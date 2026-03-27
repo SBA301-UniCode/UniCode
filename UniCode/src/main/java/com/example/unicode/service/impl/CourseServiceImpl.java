@@ -2,14 +2,19 @@ package com.example.unicode.service.impl;
 
 import com.example.unicode.dto.request.CourseCreateRequest;
 import com.example.unicode.dto.request.CourseUpdateRequest;
+import com.example.unicode.dto.request.ReportRequest;
 import com.example.unicode.dto.response.CourseResponse;
+import com.example.unicode.dto.response.InstructorReport;
 import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.entity.Course;
+import com.example.unicode.entity.Subcription;
 import com.example.unicode.entity.Users;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 import com.example.unicode.mapper.CourseMapper;
 import com.example.unicode.repository.CourseRepository;
+import com.example.unicode.repository.EnrollmentRepository;
+import com.example.unicode.repository.SubcriptionRepository;
 import com.example.unicode.repository.UsersRepository;
 import com.example.unicode.service.CourseService;
 import com.example.unicode.ultils.CloudiaryUltils;
@@ -23,7 +28,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +49,8 @@ public class CourseServiceImpl implements CourseService {
     private final UsersRepository usersRepository;
     private final CourseMapper courseMapper;
     private final CloudiaryUltils cloudiaryUltils;
+    private final SubcriptionRepository subcriptionRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
     @Override
     public CourseResponse create(CourseCreateRequest request, MultipartFile file) {
@@ -146,6 +155,32 @@ public class CourseServiceImpl implements CourseService {
         course.setDeletedBy(getCurrentUser());
 
         courseRepository.save(course);
+    }
+
+    @Override
+    public InstructorReport instructorReport(ReportRequest request) {
+        Users users = usersRepository.findByEmail(getCurrentUser());
+        LocalDateTime from = request.getFrom().atStartOfDay();
+        LocalDateTime to = request.getTo().plusDays(1).atStartOfDay();
+      List<Course> courseList = courseRepository.findByInstructors(users);
+        InstructorReport instructorReport = InstructorReport.builder()
+                .numberOfCourse(courseRepository.countByInstructors(users))
+                .revenua(subcriptionRepository.sumBySubcriptionDateAndCourseIn(courseList,from,to))
+                .totalStudent(enrollmentRepository.countByCourseIn(courseList))
+                .build();
+List<InstructorReport.ReportSumaries> reportSumaries = new ArrayList<>();
+        List<Subcription> subcriptionList = subcriptionRepository.findByCreatedAtBetween(from,to);
+        for(Subcription subcription : subcriptionList){
+            InstructorReport.ReportSumaries r = InstructorReport.ReportSumaries.builder()
+                    .price(subcription.getSubcriptionPrice())
+                    .localDate(LocalDate.from(subcription.getCreatedAt()))
+                .build();
+            reportSumaries.add(r);
+
+        }
+        instructorReport.setReports(reportSumaries);
+
+        return instructorReport;
     }
 
     /**

@@ -147,7 +147,7 @@ public class S3Service {
                 "-b:v", "4M",
                 "-c:a", "aac",
                 "-b:a", "128k",
-                "-hls_time", "6",
+                "-hls_time", "10",
                 "-hls_list_size", "0",
                 "-hls_segment_filename", segmentPattern,
                 localDir + "/index.m3u8"

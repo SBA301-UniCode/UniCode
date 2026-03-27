@@ -21,5 +21,9 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
     boolean existsByTitleAndDeletedFalse(String title);
 
     boolean existsByInstructors(Users instructors);
+
+    long countByInstructors(Users instructors);
+
+    List<Course> findByInstructors(Users instructors);
 }
 
