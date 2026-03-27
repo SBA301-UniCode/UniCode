@@ -17,12 +17,15 @@ import com.example.unicode.repository.EnrollmentRepository;
 import com.example.unicode.repository.SubcriptionRepository;
 import com.example.unicode.repository.UsersRepository;
 import com.example.unicode.service.CourseService;
+import com.example.unicode.specification.CouresSpecification;
 import com.example.unicode.ultils.CloudiaryUltils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -181,6 +184,40 @@ List<InstructorReport.ReportSumaries> reportSumaries = new ArrayList<>();
         instructorReport.setReports(reportSumaries);
 
         return instructorReport;
+    }
+
+    @Override
+    public Page<CourseResponse> getMyCoures(String keysearch, String sortBy, String direction,boolean deleted, int page, int size) {
+
+        Users users = usersRepository.findByEmail(getCurrentUser());
+        if(users == null){
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        if(sortBy != null && !sortBy.isEmpty() && sortBy.equalsIgnoreCase("desc")){
+            pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        }
+        Specification<Course> spec = Specification.allOf(
+                CouresSpecification.searchKey(keysearch),
+                CouresSpecification.findByInstructor(users.getUserId()),
+                CouresSpecification.findbyDeleted(deleted)
+        );
+        Page<Course> courses = courseRepository.findAll(spec, pageable);
+        return courses.map(courseMapper::toResponse);
+    }
+
+    @Override
+    public void active(UUID courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                ()-> new AppException(ErrorCode.COURSE_NOT_FOUND)
+        );
+
+        // Soft delete
+        course.setDeleted(false);
+        course.setDeletedAt(LocalDateTime.now());
+        course.setDeletedBy(getCurrentUser());
+
+        courseRepository.save(course);
     }
 
     /**
