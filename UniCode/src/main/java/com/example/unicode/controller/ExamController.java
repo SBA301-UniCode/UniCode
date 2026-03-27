@@ -8,6 +8,7 @@ import com.example.unicode.dto.request.PracticeSubmitRequest;
 import com.example.unicode.dto.response.*;
 import com.example.unicode.service.ExamService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -109,6 +110,12 @@ public class ExamController {
         return ResponseEntity.ok(ApiResponse.success(examService.submitPracticeExam(request)));
     }
 
+    @GetMapping("/{examId}/my-attempt")
+    public ResponseEntity<ApiResponse<List<ExamAttempResultsResponse>>> getMyAttempt(
+            @PathVariable UUID examId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-
+        return ResponseEntity.ok(ApiResponse.success(examService.getMyExamAttempt(page, size, examId)));
+    }
 }

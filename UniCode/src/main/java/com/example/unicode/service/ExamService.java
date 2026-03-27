@@ -25,4 +25,5 @@ public interface ExamService {
     PracticeExamResponse updatePracticeExam(UUID id, PracticeExamRequest request);
     PracticeStartResponse startPracticeExam(UUID contentId);
     PracticeResultResponse submitPracticeExam(PracticeSubmitRequest request);
+    List<ExamAttempResultsResponse> getMyExamAttempt(int page ,int size , UUID examId);
 }

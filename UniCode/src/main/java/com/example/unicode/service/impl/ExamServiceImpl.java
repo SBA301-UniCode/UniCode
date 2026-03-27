@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -177,6 +178,7 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public List<QuestionBankResponse> getQuestionsByExam(UUID examId) {
+        log.info("Loi lay question");
         Content content = contentRepo.findByContentId(examId)
                 .orElseThrow(()-> new AppException(ErrorCode.CONTENT_NOT_FOUND));
         Exam exam = content.getExam();
@@ -202,7 +204,9 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public ExamAttemptRespone startExam(UUID examId) {
-        Exam exam = examRepository.findByExamId(examId);
+        Content content = contentRepo.findByContentId(examId)
+                .orElseThrow(()-> new AppException(ErrorCode.CONTENT_NOT_FOUND));
+        Exam exam = content.getExam();
         if (exam == null) {
             throw new AppException(ErrorCode.EXAM_NOT_FOUND);
         }
@@ -225,7 +229,7 @@ public class ExamServiceImpl implements ExamService {
         examAttemptRespone.setExamName(exam.getName());
         examAttemptRespone.setLearnerName(eA.getLearner().getName());
 
-        List<QuestionBankResponse> questions = getQuestionsByExam(exam.getExamId());
+        List<QuestionBankResponse> questions = getQuestionsByExam(examId);
         examAttemptRespone.setQuestions(questions);
 
         return examAttemptRespone;
@@ -253,15 +257,18 @@ public class ExamServiceImpl implements ExamService {
             anwserHistories.add(anwserHistory);
         }
         answerHistoryRepository.saveAll(anwserHistories);
-        double score = (double) correctAnswers / examAttempt.getExam().getNumberQuestions() * 10;
+        double score = (double) correctAnswers / examAttempt.getExam().getNumberQuestions() * 100;
         examAttempt.setScore(score);
+
         if (score >= examAttempt.getExam().getPassScore()) {
             examAttempt.setPassed(true);
         }
         examAttempt.setAttemptEndTime(LocalDateTime.now());
         examAttemptRepository.save(examAttempt);
 
-        return examAttemptMapper.toResultsResponse(examAttempt);
+        ExamAttempResultsResponse res = examAttemptMapper.toResultsResponse(examAttempt);
+        res.setRightAnswer(correctAnswers);
+        return res;
     }
 
     @Override
@@ -462,6 +469,21 @@ log.info("actual {}",actual);
         } catch (Exception e) {
             throw new RuntimeException("Invalid paramTypes JSON", e);
         }
+    }
+
+    @Override
+    public List<ExamAttempResultsResponse> getMyExamAttempt(int page ,int size , UUID examId){
+        Exam exam = examRepository.findByExamId(examId);
+        if(exam==null){
+            throw new AppException(ErrorCode.EXAM_NOT_FOUND);
+        }
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        List<ExamAttempt> myAttemp = examAttemptRepository.findByLearner_userIdAndExam(userService.getUsers().getUserId(),exam,pageable);
+        if(myAttemp==null){
+            throw new AppException(ErrorCode.EXAM_ATTEMPT_NOT_FOUND);
+        }
+
+        return myAttemp.stream().map(examAttemptMapper::toResultsResponse).toList();
     }
 
 }
