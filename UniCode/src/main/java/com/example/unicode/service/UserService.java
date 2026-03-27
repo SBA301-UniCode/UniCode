@@ -20,7 +20,7 @@ public interface UserService {
 
     UserResponse update(UUID userId, UserUpdateRequest request);
 
-    void delete(UUID userId);
+    void modifiUser(UUID userId,boolean delete);
 
     UserResponse getMyInfo();
 

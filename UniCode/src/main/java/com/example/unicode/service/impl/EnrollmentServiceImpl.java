@@ -1,9 +1,8 @@
 package com.example.unicode.service.impl;
 
 import com.example.unicode.base.ApiResponse;
-import com.example.unicode.dto.request.SearchEnrollRequest;
-import com.example.unicode.dto.request.SearchSubcriptionRequest;
-import com.example.unicode.dto.request.UpdateEnrollmentRequest;
+import com.example.unicode.dto.request.*;
+import com.example.unicode.dto.response.EnrollmentReportResponse;
 import com.example.unicode.dto.response.EnrolmentResponse;
 import com.example.unicode.entity.Course;
 import com.example.unicode.entity.Enrollment;
@@ -18,6 +17,7 @@ import com.example.unicode.repository.EnrollmentRepository;
 import com.example.unicode.repository.SubcriptionRepository;
 import com.example.unicode.repository.UsersRepository;
 import com.example.unicode.service.EnrollmentService;
+import com.example.unicode.service.ProcessService;
 import com.example.unicode.specification.EnrollmentSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -40,6 +40,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final CourseRepository courseRepository;
     private final UsersRepository usersRepository;
     private final SubcriptionRepository subcriptionRepository;
+    private final ProcessService processService;
 
     @Override
     public EnrolmentResponse joinCousera(UUID courseId) {
@@ -125,6 +126,53 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         );
         enrollment.setStatusCourse(request.getStatusCourse());
         return enrollmentMapper.entityToResponse(enrollmentRepository.save(enrollment));
+    }
+
+    @Override
+    public boolean isbanned(EnrollementBannerRequest request) {
+
+        Course course = courseRepository.findById(request.getCoureId()).orElseThrow(
+                ()-> new AppException(ErrorCode.COURSE_NOT_FOUND)
+        );
+        Users users  = usersRepository.findById(request.getUserId()).orElseThrow(
+                ()-> new AppException(ErrorCode.USER_NOT_FOUND)
+        );
+        return enrollmentRepository.existsByCourseAndLearnerAndDeleted(course,users,true);
+    }
+
+    @Override
+    public void banLearner(EnrollementBannerRequest request,boolean ban) {
+        Course course = courseRepository.findById(request.getCoureId()).orElseThrow(
+                ()-> new AppException(ErrorCode.COURSE_NOT_FOUND)
+        );
+        Users users  = usersRepository.findById(request.getUserId()).orElseThrow(
+                ()-> new AppException(ErrorCode.USER_NOT_FOUND)
+        );
+        Enrollment enrollment = enrollmentRepository.findByCourseAndLearner(course,users);
+        enrollment.setDeleted(ban);
+        enrollmentRepository.save(enrollment);
+    }
+
+    @Override
+    public Page<EnrollmentReportResponse> getReportEnrollmentFollowByCourse(UUID coureId, String keySearch,boolean banned, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt"));
+        Course course = courseRepository.findById(coureId).orElseThrow(
+                ()-> new AppException(ErrorCode.COURSE_NOT_FOUND)
+        );
+        Specification<Enrollment> specification = Specification.allOf(
+          EnrollmentSpecification.findBySearchKeyLeaner(keySearch),
+          EnrollmentSpecification.findByCourseId(coureId),
+                EnrollmentSpecification.findbyDeleted(banned)
+        );
+        Page<Enrollment> enrollments = enrollmentRepository.findAll(specification,pageable);
+        Page<EnrollmentReportResponse> responses = enrollments.map(enrollmentMapper::entityToReport);
+        for (EnrollmentReportResponse response : responses.getContent()) {
+            response.setPercentComplete(processService.getProcessOfCourses(TrackingRequest.builder()
+                            .enrollmentId(response.getEnrollmentId())
+                            .id(response.getCourseResponse().getCourseId())
+                            .build()).getPercentComplete());
+        }
+        return responses;
     }
 
 

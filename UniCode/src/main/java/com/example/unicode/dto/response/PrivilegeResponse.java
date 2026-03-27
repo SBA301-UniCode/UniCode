@@ -16,5 +16,7 @@ public class PrivilegeResponse {
     private String privilegeName;
 
     private String description;
+
+    private boolean deleted;
 }
 

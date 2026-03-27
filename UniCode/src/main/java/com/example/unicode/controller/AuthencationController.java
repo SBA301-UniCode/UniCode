@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -44,10 +45,12 @@ public class AuthencationController {
         return ApiResponse.success("Logout successful");
     }
     @GetMapping("/login-google")
-    public ApiResponse loginGoogle(OAuth2AuthenticationToken principal) throws JOSEException {
+    public RedirectView loginGoogle(OAuth2AuthenticationToken principal) throws JOSEException {
         log.info("Google login attempt for user: {}", principal.getName());
         LoginResponse loginResponse = authencationSevice.loginGoogle(principal);
-        return ApiResponse.success(authencationSevice.loginGoogle(principal));
+        return new RedirectView(FE_URL+"?accessToken="+loginResponse.getAccessToken()+"&refreshToken="+loginResponse.getRefreshToken()
+        +"&role="+loginResponse.getRoleCode()
+        );
     }
 
 }

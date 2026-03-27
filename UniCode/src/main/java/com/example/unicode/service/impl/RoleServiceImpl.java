@@ -92,6 +92,7 @@ public class RoleServiceImpl implements RoleService {
 
         // Update privileges if provided
         if (request.getPrivilegeCodes() != null) {
+            role.getPrivileges().clear();
             Set<Privilege> privileges = new HashSet<>();
             for (String privilegeCode : request.getPrivilegeCodes()) {
                 Privilege privilege = privilegeRepository.findByPrivilegeCodeAndDeletedFalse(privilegeCode)
