@@ -15,12 +15,11 @@ public interface CertificateService {
 
     PageResponse<CertificateResponse> getAll(int page, int size);
 
+    List<CertificateResponse> getByLearnerId(UUID learnerId);
+
     List<CertificateResponse> getMyList();
 
     CertificateResponse getBySerialNumber(String serialNumber);
 
-    List<CertificateResponse> getByLearnerId(UUID learnerId);
-
     void delete(UUID certificateId);
 }
-

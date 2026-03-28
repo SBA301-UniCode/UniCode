@@ -22,7 +22,6 @@ public class Content extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID contentId;
-    @Enumerated(EnumType.STRING)
     private ContentType contentType; // e.g., "video", "text", "quiz"
     @ManyToOne
     @JoinColumn(name = "lesson_id")

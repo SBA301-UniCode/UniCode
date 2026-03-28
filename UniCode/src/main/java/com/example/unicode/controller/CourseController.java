@@ -6,8 +6,10 @@ import com.example.unicode.dto.request.CourseUpdateRequest;
 import com.example.unicode.dto.request.ReportRequest;
 import com.example.unicode.dto.response.CourseResponse;
 import com.example.unicode.dto.response.InstructorReport;
+import com.example.unicode.dto.response.EnrolmentResponse;
 import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.service.CourseService;
+import com.example.unicode.service.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -72,34 +74,15 @@ public class CourseController {
     public ResponseEntity<ApiResponse<CourseResponse>> update(
             @PathVariable UUID courseId,
             @Valid @RequestBody CourseUpdateRequest request) {
-        CourseResponse response = courseService.update(courseId, request, null);
+        CourseResponse response = courseService.update(courseId, request);
         return ResponseEntity.ok(ApiResponse.success("Course updated successfully", response));
-    }
-
-    @PutMapping(value = "/{courseId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Update course by ID with optional image")
-    public ResponseEntity<ApiResponse<CourseResponse>> updateWithImage(
-            @PathVariable UUID courseId,
-            @Valid @RequestPart CourseUpdateRequest request,
-            @RequestPart(required = false) MultipartFile file) {
-        CourseResponse response = courseService.update(courseId, request, file);
-        return ResponseEntity.ok(ApiResponse.success("Course updated successfully", response));
-    }
-
-    @PostMapping(value = "/{courseId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Update course image by ID")
-    public ResponseEntity<ApiResponse<CourseResponse>> updateImage(
-            @PathVariable UUID courseId,
-            @RequestPart MultipartFile file) {
-        CourseResponse response = courseService.updateImage(courseId, file);
-        return ResponseEntity.ok(ApiResponse.success("Course image updated successfully", response));
     }
 
     @DeleteMapping("/{courseId}")
     @Operation(summary = "Delete course by ID (soft delete)")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID courseId) {
         courseService.delete(courseId);
-        return ResponseEntity.ok(ApiResponse.success("Course deleted successfully", (Void) null));
+        return ResponseEntity.ok(ApiResponse.success("Course deleted successfully"));
     }
     @PostMapping("/instructor-report")
     public ResponseEntity<ApiResponse<InstructorReport>> getReportForInstructor(

@@ -4,7 +4,6 @@ import com.example.unicode.dto.request.UserCreateRequest;
 import com.example.unicode.dto.request.UserUpdateRequest;
 import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.dto.response.UserResponse;
-import com.example.unicode.entity.Users;
 
 import java.util.UUID;
 
@@ -23,7 +22,5 @@ public interface UserService {
     void modifiUser(UUID userId,boolean delete);
 
     UserResponse getMyInfo();
-
-    Users getUsers();
 }
 
