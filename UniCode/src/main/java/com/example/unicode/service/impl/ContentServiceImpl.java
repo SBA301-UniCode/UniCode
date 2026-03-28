@@ -13,6 +13,7 @@ import com.example.unicode.repository.LessonRepository;
 import com.example.unicode.service.ContentService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ContentServiceImpl implements ContentService {
     private final ContentRepo contentRepo;
     private final ContentMapper contentMapper;
@@ -42,6 +44,13 @@ public class ContentServiceImpl implements ContentService {
         return contentMapper.toResponseList(contents);
     }
 
+    @Override
+    public ContentResponse getById(UUID contentId){
+        log.info("goi qua day");
+        Content content = contentRepo.findByContentId(contentId)
+                .orElseThrow(()->new AppException(ErrorCode.CONTENT_NOT_FOUND));
+        return contentMapper.toResponse(content);
+    }
     @Override
     public void delete(UUID contentId) {
         Content content = contentRepo.getReferenceById(contentId);

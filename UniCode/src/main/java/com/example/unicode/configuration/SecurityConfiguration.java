@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -22,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfiguration {
     private final CustomDecoder jwtDecoder;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtQueryParamFilter jwtQueryParamFilter;
     @Value("${login.google.success-url}")
     private String SUCCESS_URL;
 
@@ -43,6 +45,8 @@ public class SecurityConfiguration {
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/syllabuses/**").permitAll()
                     // Public certificate verification
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/certificates/verify/**").permitAll()
+                    // Public AI course chatbot
+                    .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/ai/course-chat").permitAll()
                     .anyRequest().authenticated();
         });
 
@@ -59,6 +63,7 @@ public class SecurityConfiguration {
         });
         http.cors((cor)->cor.configurationSource(corsConfiguration()));
         http.csrf(AbstractHttpConfigurer::disable);
+        http.addFilterBefore(jwtQueryParamFilter, BearerTokenAuthenticationFilter.class);
         return http.build();
     }
 
@@ -78,6 +83,8 @@ public class SecurityConfiguration {
         corsConfig.addAllowedMethod("*");
         corsConfig.addExposedHeader("Content-Disposition");
         corsConfig.addExposedHeader("Content-Type");
+        corsConfig.addExposedHeader("Content-Range");
+        corsConfig.addExposedHeader("Accept-Ranges");
         corsConfig.setAllowCredentials(true);
         CorsConfigurationSource c = request -> corsConfig;
         return c;

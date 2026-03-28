@@ -20,5 +20,7 @@ public class RoleResponse {
     private String description;
 
     private Set<PrivilegeResponse> privileges;
+
+    private  boolean deleted;
 }
 

@@ -54,12 +54,16 @@ public enum ErrorCode {
     ENROLLMENT_NOT_FOUND(13002,"Enrollment not found ", HttpStatus.NOT_FOUND),
 
     VIDEO_NOT_FOUND(13003, "Video not found", HttpStatus.NOT_FOUND),
+    NOT_HAVE_PERMISION_TO_VIEW(13004,"You do not has permision to view this video ",HttpStatus.BAD_REQUEST),
+
 
     //Exam(14)
     EXAM_NOT_FOUND(14001,"Exam not found",HttpStatus.NOT_FOUND),
     EXAM_INACTIVE(14002,"Exam is inactive",HttpStatus.BAD_REQUEST),
     EXAM_ATTEMPT_NOT_FOUND(14003,"Exam attempt not found",HttpStatus.NOT_FOUND),
     ANSWER_HISTORY_NOT_FOUND(14004,"Answer history not found",HttpStatus.NOT_FOUND),
+    PRACTICAL_EXAM_TIMLE_LIMIT(14005, "Time Limit Exceeded ", HttpStatus.BAD_REQUEST),
+    CODE_WRONG_FORMAT(14006, "Execution Error: ", HttpStatus.BAD_REQUEST),
 
     //Question bank(15)
     QUESTION_BANK_NOT_FOUND(15001,"Question bank not found",HttpStatus.NOT_FOUND),
@@ -72,6 +76,11 @@ public enum ErrorCode {
 
     // DOCUMENT/WATERMARK ERRORS(17)
     DOCUMENT_NOT_FOUND(17001, "Document not found", HttpStatus.NOT_FOUND),
+
+    // FEEDBACK NOT FOUND(18)
+    FEEDBACK_NOT_FOUND(18001,"Feedback not found ", HttpStatus.NOT_FOUND),
+    //Submission(19)
+    SUBMISSION_NOT_FOUND(19001,"Submission not found",HttpStatus.NOT_FOUND),
     ;
     int code;
     String message;

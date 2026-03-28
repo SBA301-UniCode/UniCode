@@ -61,8 +61,9 @@ public class UserController {
             @Parameter(description = "Page number (0-indexed)", example = "0")
             @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Page size", example = "10")
-            @RequestParam(defaultValue = "10") int size) {
-        PageResponse<UserResponse> response = userService.getAll(page, size);
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "false") boolean deleted) {
+        PageResponse<UserResponse> response = userService.getAll(page, size,deleted);
         return ResponseEntity.ok(ApiResponse.success("Users retrieved successfully", response));
     }
 
@@ -85,8 +86,14 @@ public class UserController {
     @DeleteMapping("/{userId}")
     @Operation(summary = "Delete user by ID")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID userId) {
-        userService.delete(userId);
+        userService.modifiUser(userId,true);
         return ResponseEntity.ok(ApiResponse.success("User deleted successfully"));
+    }
+    @GetMapping("/active/{userId}")
+    @Operation(summary = "Active user by ID")
+    public ResponseEntity<ApiResponse<Void>> active(@PathVariable UUID userId) {
+        userService.modifiUser(userId,false);
+        return ResponseEntity.ok(ApiResponse.success("User active successfully"));
     }
     @GetMapping("/{userId}/enrollments")
     @Operation(summary = "Get enrollments by  ID")

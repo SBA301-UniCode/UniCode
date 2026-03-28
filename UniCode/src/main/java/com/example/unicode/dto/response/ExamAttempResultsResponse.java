@@ -12,10 +12,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ExamAttempResultsResponse {
     private UUID examAttemptId;
+    private UUID examId;
     private String examName;
     private String learnerName;
     private double score;
-    private Boolean passed;
+    private Boolean passed = false;
+    private int rightAnswer;
     private LocalDateTime attemptStartTime;
     private LocalDateTime attemptEndTime;
 }

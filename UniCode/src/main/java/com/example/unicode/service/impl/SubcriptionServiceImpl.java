@@ -162,33 +162,33 @@ public class SubcriptionServiceImpl implements SubcriptionService {
 
     @Override
     public SubcriptionReportResponse report(SubcriptionReportRequest request) {
-        SubcriptionReportResponse response  = SubcriptionReportResponse.builder().build();
+        SubcriptionReportResponse response = SubcriptionReportResponse.builder().build();
         List<Summaries> summaries = new ArrayList<>();
-        summaries.addAll(sumariesRepository.findByLocalDateBetween(request.getFrom(),request.getTo()));
-        if(request.getTo().equals(LocalDate.now()))
-        {
-            LocalDateTime start = LocalDate.now().atStartOfDay();
-            LocalDateTime end = LocalDateTime.now();
+
+        // Iterate each day in the requested range and aggregate directly from Subcription table
+        LocalDate current = request.getFrom();
+        while (!current.isAfter(request.getTo())) {
+            LocalDateTime dayStart = current.atStartOfDay();
+            LocalDateTime dayEnd = current.plusDays(1).atStartOfDay();
+
             Summaries s = Summaries.builder()
-                    .localDate(LocalDate.now())
-                    .totalPayment(subcriptionRepository.countByCreatedAtBetween(start,end))
-                    .error(subcriptionRepository.countByCreatedAtBetweenAndStatusPayment(start,end, StatusPayment.ERROR))
-                    .success(subcriptionRepository.countByCreatedAtBetweenAndStatusPayment(start,end, StatusPayment.SUCCESS))
-                    .totalAmount(subcriptionRepository.sumBySubcriptionDate(start,end))
+                    .localDate(current)
+                    .totalPayment(subcriptionRepository.countByCreatedAtBetween(dayStart, dayEnd))
+                    .error(subcriptionRepository.countByCreatedAtBetweenAndStatusPayment(dayStart, dayEnd, StatusPayment.ERROR))
+                    .success(subcriptionRepository.countByCreatedAtBetweenAndStatusPayment(dayStart, dayEnd, StatusPayment.SUCCESS))
+                    .totalAmount(subcriptionRepository.sumBySubcriptionDate(dayStart, dayEnd))
                     .build();
             summaries.add(s);
+            current = current.plusDays(1);
         }
-        if(summaries != null)
-        {
-            summaries.forEach((s)->{
-                response.setTotalError(response.getTotalError() + s.getError());
-                response.setTotalSuccess(response.getTotalSuccess() + s.getSuccess());
-                response.setTotalPayment(response.getTotalPayment()+ s.getTotalPayment());
-                response.setTotalAmount(response.getTotalAmount()+ s.getTotalAmount());
 
-            });
-            response.setTotalPending(response.getTotalPayment() -(response.getTotalSuccess()+ response.getTotalError()));
-        }
+        summaries.forEach(s -> {
+            response.setTotalError(response.getTotalError() + s.getError());
+            response.setTotalSuccess(response.getTotalSuccess() + s.getSuccess());
+            response.setTotalPayment(response.getTotalPayment() + s.getTotalPayment());
+            response.setTotalAmount(response.getTotalAmount() + s.getTotalAmount());
+        });
+        response.setTotalPending(response.getTotalPayment() - (response.getTotalSuccess() + response.getTotalError()));
         response.setData(summaries.stream().map(sumariesMapper::entityToResponse).toList());
         return response;
     }

@@ -15,6 +15,7 @@ import java.util.List;
 public interface ContentMapper {
    // @Mapping(source = "lessonId", target = "lesson.lessonId")
     Content toEntity(ContentCreateRequest request);
+    @Mapping(source = "exam.examId",target = "examId")
     @Mapping(source = "lesson.lessonId", target = "lessonId")
     ContentResponse toResponse(Content content); // tự lo việc tạo object Content và setContentType, setLessonId
     List<ContentResponse> toResponseList(List<Content> contents);

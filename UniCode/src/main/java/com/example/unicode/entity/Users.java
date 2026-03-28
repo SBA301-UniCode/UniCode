@@ -22,10 +22,15 @@ public class Users extends BaseEntity {
     private String name;
     private int tokenVersion = 0;
     private String avatarUrl;
-    private boolean isActive = true;
+    @Column(name = "is_active")
+    private boolean active = true;
     private String jwtId;
-    @ManyToMany(mappedBy = "userslist")
-    private Set<Role> rolesList = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_code")
+    )    private Set<Role> rolesList = new HashSet<>();
     @OneToMany(mappedBy = "instructors")
     private List<Course> courseList = new ArrayList<>();
     @OneToMany(mappedBy = "learner")

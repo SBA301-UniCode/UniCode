@@ -4,15 +4,19 @@ import com.example.unicode.dto.request.UserCreateRequest;
 import com.example.unicode.dto.request.UserUpdateRequest;
 import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.dto.response.UserResponse;
+import com.example.unicode.entity.Certificate;
 import com.example.unicode.entity.Role;
 import com.example.unicode.entity.Users;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 import com.example.unicode.mapper.UserMapper;
+import com.example.unicode.repository.CertificateRepository;
 import com.example.unicode.repository.RoleRepository;
 import com.example.unicode.repository.UsersRepository;
 import com.example.unicode.service.UserService;
+import com.example.unicode.ultils.ExportCertificateUltils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,9 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -35,6 +41,8 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final CertificateRepository certificateRepository;
+    private final ExportCertificateUltils exportCertificateUltils;
 
     @Override
     public UserResponse create(UserCreateRequest request) {
@@ -85,9 +93,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<UserResponse> getAll(int page, int size) {
+    public PageResponse<UserResponse> getAll(int page, int size, boolean deleted) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Users> usersPage = usersRepository.findAllByDeletedFalse(pageable);
+        Page<Users> usersPage = usersRepository.findAllByDeletedAndUserIdNot(deleted, getUsers().getUserId(), pageable);
 
         return PageResponse.<UserResponse>builder()
                 .content(userMapper.toResponseList(usersPage.getContent()))
@@ -102,13 +110,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse update(UUID userId, UserUpdateRequest request) {
-        Users user = usersRepository.findByUserIdAndDeletedFalse(userId)
+        Users user = usersRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        if (request.getName() != user.getName()) {
 
+            List<Certificate> certificateList = certificateRepository.getByLearner(user);
+            for (Certificate certificate : certificateList) {
+                certificate.setKeyUrl(exportCertificateUltils.generateCertificate(request.getName(), certificate.getCourse()));
+
+            }
+            certificateRepository.saveAll(certificateList);
+        }
         userMapper.updateEntity(request, user);
 
         // Update roles if provided
         if (request.getRoleCodes() != null) {
+            user.getRolesList().clear();
             Set<Role> roles = new HashSet<>();
             for (String roleCode : request.getRoleCodes()) {
                 Role role = roleRepository.findByRoleCodeAndDeletedFalse(roleCode)
@@ -117,18 +134,17 @@ public class UserServiceImpl implements UserService {
             }
             user.setRolesList(roles);
         }
-
         user = usersRepository.save(user);
         return userMapper.toResponse(user);
     }
 
     @Override
-    public void delete(UUID userId) {
-        Users user = usersRepository.findByUserIdAndDeletedFalse(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
+    public void modifiUser(UUID userId,boolean delete) {
+        Users user = usersRepository.findById(userId).orElseThrow(
+                ()-> new AppException(ErrorCode.USER_NOT_FOUND)
+        );
         // Soft delete
-        user.setDeleted(true);
+        user.setDeleted(delete);
         user.setDeletedAt(LocalDateTime.now());
         user.setDeletedBy(getCurrentUser());
 
@@ -143,6 +159,16 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         return userMapper.toResponse(user);
+    }
+
+    @Override
+    public Users getUsers() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users users = usersRepository.findByEmail(email);
+        if (users == null) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
+        return users;
     }
 
     private String getCurrentUser() {

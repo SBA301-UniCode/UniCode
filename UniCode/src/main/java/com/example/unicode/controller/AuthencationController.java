@@ -3,16 +3,19 @@ package com.example.unicode.controller;
 import com.example.unicode.base.ApiResponse;
 import com.example.unicode.dto.request.LoginRequest;
 import com.example.unicode.dto.request.RefreshAccessTokenRequest;
+import com.example.unicode.dto.response.LoginResponse;
 import com.example.unicode.service.AuthencationSevice;
 import com.nimbusds.jose.JOSEException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -20,6 +23,8 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 @Slf4j
 @Tag(name = "Authencations", description = "Authencations management APIs")
 public class AuthencationController {
+    @Value("${FRONT_END_URL}")
+    private String FE_URL;
     private final AuthencationSevice authencationSevice;
 
     @PostMapping("/login")
@@ -40,9 +45,12 @@ public class AuthencationController {
         return ApiResponse.success("Logout successful");
     }
     @GetMapping("/login-google")
-    public ApiResponse loginGoogle(OAuth2AuthenticationToken principal) throws JOSEException {
+    public RedirectView loginGoogle(OAuth2AuthenticationToken principal) throws JOSEException {
         log.info("Google login attempt for user: {}", principal.getName());
-        return ApiResponse.success(authencationSevice.loginGoogle(principal));
+        LoginResponse loginResponse = authencationSevice.loginGoogle(principal);
+        return new RedirectView(FE_URL+"?accessToken="+loginResponse.getAccessToken()+"&refreshToken="+loginResponse.getRefreshToken()
+        +"&role="+loginResponse.getRoleCode()
+        );
     }
 
 }

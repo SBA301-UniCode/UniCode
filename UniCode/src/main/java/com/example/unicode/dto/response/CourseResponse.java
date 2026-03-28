@@ -35,4 +35,6 @@ public class CourseResponse {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    private boolean deleted;
 }

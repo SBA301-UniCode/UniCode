@@ -3,7 +3,9 @@ package com.example.unicode.controller;
 import com.example.unicode.base.ApiResponse;
 import com.example.unicode.dto.request.CourseCreateRequest;
 import com.example.unicode.dto.request.CourseUpdateRequest;
+import com.example.unicode.dto.request.ReportRequest;
 import com.example.unicode.dto.response.CourseResponse;
+import com.example.unicode.dto.response.InstructorReport;
 import com.example.unicode.dto.response.EnrolmentResponse;
 import com.example.unicode.dto.response.PageResponse;
 import com.example.unicode.service.CourseService;
@@ -82,5 +84,28 @@ public class CourseController {
         courseService.delete(courseId);
         return ResponseEntity.ok(ApiResponse.success("Course deleted successfully"));
     }
-
+    @PostMapping("/instructor-report")
+    public ResponseEntity<ApiResponse<InstructorReport>> getReportForInstructor(
+                @RequestBody ReportRequest request) {
+        return ResponseEntity.ok(ApiResponse.success(courseService.instructorReport(request)));
+    }
+    @GetMapping("/my-courses")
+    public ResponseEntity<ApiResponse<Page<CourseResponse>>> getMyCourses(
+            @RequestParam String keySearch,
+            @RequestParam String sortBy,
+            @RequestParam(required = false,defaultValue = "asc") String direction,
+            @Parameter(description = "Page number (0-indexed)", example = "0")
+            @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Page size", example = "10")
+             @RequestParam(defaultValue = "10") int size,
+@RequestParam(defaultValue =  "false", required = false) boolean deleted
+    ) {
+        Page<CourseResponse> response = courseService.getMyCoures(keySearch,sortBy,direction,deleted,page, size);
+        return ResponseEntity.ok(ApiResponse.success("Courses retrieved successfully", response));
+    }
+    @PutMapping("/active/{courseId}")
+    public ResponseEntity<ApiResponse<Void>> active(@PathVariable UUID courseId) {
+        courseService.active(courseId);
+        return ResponseEntity.ok(ApiResponse.success("Course active successfully", (Void) null));
+    }
 }

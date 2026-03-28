@@ -1,31 +1,22 @@
 package com.example.unicode.controller;
 
 import com.example.unicode.base.ApiResponse;
-import com.example.unicode.dto.request.ContentCreateRequest;
 import com.example.unicode.dto.request.VideoCreateRequest;
-import com.example.unicode.dto.response.ContentResponse;
-import com.example.unicode.dto.response.PageResponse;
-import com.example.unicode.dto.response.UserResponse;
 import com.example.unicode.dto.response.VideoResponse;
-import com.example.unicode.entity.Users;
-import com.example.unicode.repository.UsersRepository;
-import com.example.unicode.service.CloudinaryService;
-import com.example.unicode.service.UserService;
 import com.example.unicode.service.impl.VideoServiceImpl;
+import com.example.unicode.ultils.S3Service;
+import com.example.unicode.service.CloudinaryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
-import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -33,26 +24,27 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/videos")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Video", description = "Video management APIs")
 public class VideoController {
     private final VideoServiceImpl videoService;
+    private final S3Service s3Service;
     private final CloudinaryService cloudinaryService;
 
-
-
-    @PostMapping("/create")
-    @Operation(summary = "Create video record after direct upload or simple upload")
+    @PostMapping(value = "/create")
+    @Operation(summary = "Create video record after client-side upload")
     public ResponseEntity<ApiResponse<VideoResponse>> create(
-            @RequestBody @Valid VideoCreateRequest request
+            @RequestPart @Valid VideoCreateRequest request
     ) {
         return ResponseEntity.ok(ApiResponse.success(
                 "Video record created successfully",
-                videoService.create(request, null) // Truyền null cho file vì đã up thẳng
+                videoService.create(request)
         ));
     }
+
     @GetMapping
     @Operation(summary = "Get all list videos")
-    public  ResponseEntity<ApiResponse<List<VideoResponse>>> getAcctiveVideo(){
+    public ResponseEntity<ApiResponse<List<VideoResponse>>> getActiveVideo() {
         List<VideoResponse> response = videoService.getAllActiveVideos();
         return ResponseEntity.ok(ApiResponse.success("Get list active video successfully", response));
     }
@@ -73,7 +65,6 @@ public class VideoController {
         return ResponseEntity.ok(ApiResponse.success("Get video detail successfully", response));
     }
 
-
     @GetMapping("/upload-signature")
     @Operation(summary = "Get signature for direct client-side upload")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getUploadSignature() {
@@ -81,6 +72,14 @@ public class VideoController {
                 "Signature generated successfully",
                 cloudinaryService.getUploadSignature()
         ));
+    }
+
+    @PostMapping("/generate-upload-url")
+    public ResponseEntity<?> generateUploadUrl(@RequestBody Map<String, String> request) {
+        String fileName = request.get("fileName");
+        String contentType = request.get("contentType");
+        String size = request.get("size");
+        return ResponseEntity.ok(s3Service.generateUploadUrl(fileName, contentType, Long.valueOf(size)));
     }
 
     @PostMapping(value = "/upload-chunk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -111,6 +110,8 @@ public class VideoController {
         return ResponseEntity.ok(ApiResponse.success(message, response));
     }
 
-
-
+    @GetMapping("/video-url/{videoId}")
+    public ResponseEntity<?> getVideo(@PathVariable UUID videoId) {
+        return ResponseEntity.ok(videoService.getUrlToShow(videoId));
+    }
 }

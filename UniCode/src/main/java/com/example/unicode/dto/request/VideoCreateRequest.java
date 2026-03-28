@@ -14,9 +14,9 @@ public class VideoCreateRequest {
 
         @NotNull(message = "LessonId ID is required")
         private UUID lessonId;
-
         private int duration;
         private String videoUrl;
         private String publicId;
+        private String key;
 }
 

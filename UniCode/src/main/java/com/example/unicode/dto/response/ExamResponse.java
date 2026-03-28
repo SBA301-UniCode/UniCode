@@ -15,4 +15,5 @@ public class ExamResponse {
     private int duration;
     private double passScore;
     private int numberQuestions;
+    private boolean deleted;
 }

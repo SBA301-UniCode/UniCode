@@ -15,7 +15,7 @@ public class UserUpdateRequest {
 
     private String avatarUrl;
 
-    private Boolean isActive;
+    private Boolean active;
 
     private Set<String> roleCodes;
 }

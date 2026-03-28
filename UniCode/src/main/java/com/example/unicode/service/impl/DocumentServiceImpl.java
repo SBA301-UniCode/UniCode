@@ -12,6 +12,7 @@ import com.example.unicode.repository.ContentRepo;
 import com.example.unicode.repository.DocumentRepository;
 import com.example.unicode.repository.LessonRepository;
 import com.example.unicode.service.DocumentService;
+import com.example.unicode.ultils.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ public class DocumentServiceImpl implements DocumentService {
     private final DocumentMapper documentMapper;
     private final LessonRepository lessonRepository;
     private final com.example.unicode.service.CloudinaryService cloudinaryService;
+    private final S3Service s3Service;
 
     @Override
     public DocumentResponse create(DocumentCreateRequest request, org.springframework.web.multipart.MultipartFile file) throws java.io.IOException {
@@ -37,9 +39,9 @@ public class DocumentServiceImpl implements DocumentService {
                 .orElseThrow(() -> new RuntimeException("Lesson not found"));
                 
         // Upload file to Cloudinary
-        java.util.Map uploadResult = cloudinaryService.uploadDocument(file);
-        String documentUrl = uploadResult.get("secure_url").toString();
-        String publicId = uploadResult.get("public_id").toString();
+//        java.util.Map uploadResult = cloudinaryService.uploadDocument(file);
+//        String documentUrl = uploadResult.get("secure_url").toString();
+//        String publicId = uploadResult.get("public_id").toString();
 
         Content  content = new Content();
         content.setLesson(lesson);
@@ -47,8 +49,7 @@ public class DocumentServiceImpl implements DocumentService {
         content = contentRepository.save(content);
         
         Document document = new Document();
-        document.setDocumentUrl(documentUrl);
-        document.setPublicId(publicId);
+        document.setDocumentUrl(s3Service.uploadPublic(file,"document"));
         document.setTitle(request.getTitle());
         document.setContent(content);
         return documentMapper.toResponse(documentRepository.save(document));

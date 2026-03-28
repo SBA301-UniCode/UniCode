@@ -2,20 +2,22 @@ package com.example.unicode.service.impl;
 
 import com.example.unicode.dto.request.VideoCreateRequest;
 import com.example.unicode.dto.response.VideoResponse;
-import com.example.unicode.entity.Content;
-import com.example.unicode.entity.Lesson;
-import com.example.unicode.entity.Video;
+import com.example.unicode.dto.response.VideoResponseUrl;
+import com.example.unicode.entity.*;
 import com.example.unicode.enums.ContentType;
+import com.example.unicode.enums.VideoStatus;
 import com.example.unicode.exception.AppException;
 import com.example.unicode.exception.ErrorCode;
 import com.example.unicode.mapper.VideoMapper;
-import com.example.unicode.repository.ContentRepo;
-import com.example.unicode.repository.LessonRepository;
-import com.example.unicode.repository.VideoRepository;
+import com.example.unicode.repository.*;
 import com.example.unicode.service.CloudinaryService;
 import com.example.unicode.service.VideoService;
+import com.example.unicode.ultils.S3Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,36 +30,23 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class VideoServiceImpl implements VideoService {
     private final VideoRepository videoRepository;
     private final LessonRepository lessonRepository;
     private final VideoMapper videoMapper;
     private final CloudinaryService cloudinaryService;
     private final ContentRepo contentRepo;
+    private final EnrollmentRepository enrollmentRepository;
+    private final S3Service s3Service;
+    private final UsersRepository usersRepository;
+    private final CourseRepository courseRepository;
 
     @Transactional
     @Override
-    public VideoResponse create(VideoCreateRequest request, MultipartFile file) {
+    public VideoResponse create(VideoCreateRequest request) {
         Lesson lesson = lessonRepository.findById(request.getLessonId())
                 .orElseThrow(() -> new RuntimeException("Lesson not found"));
-
-        String publicId;
-        String secureUrl;
-
-        if (file != null) {
-            Map<String, Object> uploadResult;
-            try {
-                uploadResult = cloudinaryService.uploadVideo(file);
-            } catch (IOException e) {
-                throw new RuntimeException("Upload video failed: " + e.getMessage());
-            }
-            publicId = (String) uploadResult.get("public_id");
-            secureUrl = (String) uploadResult.get("secure_url");
-        } else {
-            publicId = request.getPublicId();
-            secureUrl = request.getVideoUrl();
-        }
-
 
         Content content = new Content();
         content.setLesson(lesson);
@@ -65,10 +54,11 @@ public class VideoServiceImpl implements VideoService {
         content = contentRepo.save(content);
 
         Video video = new Video();
-        video.setVideoUrl(secureUrl);
-        video.setPublicId(publicId);
         video.setDuration(request.getDuration());
+        video.setStatus(VideoStatus.IN_PROCESSING);
         video.setContent(content);
+        processVideo(video, request.getKey());
+        video.setStatus(VideoStatus.READY);
         return videoMapper.toResponse(videoRepository.save(video));
     }
 
@@ -84,12 +74,10 @@ public class VideoServiceImpl implements VideoService {
                 .orElseThrow(() -> new RuntimeException("Video not found"));
 
         String publicId = video.getPublicId();
-
         String signedUrl = cloudinaryService.generateSignedUrl(publicId);
 
         return VideoResponse.builder()
                 .url(signedUrl)
-                .duration(video.getDuration())
                 .build();
     }
 
@@ -104,8 +92,6 @@ public class VideoServiceImpl implements VideoService {
         }
         video.setDeleted(true);
         video.setDeletedAt(LocalDateTime.now());
-        video.setVideoUrl(null);
-        video.setPublicId(null);
         videoRepository.save(video);
     }
 
@@ -132,7 +118,6 @@ public class VideoServiceImpl implements VideoService {
             content = contentRepo.save(content);
 
             Video video = new Video();
-            video.setVideoUrl(secureUrl);
             video.setPublicId(publicId);
             video.setDuration(duration);
             video.setContent(content);
@@ -153,7 +138,7 @@ public class VideoServiceImpl implements VideoService {
         file.transferTo(chunkFile);
 
         boolean isReadyToMerge = false;
-        
+
         // Block đồng bộ hóa nhiều luồng ghép file (tránh 2 luồng cùng merge 1 lúc)
         synchronized (uploadId.intern()) {
             java.io.File[] chunks = dir.listFiles();
@@ -177,7 +162,7 @@ public class VideoServiceImpl implements VideoService {
 
             // Cleanup chunk files
             java.io.File[] chunks = dir.listFiles();
-            if(chunks != null) {
+            if (chunks != null) {
                 for (java.io.File c : chunks) {
                     c.delete();
                 }
@@ -194,7 +179,6 @@ public class VideoServiceImpl implements VideoService {
             content = contentRepo.save(content);
 
             Video video = new Video();
-            video.setVideoUrl("(" + uploadId + ") Đang xử lý trên máy chủ...");
             video.setPublicId("processing_" + uploadId);
             video.setDuration(0);
             video.setContent(content);
@@ -204,10 +188,7 @@ public class VideoServiceImpl implements VideoService {
             // Start async upload thread
             java.util.concurrent.CompletableFuture.runAsync(() -> {
                 try {
-                    // FIX LỖI: Chờ 3 giây để đảm bảo Spring Boot @Transactional đã lưu VideoId này vào Database
-                    // Nếu không chờ, luồng này chạy quá nhanh (với file 10MB) -> tìm ID trong DB sẽ báo Null -> kẹt chữ "Đang chờ".
-                    Thread.sleep(3000); 
-
+                    Thread.sleep(3000);
                     System.out.println("Bắt đầu upload background file " + mergedFile.getName() + " lên Cloudinary...");
                     Map<String, Object> uploadResult = cloudinaryService.uploadVideoFile(mergedFile);
 
@@ -221,7 +202,6 @@ public class VideoServiceImpl implements VideoService {
                     Video v = videoRepository.findById(videoId).orElse(null);
                     if (v != null) {
                         v.setPublicId(publicId);
-                        v.setVideoUrl(secureUrl);
                         v.setDuration(duration);
                         videoRepository.save(v);
                         System.out.println("Upload hoàn tất cho video: " + videoId);
@@ -233,7 +213,7 @@ public class VideoServiceImpl implements VideoService {
                     e.printStackTrace();
                     Video v = videoRepository.findById(videoId).orElse(null);
                     if (v != null) {
-                        v.setVideoUrl("(" + uploadId + ") Upload Thất Bại: " + e.getMessage());
+                        v.setPublicId("FAILED_" + uploadId);
                         videoRepository.save(v);
                     }
                 } finally {
@@ -247,4 +227,37 @@ public class VideoServiceImpl implements VideoService {
         return null;
     }
 
+    @Override
+    public VideoResponseUrl getUrlToShow(UUID uuid) {
+        Video video = videoRepository.findById(uuid).orElseThrow(
+                () -> new AppException(ErrorCode.VIDEO_NOT_FOUND)
+        );
+        Course course = video.getContent().getLesson().getChapter().getCourse();
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users users = usersRepository.findByEmail(email);
+        if (users == null) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        if (!enrollmentRepository.existsByCourseAndLearner(course, users) && !courseRepository.existsByInstructors(users)) {
+            throw new AppException(ErrorCode.NOT_HAVE_PERMISION_TO_VIEW);
+        }
+
+        String url = s3Service.generateViewUrl(video.getPublicId(), video.getDuration());
+        return new VideoResponseUrl(video.getDuration(), url);
+    }
+
+    @Async
+    public void processVideo(Video video, String key) {
+        try {
+            String hlsKey = s3Service.convertToHlsFast(key);
+            video.setPublicId(hlsKey);
+            video.setStatus(VideoStatus.READY);
+            videoRepository.save(video);
+        } catch (Exception e) {
+            e.printStackTrace();
+            video.setStatus(VideoStatus.FAILED);
+            videoRepository.save(video);
+        }
+    }
 }

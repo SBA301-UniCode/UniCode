@@ -39,7 +39,7 @@ public class AuthencationServiceImpl implements AuthencationSevice {
         if (user == null) {
             throw new AppException(ErrorCode.INVALID_LOGIN_REQUEST);
         }
-        if (!user.isActive()) {
+        if (user.getDeleted()) {
             throw new AppException(ErrorCode.USER_INACTIVE);
         }
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
@@ -72,7 +72,32 @@ public class AuthencationServiceImpl implements AuthencationSevice {
         return LoginResponse.builder()
                 .accessToken(tokenService.generateToken(user))
                 .refreshToken(refreshTokenService.generateRefreshToken(user))
+                .roleCode(getRole(user))
                 .build();
+    }
+    public String getRole(Users user) {
+           int admin = 0 ;
+           int instructor = 0 ;
+
+        for (Role role : user.getRolesList()) {
+            if(role.getRoleCode().equals("ADMIN")) {
+                admin++;
+            }
+            else if(role.getRoleCode().equalsIgnoreCase("INSTRUCTOR"))
+            {
+                instructor++;
+            }
+
+        }
+        if(admin > 0 )
+        {
+            return "ADMIN";
+        }
+        if (instructor > 0 )
+        {
+            return "INSTRUCTOR";
+        }
+        return "LEARNER";
     }
 
     @Override
